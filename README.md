@@ -239,3 +239,22 @@ mu(S) = sum_{i in S} m_i + sum_{i<j, i,j in S} m_ij
 ```powershell
 python scripts/test_choquet_formula.py
 ```
+## Auto Run with Python
+
+You can run the project without manually typing PowerShell environment variables each time:
+
+```powershell
+python auto_run.py
+```
+
+Edit the `CONFIG` block at the top of `auto_run.py` to switch modes:
+
+- `CHOQUET_MODE`: `inspired` or `discrete_2additive`
+- `AGENT_BACKEND`: `rule`, `hybrid`, or `llm`
+- `RUN_SAMPLE_LIMIT`: `"8"` for a quick small-sample test, or `""` for the full dataset
+- `EPOCHS`: `"2"` for a quick test, or `""` to use the default training epochs from `config.py`
+- `BATCH_SIZE`: `"2"` for a quick test, or `""` to use the default batch size from `config.py`
+
+`auto_run.py` does not store the real API key. If you use `hybrid` or `llm`, set `XIAOHU_API_KEY` in your system environment or current shell before running it. The default `rule` backend does not need a key.
+
+Common presets are documented as comments inside `auto_run.py`, including quick `inspired`, quick `discrete_2additive`, full rule training, and LLM hybrid small-sample validation.
