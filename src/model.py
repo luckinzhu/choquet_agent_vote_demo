@@ -1,4 +1,4 @@
-from typing import Dict, List
+﻿from typing import Dict
 
 import numpy as np
 import torch
@@ -10,19 +10,45 @@ from .utils import to_tensor
 
 
 class MultiAgentChoquetModel:
-    """Thin orchestration wrapper around fixed agents + trainable aggregator."""
+    """Thin orchestration wrapper around fixed agents + trainable aggregator.
 
-    def __init__(self, num_classes: int = 2, device: str = "cpu"):
+    Agents can be rule-based or LLM-backed. They are inference-only; the only
+    trainable module remains the selected Choquet aggregation layer mode.
+    """
+
+    def __init__(
+        self,
+        num_classes: int = 2,
+        device: str = "cpu",
+        agent_backend: str = None,
+        choquet_mode: str = "inspired",
+    ):
         self.device = device
-        self.agents = build_agents()
+        self.choquet_mode = choquet_mode
+        self.agents = build_agents(agent_backend)
         self.agent_names = [a.name for a in self.agents]
         self.agent_descriptions = AGENT_DESCRIPTIONS
         self.relevance = TfidfRelevanceEstimator(self.agent_descriptions)
-        self.layer = ChoquetInspiredVotingLayer(len(self.agents), num_classes).to(device)
+        self.layer = ChoquetInspiredVotingLayer(
+            len(self.agents),
+            num_classes,
+            mode=choquet_mode,
+        ).to(device)
 
     def fit_relevance(self, df):
         self.relevance.fit(df["task_description"].tolist(), df["text"].tolist())
         return self
+
+    def set_llm_cache_only(self, cache_only: bool = True) -> None:
+        for agent in self.agents:
+            setter = getattr(agent, "set_cache_only", None)
+            if callable(setter):
+                setter(cache_only)
+
+    def warm_agent_cache(self, df) -> None:
+        texts = df["text"].tolist()
+        task_descriptions = df["task_description"].tolist()
+        run_agents(self.agents, texts, task_descriptions)
 
     def make_inputs(self, df_or_texts, task_descriptions=None) -> Dict[str, object]:
         if hasattr(df_or_texts, "__getitem__") and task_descriptions is None:

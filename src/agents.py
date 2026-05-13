@@ -1,9 +1,16 @@
+import json
 import math
 import re
 from abc import ABC, abstractmethod
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
+
+
+DEFAULT_LABEL_SCHEMA = {
+    "class_0": "否 / 非标题党 / 非点击诱导",
+    "class_1": "是 / 标题党 / 点击诱导",
+}
 
 
 def _contains_any(text: str, keywords: List[str]) -> int:
@@ -12,54 +19,120 @@ def _contains_any(text: str, keywords: List[str]) -> int:
 
 
 def _punctuation_intensity(text: str) -> float:
-    return min(3.0, text.count("!") + text.count("?") + text.count("？") + text.count("！"))
+    return min(3.0, text.count("!") + text.count("?") + text.count("！") + text.count("？"))
 
 
 def _sigmoid(x: float) -> float:
     return 1.0 / (1.0 + math.exp(-max(-12.0, min(12.0, x))))
 
 
-class AgentBase(ABC):
-    """Rule-based fixed expert used to simulate a specialized agent.
+def _normalize_probs(p0: float, p1: float) -> Tuple[float, float]:
+    p0 = float(p0)
+    p1 = float(p1)
+    if p0 < 0.0 or p1 < 0.0:
+        p0 = min(1.0, max(0.0, p0))
+        p1 = min(1.0, max(0.0, p1))
+    total = p0 + p1
+    if total <= 1e-8:
+        return 0.5, 0.5
+    return min(1.0, max(0.0, p0 / total)), min(1.0, max(0.0, p1 / total))
 
-    Each agent maps text + task description to a binary probability vector.
-    Labels are task-local: clickbait uses 1=clickbait; sentiment uses 1=positive.
-    """
 
+def _clamp01(value: float, default: float = 0.5) -> float:
+    try:
+        return min(1.0, max(0.0, float(value)))
+    except (TypeError, ValueError):
+        return default
+
+
+def _first_json_object(text: str) -> str:
+    cleaned = text.strip()
+    if cleaned.startswith("```"):
+        cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"\s*```$", "", cleaned)
+    start = cleaned.find("{")
+    if start < 0:
+        raise ValueError("No JSON object found in LLM output")
+    depth = 0
+    in_string = False
+    escape = False
+    for idx in range(start, len(cleaned)):
+        char = cleaned[idx]
+        if in_string:
+            if escape:
+                escape = False
+            elif char == "\\":
+                escape = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+        elif char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                return cleaned[start : idx + 1]
+    raise ValueError("Unclosed JSON object in LLM output")
+
+
+class AgentInterface(ABC):
     name = "Base"
     description = ""
+
+    @abstractmethod
+    def predict_one(
+        self,
+        text: str,
+        task_description: str,
+        label_schema: Optional[Dict[str, str]] = None,
+    ) -> Dict[str, object]:
+        """Return probs/confidence/explanation for one sample."""
+
+    def predict_batch(self, texts: List[str], task_descriptions: List[str]):
+        outputs = [
+            self.predict_one(t, d, DEFAULT_LABEL_SCHEMA)
+            for t, d in zip(texts, task_descriptions)
+        ]
+        probs = np.stack([np.asarray(o["probs"], dtype=np.float32) for o in outputs], axis=0)
+        confidences = np.array([o["confidence"] for o in outputs], dtype=np.float32)
+        explanations = [str(o["explanation"]) for o in outputs]
+        return probs, confidences, explanations
+
+
+class RuleBasedAgent(AgentInterface):
+    """Rule-based fixed expert used to simulate a specialized agent."""
 
     @abstractmethod
     def raw_score(self, text: str, task_description: str) -> Tuple[float, str]:
         """Return a class-1 logit-like score and a short explanation."""
 
-    def predict_one(self, text: str, task_description: str) -> Dict[str, object]:
+    def predict_one(
+        self,
+        text: str,
+        task_description: str,
+        label_schema: Optional[Dict[str, str]] = None,
+    ) -> Dict[str, object]:
         score, explanation = self.raw_score(text, task_description)
         p1 = _sigmoid(score)
         probs = np.array([1.0 - p1, p1], dtype=np.float32)
         confidence = float(np.max(probs))
         return {"probs": probs, "confidence": confidence, "explanation": explanation}
 
-    def predict_batch(self, texts: List[str], task_descriptions: List[str]):
-        outputs = [self.predict_one(t, d) for t, d in zip(texts, task_descriptions)]
-        probs = np.stack([o["probs"] for o in outputs], axis=0)
-        confidences = np.array([o["confidence"] for o in outputs], dtype=np.float32)
-        explanations = [o["explanation"] for o in outputs]
-        return probs, confidences, explanations
 
-
-class SemanticAgent(AgentBase):
+class SemanticAgent(RuleBasedAgent):
     name = "Semantic"
     description = "understands semantic meaning, implication, context, and hidden meaning"
 
-    hidden_clickbait = ["hidden", "secret", "truth", "behind", "mysterious", "真相", "秘密", "背后"]
-    neutral_news = ["report", "budget", "schedule", "announces", "survey", "data", "公布", "报告", "安排"]
-    positive_semantic = ["worth", "better", "warm", "kindness", "encouraged", "dependable", "安心", "感动", "明亮"]
-    negative_semantic = ["regret", "wrong", "lost", "ignored", "crashed", "errors", "崩溃", "白忙", "问题"]
-    negators = ["not", "no", "barely", "without", "并不", "没有", "不"]
+    hidden_clickbait = ["hidden", "secret", "truth", "behind", "mysterious", "revealed", "unknown", "真相", "秘密", "背后"]
+    neutral_news = ["report", "budget", "schedule", "announces", "survey", "data", "review", "summary", "报告", "公布"]
+    positive_semantic = ["worth", "better", "warm", "kindness", "encouraged", "dependable", "helpful", "安心", "感动"]
+    negative_semantic = ["regret", "wrong", "lost", "ignored", "crashed", "errors", "failed", "崩溃", "白忙"]
+    negators = ["not", "no", "barely", "without", "never", "不", "没有", "并不"]
 
     def raw_score(self, text: str, task_description: str) -> Tuple[float, str]:
-        is_clickbait = "clickbait" in task_description.lower()
+        is_clickbait = "clickbait" in task_description.lower() or "点击" in task_description
         if is_clickbait:
             pos = _contains_any(text, self.hidden_clickbait)
             neg = _contains_any(text, self.neutral_news)
@@ -72,20 +145,20 @@ class SemanticAgent(AgentBase):
         return score, f"semantic positive={pos}, negative={neg}, negation={negation}"
 
 
-class EmotionAgent(AgentBase):
+class EmotionAgent(RuleBasedAgent):
     name = "Emotion"
     description = "detects sentiment, emotion, sarcasm, subjective attitude, and implicit feeling"
 
-    emotion_words = ["angry", "sad", "happy", "warm", "delightful", "love", "smiling", "感动", "开心", "惊喜"]
-    negative_feelings = ["regret", "punishment", "ignored", "wrong", "unfortunately", "失望", "崩溃", "等待"]
-    sarcasm_markers = ["amazing", "just love", "what a delightful", "of course", "apparently", "真不错", "当然开心"]
-    positive_feelings = ["kindness", "smiling", "encouraged", "nicer", "respect", "安心", "明亮", "出乎意料地好"]
+    emotion_words = ["angry", "sad", "happy", "warm", "delightful", "love", "smiling", "开心", "震惊", "感动"]
+    negative_feelings = ["regret", "punishment", "ignored", "wrong", "unfortunately", "sad", "angry", "失望", "崩溃"]
+    sarcasm_markers = ["amazing", "just love", "what a delightful", "of course", "apparently", "当然开心", "真不错"]
+    positive_feelings = ["kindness", "smiling", "encouraged", "nicer", "respect", "warm", "happy", "安心", "感动"]
 
     def raw_score(self, text: str, task_description: str) -> Tuple[float, str]:
-        is_clickbait = "clickbait" in task_description.lower()
+        is_clickbait = "clickbait" in task_description.lower() or "点击" in task_description
         if is_clickbait:
             emotion = _contains_any(text, self.emotion_words)
-            shock = _contains_any(text, ["shocking", "speechless", "unbelievable", "震惊", "惊人"])
+            shock = _contains_any(text, ["shocking", "speechless", "unbelievable", "amazing", "震惊", "惊人"])
             score = 0.55 * shock + 0.2 * emotion - 0.2
             return score, f"emotional sensationality={shock}, emotion={emotion}"
         pos = _contains_any(text, self.positive_feelings)
@@ -95,28 +168,17 @@ class EmotionAgent(AgentBase):
         return score, f"emotion positive={pos}, negative={neg}, sarcasm={sarcasm}"
 
 
-class IntentionAgent(AgentBase):
+class IntentionAgent(RuleBasedAgent):
     name = "Intention"
     description = "detects persuasion, misleading intention, exaggeration, and click-inducing purpose"
 
-    click_intent = [
-        "click",
-        "share",
-        "must see",
-        "must know",
-        "do not miss",
-        "you need to see",
-        "everyone is sharing",
-        "赶紧看",
-        "一定要知道",
-        "点击查看",
-    ]
-    manipulative = ["doctors do not want", "secret", "warning sign", "could cost", "will change", "从不主动告诉"]
-    calm_info = ["approves", "announces", "releases", "review", "schedule", "budget", "发布", "公布"]
-    sentiment_intent = ["promised", "called it", "goal was", "apparently", "所谓", "其实"]
+    click_intent = ["click", "share", "must see", "must know", "do not miss", "you need to see", "everyone is sharing", "点击", "速看", "必看", "一定要知道"]
+    manipulative = ["doctors do not want", "secret", "warning sign", "could cost", "will change", "不告诉你", "真相"]
+    calm_info = ["approves", "announces", "releases", "review", "schedule", "budget", "report", "发布", "报告"]
+    sentiment_intent = ["promised", "called it", "goal was", "apparently", "其实", "所谓"]
 
     def raw_score(self, text: str, task_description: str) -> Tuple[float, str]:
-        is_clickbait = "clickbait" in task_description.lower()
+        is_clickbait = "clickbait" in task_description.lower() or "点击" in task_description
         if is_clickbait:
             intent = _contains_any(text, self.click_intent)
             manipulation = _contains_any(text, self.manipulative)
@@ -124,37 +186,22 @@ class IntentionAgent(AgentBase):
             score = 1.15 * intent + 0.75 * manipulation - 0.9 * calm - 0.1
             return score, f"click intent={intent}, manipulation={manipulation}, calm-info={calm}"
         cue = _contains_any(text, self.sentiment_intent)
-        # In sentiment, intention cues often reveal disappointment or contrast.
-        positive_resolution = _contains_any(text, ["solved", "needed", "worth", "made my day", "出乎意料地好"])
+        positive_resolution = _contains_any(text, ["solved", "needed", "worth", "made my day", "helped", "出乎意料地好"])
         score = 0.55 * positive_resolution - 0.5 * cue
         return score, f"speaker intention/contrast={cue}, positive-resolution={positive_resolution}"
 
 
-class LexicalAgent(AgentBase):
+class LexicalAgent(RuleBasedAgent):
     name = "Lexical"
     description = "detects sensational words, punctuation, keywords, and surface-level patterns"
 
-    sensational = [
-        "shocking",
-        "unbelievable",
-        "secret",
-        "weird trick",
-        "must see",
-        "speechless",
-        "viral",
-        "bizarre",
-        "you won't believe",
-        "震惊",
-        "万万没想到",
-        "竟然",
-        "惊人",
-    ]
+    sensational = ["shocking", "unbelievable", "secret", "weird trick", "must see", "speechless", "viral", "bizarre", "you won't believe", "震惊", "竟然", "万万没想到", "惊人"]
     plain_news = ["report", "budget", "rules", "schedule", "survey", "summary", "measures", "报告", "预算"]
     positive_words = ["better", "kindness", "warm", "worth", "encouraged", "nicer", "respect", "安心", "感动"]
     negative_words = ["crashed", "regret", "wrong", "fee", "errors", "ignored", "punishment", "崩溃", "等待"]
 
     def raw_score(self, text: str, task_description: str) -> Tuple[float, str]:
-        is_clickbait = "clickbait" in task_description.lower()
+        is_clickbait = "clickbait" in task_description.lower() or "点击" in task_description
         punct = _punctuation_intensity(text)
         if is_clickbait:
             pos = _contains_any(text, self.sensational)
@@ -167,18 +214,18 @@ class LexicalAgent(AgentBase):
         return score, f"lexical positive={pos}, negative={neg}, punctuation={punct:.0f}"
 
 
-class ConsistencyAgent(AgentBase):
+class ConsistencyAgent(RuleBasedAgent):
     name = "Consistency"
     description = "detects mismatch, contradiction, inconsistency between title, content, and image description"
 
-    contrast = ["but", "however", "actually", "yet", "except", "unfortunately", "然而", "其实", "并不是", "虽然"]
+    contrast = ["but", "however", "actually", "yet", "except", "unfortunately", "然而", "其实", "但是"]
     bait_mismatch = ["but", "actually", "hidden", "behind", "truth", "然而", "其实", "背后", "真相"]
-    stable_news = ["annual", "schedule", "data", "numbers", "summary", "年度", "安排", "摘要"]
-    positive_after_contrast = ["better", "worth", "warm", "needed", "good", "安心", "感动", "好"]
-    negative_after_contrast = ["wrong", "errors", "crashed", "fee", "lost", "崩溃", "问题", "白忙"]
+    stable_news = ["annual", "schedule", "data", "numbers", "summary", "report", "年度", "摘要"]
+    positive_after_contrast = ["better", "worth", "warm", "needed", "good", "helpful", "安心", "感动", "好"]
+    negative_after_contrast = ["wrong", "errors", "crashed", "fee", "lost", "failed", "崩溃", "白忙"]
 
     def raw_score(self, text: str, task_description: str) -> Tuple[float, str]:
-        is_clickbait = "clickbait" in task_description.lower()
+        is_clickbait = "clickbait" in task_description.lower() or "点击" in task_description
         contrast = _contains_any(text, self.contrast)
         if is_clickbait:
             mismatch = _contains_any(text, self.bait_mismatch)
@@ -187,29 +234,221 @@ class ConsistencyAgent(AgentBase):
             return score, f"mismatch cues={mismatch}, contrast={contrast}, stable-news={stable}"
         pos = _contains_any(text, self.positive_after_contrast)
         neg = _contains_any(text, self.negative_after_contrast)
-        # Contrast is informative, but not always negative; paired words decide direction.
         score = 0.45 * contrast + 0.75 * pos - 0.9 * neg
         return score, f"contrast={contrast}, positive-after-contrast={pos}, negative-after-contrast={neg}"
 
 
-def build_agents() -> List[AgentBase]:
-    return [
-        SemanticAgent(),
-        EmotionAgent(),
-        IntentionAgent(),
-        LexicalAgent(),
-        ConsistencyAgent(),
+class LLMAgentError(RuntimeError):
+    pass
+
+
+class LLMBaseAgent(AgentInterface):
+    """LLM-backed expert. It is inference-only and never participates in backprop."""
+
+    system_role = "通用专家"
+    perspective = "从自己的专家视角判断文本是否属于目标类别。"
+
+    def __init__(self, llm_client, cache=None, fallback_agent: Optional[RuleBasedAgent] = None):
+        self.llm_client = llm_client
+        self.cache = cache
+        self.fallback_agent = fallback_agent
+        self.cache_only = False
+        self.last_error = None
+        self.last_used_fallback = False
+    def set_cache_only(self, cache_only: bool = True) -> None:
+        self.cache_only = cache_only
+
+
+    @property
+    def model_name(self) -> str:
+        return getattr(self.llm_client, "model", "unknown")
+
+    def system_prompt(self) -> str:
+        return (
+            f"你是{self.system_role}。{self.perspective}\n"
+            "你只从自己的专家视角判断，不要综合其他角度。\n"
+            "当前主要任务是中文点击诱导/标题党判断；如果 task_description 另有说明，则仍按任务描述判断。\n"
+            "class_0 = 否 / 非标题党 / 非点击诱导 / 负类。\n"
+            "class_1 = 是 / 标题党 / 点击诱导 / 正类。\n"
+            "probability 必须在 0 到 1 之间；confidence 表示你对自己判断的可靠程度。\n"
+            "输出必须是严格 JSON，不要 Markdown，不要代码块，不要额外解释。"
+        )
+
+    def user_prompt(self, text: str, task_description: str, label_schema: Dict[str, str]) -> str:
+        return (
+            "任务描述：\n"
+            f"{task_description}\n\n"
+            "标签定义：\n"
+            f"class_0 = {label_schema.get('class_0', DEFAULT_LABEL_SCHEMA['class_0'])}\n"
+            f"class_1 = {label_schema.get('class_1', DEFAULT_LABEL_SCHEMA['class_1'])}\n\n"
+            "待判断文本：\n"
+            f"{text}\n\n"
+            "请从你的专家视角输出严格 JSON：\n"
+            "{\n"
+            '  "class_0_probability": 0.0,\n'
+            '  "class_1_probability": 1.0,\n'
+            '  "confidence": 0.0,\n'
+            '  "explanation": "不超过50字的中文解释"\n'
+            "}"
+        )
+
+    @staticmethod
+    def _parse_llm_json(raw_text: str) -> Dict[str, object]:
+        try:
+            cleaned = _first_json_object(raw_text)
+            data = json.loads(cleaned)
+        except (ValueError, json.JSONDecodeError) as exc:
+            raise LLMAgentError(f"LLM JSON parse failed: {exc}") from exc
+
+        try:
+            p0, p1 = _normalize_probs(
+                data["class_0_probability"],
+                data["class_1_probability"],
+            )
+        except KeyError as exc:
+            raise LLMAgentError(f"LLM JSON missing field: {exc}") from exc
+        except (TypeError, ValueError) as exc:
+            raise LLMAgentError(f"LLM probability field is invalid: {exc}") from exc
+        confidence = _clamp01(data.get("confidence", max(p0, p1)), default=max(p0, p1))
+        explanation = str(data.get("explanation", "LLM explanation missing")).strip()
+        if not explanation:
+            explanation = "LLM explanation missing"
+        return {
+            "probs": np.array([p0, p1], dtype=np.float32),
+            "confidence": confidence,
+            "explanation": explanation[:120],
+        }
+
+    @staticmethod
+    def neutral_fallback() -> Dict[str, object]:
+        return {
+            "probs": np.array([0.5, 0.5], dtype=np.float32),
+            "confidence": 0.3,
+            "explanation": "LLM parse failed fallback",
+        }
+
+    def predict_one(
+        self,
+        text: str,
+        task_description: str,
+        label_schema: Optional[Dict[str, str]] = None,
+    ) -> Dict[str, object]:
+        self.last_error = None
+        self.last_used_fallback = False
+        label_schema = label_schema or DEFAULT_LABEL_SCHEMA
+        if self.cache is not None:
+            cached = self.cache.get(text, task_description, self.name, self.model_name)
+            if cached is not None:
+                return cached
+
+        if self.cache_only:
+            self.last_error = "LLM cache miss during cache-only training. Run scripts/precompute_llm_outputs.py first."
+            self.last_used_fallback = True
+            if self.fallback_agent is not None:
+                fallback = self.fallback_agent.predict_one(text, task_description, label_schema)
+                fallback["explanation"] = f"LLM cache miss, rule fallback: {fallback['explanation']}"
+                return fallback
+            raise LLMAgentError(self.last_error)
+
+        try:
+            raw_text = self.llm_client.complete(
+                messages=[
+                    {"role": "system", "content": self.system_prompt()},
+                    {"role": "user", "content": self.user_prompt(text, task_description, label_schema)},
+                ]
+            )
+            parsed = self._parse_llm_json(raw_text)
+            if self.cache is not None:
+                self.cache.set(text, task_description, self.name, self.model_name, parsed, raw_text)
+            return parsed
+        except Exception as exc:
+            self.last_error = str(exc)
+            self.last_used_fallback = True
+            if self.fallback_agent is not None:
+                fallback = self.fallback_agent.predict_one(text, task_description, label_schema)
+                fallback["explanation"] = f"LLM failed, rule fallback: {fallback['explanation']}"
+                return fallback
+            return self.neutral_fallback()
+
+
+class LLMSemanticAgent(LLMBaseAgent):
+    name = "Semantic"
+    description = SemanticAgent.description
+    system_role = "语义上下文专家"
+    perspective = "你关注语义上下文、隐含意义、事实指向和文本整体含义。"
+
+
+class LLMEmotionAgent(LLMBaseAgent):
+    name = "Emotion"
+    description = EmotionAgent.description
+    system_role = "情绪态度专家"
+    perspective = "你关注情绪、态度、主观色彩、讽刺和隐含感受。"
+
+
+class LLMIntentionAgent(LLMBaseAgent):
+    name = "Intention"
+    description = IntentionAgent.description
+    system_role = "点击诱导/操纵意图专家"
+    perspective = "你关注诱导点击、操纵意图、夸张承诺、误导性动机和劝服目的。"
+
+
+class LLMLexicalAgent(LLMBaseAgent):
+    name = "Lexical"
+    description = LexicalAgent.description
+    system_role = "词汇表层模式专家"
+    perspective = "你关注表层词汇、标点、标题党模式、极端修饰和关键词线索。"
+
+
+class LLMConsistencyAgent(LLMBaseAgent):
+    name = "Consistency"
+    description = ConsistencyAgent.description
+    system_role = "一致性/矛盾/转折专家"
+    perspective = "你关注文本内部一致性、矛盾、转折、前后不匹配和叙述落差。"
+
+
+class AgentFactory:
+    rule_agent_classes = [SemanticAgent, EmotionAgent, IntentionAgent, LexicalAgent, ConsistencyAgent]
+    llm_agent_classes = [
+        LLMSemanticAgent,
+        LLMEmotionAgent,
+        LLMIntentionAgent,
+        LLMLexicalAgent,
+        LLMConsistencyAgent,
     ]
 
+    @classmethod
+    def build(cls, backend: Optional[str] = None) -> List[AgentInterface]:
+        from config import AGENT_BACKEND, LLM_CACHE_ENABLED, LLM_CACHE_PATH
+        from .cache import LLMCache
+        from .llm_client import LLMClient
 
-def run_agents(agents: List[AgentBase], texts: List[str], task_descriptions: List[str]):
+        backend = (backend or AGENT_BACKEND).strip().lower()
+        rule_agents = [agent_cls() for agent_cls in cls.rule_agent_classes]
+        if backend == "rule":
+            return rule_agents
+        if backend not in {"llm", "hybrid"}:
+            raise ValueError(f"Unsupported AGENT_BACKEND={backend!r}; expected rule, llm, or hybrid.")
+
+        llm_client = LLMClient.from_config()
+        cache = LLMCache(LLM_CACHE_PATH) if LLM_CACHE_ENABLED else None
+        fallback_agents = rule_agents if backend == "hybrid" else [None] * len(rule_agents)
+        return [
+            llm_cls(llm_client=llm_client, cache=cache, fallback_agent=fallback)
+            for llm_cls, fallback in zip(cls.llm_agent_classes, fallback_agents)
+        ]
+
+
+def build_agents(backend: Optional[str] = None) -> List[AgentInterface]:
+    return AgentFactory.build(backend)
+
+
+def run_agents(agents: List[AgentInterface], texts: List[str], task_descriptions: List[str]):
     probs, confidences, explanations = [], [], []
     for agent in agents:
         p, c, e = agent.predict_batch(texts, task_descriptions)
         probs.append(p)
         confidences.append(c)
         explanations.append(e)
-    # [batch, K, classes], [batch, K]
     agent_probs = np.stack(probs, axis=1)
     agent_confidences = np.stack(confidences, axis=1)
     return agent_probs.astype(np.float32), agent_confidences.astype(np.float32), explanations

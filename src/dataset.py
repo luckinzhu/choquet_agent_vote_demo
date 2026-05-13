@@ -169,6 +169,39 @@ def ensure_toy_data(data_path: Path, min_rows: int = 80) -> pd.DataFrame:
     return df
 
 
+
+def split_dataframe(
+    df: pd.DataFrame,
+    train_ratio: float,
+    valid_ratio: float,
+    seed: int,
+) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Split an already-loaded dataframe, with graceful small-sample fallback."""
+    if len(df) < 3:
+        raise ValueError("Need at least 3 rows to create train/valid/test splits.")
+    stratify_key = df["task_name"].astype(str) + "_" + df["label"].astype(str)
+    stratify = stratify_key if stratify_key.value_counts().min() >= 2 else None
+    train_df, temp_df = train_test_split(
+        df,
+        train_size=train_ratio,
+        random_state=seed,
+        stratify=stratify,
+    )
+    relative_valid = valid_ratio / (1.0 - train_ratio)
+    temp_key = temp_df["task_name"].astype(str) + "_" + temp_df["label"].astype(str)
+    temp_stratify = temp_key if temp_key.value_counts().min() >= 2 else None
+    valid_df, test_df = train_test_split(
+        temp_df,
+        train_size=relative_valid,
+        random_state=seed,
+        stratify=temp_stratify,
+    )
+    return (
+        train_df.reset_index(drop=True),
+        valid_df.reset_index(drop=True),
+        test_df.reset_index(drop=True),
+    )
+
 def load_and_split(
     data_path: Path,
     train_ratio: float,
@@ -176,23 +209,4 @@ def load_and_split(
     seed: int,
 ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     df = ensure_toy_data(data_path)
-    stratify_key = df["task_name"].astype(str) + "_" + df["label"].astype(str)
-    train_df, temp_df = train_test_split(
-        df,
-        train_size=train_ratio,
-        random_state=seed,
-        stratify=stratify_key,
-    )
-    relative_valid = valid_ratio / (1.0 - train_ratio)
-    temp_key = temp_df["task_name"].astype(str) + "_" + temp_df["label"].astype(str)
-    valid_df, test_df = train_test_split(
-        temp_df,
-        train_size=relative_valid,
-        random_state=seed,
-        stratify=temp_key,
-    )
-    return (
-        train_df.reset_index(drop=True),
-        valid_df.reset_index(drop=True),
-        test_df.reset_index(drop=True),
-    )
+    return split_dataframe(df, train_ratio=train_ratio, valid_ratio=valid_ratio, seed=seed)

@@ -1,166 +1,241 @@
-# Task-aware + Sample-aware + Choquet-inspired Multi-Agent Voting Demo
+# Choquet Multi-Agent Voting Demo
 
-完整可运行的 Python / PyTorch demo，用来验证一个通用多智能体分类决策框架：
+这个项目演示一个二分类多 Agent 投票系统：5 个固定 Agent 先给出各自的概率、置信度和解释，`ChoquetInspiredVotingLayer` 再学习单 Agent 权重和两两交互权重。Agent 层支持三种后端：规则型、真实 LLM API、以及 LLM 失败后回退规则型的 hybrid 模式。
 
-- 固定 agent 专家池
-- task-aware relevance
-- sample-aware relevance
-- 可训练的 single-agent 权重
-- 可训练的 pairwise agent interaction 权重
-- Choquet-inspired 非加性聚合
+## 默认规则 Agent
 
-demo 不调用真实大模型 API。5 个 agent 用轻量规则模拟不同专家视角，重点是验证“多 agent 输出 + 任务相关性 + 样本相关性 + 组合交互权重 + 反向训练”的机制。
+默认配置是：
 
-## 项目结构
-
-```text
-choquet_agent_vote_demo/
-├── README.md
-├── requirements.txt
-├── main.py
-├── config.py
-├── data/
-│   └── toy_data.csv
-├── src/
-│   ├── dataset.py
-│   ├── agents.py
-│   ├── embeddings.py
-│   ├── choquet_layer.py
-│   ├── model.py
-│   ├── train.py
-│   ├── evaluate.py
-│   └── utils.py
+```python
+AGENT_BACKEND = "rule"
 ```
 
-## 方法思想
-
-框架面对不同任务时，使用同一组固定 agent：
-
-1. Semantic Agent：关注语义、上下文、隐含含义
-2. Emotion Agent：关注情绪、态度、讽刺、主观性
-3. Intention Agent：关注诱导、误导、操纵、吸引点击
-4. Lexical Agent：关注关键词、夸张词、标点和表层模式
-5. Consistency Agent：关注标题、正文、图片描述之间的一致性或矛盾
-
-每个 agent 输入 `text` 和 `task_description`，输出二分类概率、置信度和简短 explanation。
-
-当前 toy 数据支持两个任务：
-
-- `clickbait detection`
-- `implicit sentiment detection`
-
-首次运行时，如果 `data/toy_data.csv` 不足 80 行，程序会自动生成约 160 条 toy samples。
-
-## 为什么不是普通投票
-
-普通 majority voting 或 average probability voting 假设所有 agent 在所有任务、所有样本上同等重要。
-
-这个 demo 显式建模：
-
-- 不同任务下 agent 重要性不同，例如 clickbait 更依赖 Intention / Lexical，implicit sentiment 更依赖 Emotion / Semantic。
-- 不同样本会触发不同 agent，例如带有 `however / actually / 然而 / 其实` 的文本会提高 Consistency Agent 的相关性。
-- agent 之间不是简单相加，有些组合会产生 synergy，有些组合可能冗余。
-
-## 为什么是 Choquet-inspired
-
-完整 Choquet integral 适合表达非加性聚合：一个 agent 的贡献不只取决于自己，也取决于它和其他 agent 的组合关系。
-
-在多智能体投票里，这对应：
-
-- inter-agent interaction
-- synergy / redundancy modeling
-- pairwise capacity-like weights
-- 非简单平均的决策融合
-
-本项目中的 `ChoquetInspiredVotingLayer` 学习两类贡献：
-
-```text
-single contribution = sum_i w_i * p_i
-pair contribution   = sum_{i<j} w_ij * interaction(p_i, p_j)
-```
-
-默认 `interaction(p_i, p_j) = p_i * p_j`，代码中也标注了可替换为 `min(p_i, p_j)` 的位置。
-
-## 为什么采用 2-additive approximation
-
-完整 Choquet capacity 需要 `2^K` 个 capacity。K 变大后复杂度很高。
-
-本 demo 使用 2-additive approximation，只建模：
-
-- single agent capacity
-- pairwise agent capacity
-
-这样复杂度从指数级降到 `O(K^2)`，更适合轻量多智能体投票实验。它不是严格完整 Choquet integral 的数学实现，但保留了 Choquet-inspired 的核心：非加性聚合、组合交互、synergy / redundancy、capacity-like pair weights。
-
-## 可训练权重
-
-single weight：
-
-```text
-single_weight_i = softmax(
-    a_i * task_relevance_i
-  + b_i * sample_relevance_i
-  + c_i * confidence_i
-  + bias_i
-)
-```
-
-pair weight：
-
-```text
-pair_weight_ij = sigmoid(
-    u_ij * task_relevance_i * task_relevance_j
-  + v_ij * sample_relevance_i * sample_relevance_j
-  + r_ij * agreement_ij
-  + m_ij
-)
-```
-
-这些参数都在 PyTorch 中通过 `CrossEntropyLoss` 反向传播训练。默认 agent 是规则型固定专家，训练主要更新 Choquet-inspired voting layer。
-
-## 如何运行
+直接运行即可，不需要任何 API key：
 
 ```bash
 pip install -r requirements.txt
 python main.py
 ```
 
-默认 CPU 可运行。随机种子固定在 `config.py` 中。
+默认 rule 模式只使用本地规则 Agent，离线可跑。
 
-## 输出结果说明
+## Gemini 中转站 LLM Agent
 
-`python main.py` 会输出：
+LLM 调用走 OpenAI-compatible `chat/completions` HTTP 接口，不使用 Google Gemini 官方 SDK，也不使用 DashScope/Qwen SDK。
 
-1. 数据集规模和 train / valid / test 划分
-2. 每 5 个 epoch 的训练 loss、验证 accuracy、macro F1
-3. 最佳模型保存路径
-4. 四种方法对比：
-   - Majority Voting
-   - Average Probability Voting
-   - Dynamic Single-Agent Weighting
-   - Choquet-inspired Pairwise Voting
-5. 不同任务下的平均 single agent weights
-6. 不同任务下 top pairwise weights
-7. 若干样本的决策轨迹：
-   - text
-   - gold label
-   - each agent prediction / confidence / explanation
-   - single weights
-   - top pairwise weights
-   - final prediction
+默认 LLM 配置指向：
 
-同时会保存两个输出文件：
+```text
+Base URL: https://xiaohumini.site/v1
+Endpoint: https://xiaohumini.site/v1/chat/completions
+Model: gemini-3.1-flash-lite
+API key env: XIAOHU_API_KEY
+Provider: openai_compatible
+```
 
-- `outputs/best_choquet_model.pt`：PyTorch 二进制 checkpoint，用于程序加载，直接用文本编辑器打开会像乱码，这是正常现象。
-- `outputs/model_summary.json`：UTF-8 可读摘要，适合在 PyCharm 中查看，包括 agent 名称、pair 名称、训练参数、任务级平均权重。
+PowerShell 示例：
 
-## 后续如何替换真实 LLM agent
+```powershell
+$env:AGENT_BACKEND = "hybrid"
+$env:LLM_PROVIDER = "openai_compatible"
+$env:LLM_MODEL = "gemini-3.1-flash-lite"
+$env:LLM_API_KEY_ENV = "XIAOHU_API_KEY"
+$env:XIAOHU_API_KEY = "你的真实 key"
+$env:LLM_BASE_URL = "https://xiaohumini.site/v1"
+```
 
-可以保持 `ChoquetInspiredVotingLayer` 不变，只替换 `src/agents.py` 中的 agent 实现：
+测试中转站：
 
-- 把规则 agent 替换为 GPT / Gemini / Qwen / 本地 LLM API
-- 每个 agent 使用不同 role prompt
-- 每个 agent 返回标准化概率、置信度、解释文本
-- 继续使用 task relevance、sample relevance 和 Choquet-inspired voting layer 聚合
+```powershell
+python scripts/test_llm_gateway.py
+```
 
-也可以让 agent 输出更多类别，只需调整 `NUM_CLASSES` 和数据标签即可。
+运行项目：
+
+```powershell
+python main.py
+```
+
+## Backend 行为
+
+- `rule`：只使用规则 Agent，不需要 key。
+- `hybrid`：优先使用 LLM；没有 key 或 smoke test 失败时，清晰提示并回退规则 Agent。
+- `llm`：必须有可用 key；缺 key 或 smoke test 失败会退出，不进入训练。
+
+启动时会打印：`AGENT_BACKEND`、`LLM_PROVIDER`、`LLM_MODEL`、`LLM_BASE_URL`、`LLM_API_KEY_ENV`、是否检测到 key、缓存开关和缓存路径。不会打印 API key 内容。
+
+## Agent 输出格式
+
+规则 Agent 和 LLM Agent 都会转换为统一格式：
+
+```json
+{
+  "probs": [0.3, 0.7],
+  "confidence": 0.7,
+  "explanation": "简短解释"
+}
+```
+
+LLM 原始输出必须是严格 JSON：
+
+```json
+{
+  "class_0_probability": 0.0,
+  "class_1_probability": 1.0,
+  "confidence": 0.0,
+  "explanation": "不超过50字的中文解释"
+}
+```
+
+代码会自动处理：
+
+- `class_0 = 否 / 非标题党 / 非点击诱导`
+- `class_1 = 是 / 标题党 / 点击诱导`
+- 两个概率归一化
+- `confidence` 限制到 `[0, 1]`
+- 剥离 ```json 代码块
+- 从多余文本中提取第一个 JSON 对象
+- 解析失败时 fallback
+
+## 5 个 LLM Agent 角色
+
+- `SemanticAgent`：语义上下文专家
+- `EmotionAgent`：情绪态度专家
+- `IntentionAgent`：点击诱导/操纵意图专家
+- `LexicalAgent`：词汇表层模式专家
+- `ConsistencyAgent`：一致性/矛盾/转折专家
+
+每个 Agent 只从自己的专家视角判断，不综合其他角度。
+
+## 缓存
+
+LLM 输出缓存到：
+
+```text
+outputs/llm_cache.json
+```
+
+缓存 key 由 `text + task_description + agent_name + model_name` 生成。训练多个 epoch 时不会重复调用 API，后续训练会直接读取缓存，降低耗时和成本。
+
+## 训练的是什么
+
+项目不会训练 Gemini/LLM。LLM 只负责生成 5 个 Agent 的概率、置信度和解释。
+
+唯一可训练模块仍然是 `ChoquetInspiredVotingLayer`。训练逻辑继续使用 `CrossEntropyLoss` 和 `AdamW`，`task_relevance`、`sample_relevance` 仍由现有 TF-IDF 方法提供。
+
+最终输出包括：
+
+- `outputs/best_choquet_model.pt`
+- `outputs/model_summary.json`
+- `outputs/llm_cache.json`
+
+## 每次运行的结果归档
+
+`main.py` 每次启动都会创建一个新的运行目录：
+
+```text
+outputs/runs/0001_YYYYMMDD_HHMMSS_backend_model/
+```
+
+目录名开头是递增序号，后面是时间戳、backend 和模型名，便于区分先后顺序。每个目录会保存：
+
+- `best_choquet_model.pt`：本轮训练得到的最佳 Choquet layer checkpoint
+- `model_summary.json`：本轮可读模型摘要
+- `run_config.json`：本轮运行配置，不包含 API key
+- `run_result.json`：本轮运行状态、验证指标、测试指标和产物路径
+
+同时，最新一轮成功训练的模型和摘要仍会复制到：
+
+- `outputs/best_choquet_model.pt`
+- `outputs/model_summary.json`
+
+## 快速小样本验证
+
+首次全量 LLM 预热会调用 `样本数 × 5` 次 API，可能较慢。可以先用小样本验证链路：
+
+```powershell
+$env:AGENT_BACKEND = "hybrid"
+$env:RUN_SAMPLE_LIMIT = "8"
+$env:EPOCHS = "2"
+$env:BATCH_SIZE = "2"
+python main.py
+```
+
+正式全量运行时清除这些调试变量即可：
+
+```powershell
+Remove-Item Env:RUN_SAMPLE_LIMIT -ErrorAction SilentlyContinue
+Remove-Item Env:EPOCHS -ErrorAction SilentlyContinue
+Remove-Item Env:BATCH_SIZE -ErrorAction SilentlyContinue
+python main.py
+```
+## CPU / GPU
+
+- 默认 `DEVICE=auto`，程序会自动检测 `torch.cuda.is_available()`。
+- 没有 GPU 时会使用 CPU，项目可以完整运行。
+- 当前真正训练的是 Choquet aggregation layer，参数量很小，CPU 足够。
+- 规则 agent 不需要 GPU。
+- 远程 LLM API agent 不使用本地 GPU。
+- 只有未来接入本地大模型或本地 Transformer encoder 时，才可能需要 GPU。
+
+## LLM 预计算与缓存
+
+LLM agent 只负责生成 5 个 agent 的概率、置信度和解释。训练 Choquet layer 时不应在每个 epoch 重复请求 LLM。
+
+推荐流程：
+
+```powershell
+python scripts/precompute_llm_outputs.py
+python main.py
+```
+
+缓存文件：
+
+```text
+outputs/llm_cache.json
+```
+
+缓存 key 由 `text + task_description + agent_name + model_name` 生成。对于 1000 条样本和 5 个 agent，理论 LLM 调用次数应约为 `1000 * 5 = 5000` 次，和 epoch 数无关。如果每个 epoch 都调用 LLM，成本和耗时会乘以 epoch 数，并且远程模型输出可能引入额外不稳定性。
+
+## Choquet 模式
+
+通过环境变量切换：
+
+```powershell
+$env:CHOQUET_MODE = "inspired"              # 默认
+$env:CHOQUET_MODE = "discrete_2additive"    # 对照实验
+```
+
+### inspired
+
+默认模式，保留原有行为。公式近似为：
+
+```text
+score = sum_i w_i p_i + pair_scale * mean_{i<j}(w_ij * p_i * p_j)
+```
+
+其中 `w_i` 来自 task relevance、sample relevance 和 confidence 的 softmax 动态权重，`w_ij` 来自 pair relevance/agreement 的 sigmoid 动态权重。这个模式是 `Choquet-inspired pairwise aggregation`，不是严格离散 Choquet integral。
+
+### discrete_2additive
+
+新增可选模式，使用有限集合上的离散 Choquet 排序差分结构：
+
+```text
+C_mu(f) = sum_i [f_sigma(i) - f_sigma(i-1)] * mu({sigma(i), ..., sigma(K)})
+```
+
+其中 capacity 用 2-additive Mobius 近似：
+
+```text
+mu(S) = sum_{i in S} m_i + sum_{i<j, i,j in S} m_ij
+```
+
+实现中 `single_m = softmax(raw_single_m)`，`pair_m = pair_scale * tanh(raw_pair_m)`，并用 `mu(S) / mu(N)` 做安全归一化。
+
+注意：当前 `discrete_2additive` 实现了排序差分形式，但没有完整强制 capacity 单调性约束，因此应称为 `2-additive Choquet approximation`，不要称为数学上完全严格的 Choquet integral。代码提供 `monotonicity_diagnostics()` 用于检查是否存在 `A subset B` 但 `mu(A) > mu(B)` 的违反情况。
+
+公式验证：
+
+```powershell
+python scripts/test_choquet_formula.py
+```
