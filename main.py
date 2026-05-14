@@ -51,6 +51,18 @@ VALID_CHOQUET_MODES = {"inspired", "discrete_2additive"}
 def _has_api_key() -> bool:
     return bool(os.getenv(LLM_API_KEY_ENV))
 
+def _looks_like_inline_api_key(value: object) -> bool:
+    if value is None:
+        return False
+    text = str(value).strip()
+    return bool(re.match(r"^(sk-|AIza|eyJ)[A-Za-z0-9_.-]{12,}$", text))
+
+
+def _display_api_key_env() -> str:
+    if _looks_like_inline_api_key(LLM_API_KEY_ENV):
+        return "REDACTED_KEY_ENV_VALUE"
+    return LLM_API_KEY_ENV
+
 
 def _resolve_device() -> str:
     requested = (DEVICE or "auto").strip().lower()
@@ -100,7 +112,7 @@ def _runtime_snapshot(effective_device: str, extra: dict | None = None) -> dict:
         "llm_model": LLM_MODEL,
         "llm_model_candidates": LLM_MODEL_CANDIDATES,
         "llm_base_url": LLM_BASE_URL,
-        "llm_api_key_env": LLM_API_KEY_ENV,
+        "llm_api_key_env": _display_api_key_env(),
         "api_key_detected": _has_api_key(),
         "llm_cache_enabled": LLM_CACHE_ENABLED,
         "llm_cache_path": str(LLM_CACHE_PATH),
@@ -128,7 +140,7 @@ def _print_runtime_config(run_dir, effective_device: str) -> None:
     print(f"LLM_MODEL: {LLM_MODEL}")
     print(f"LLM_MODEL_CANDIDATES: {', '.join(LLM_MODEL_CANDIDATES)}")
     print(f"LLM_BASE_URL: {LLM_BASE_URL}")
-    print(f"LLM_API_KEY_ENV: {LLM_API_KEY_ENV}")
+    print(f"LLM_API_KEY_ENV: {_display_api_key_env()}")
     print(f"API key detected: {_has_api_key()}")
     print(f"LLM_CACHE_ENABLED: {LLM_CACHE_ENABLED}")
     print(f"LLM cache path: {LLM_CACHE_PATH}")
@@ -145,7 +157,7 @@ def _runtime_agent_backend() -> str:
     needs_key = backend in {"llm", "hybrid"} and LLM_PROVIDER != "local"
     if needs_key and not _has_api_key():
         print(
-            f"AGENT_BACKEND={backend} requires environment variable {LLM_API_KEY_ENV}, "
+            f"AGENT_BACKEND={backend} requires environment variable {_display_api_key_env()}, "
             "but it is not set."
         )
         if backend == "llm":
@@ -368,3 +380,5 @@ def main():
 if __name__ == "__main__":
     torch.set_num_threads(1)
     main()
+
+

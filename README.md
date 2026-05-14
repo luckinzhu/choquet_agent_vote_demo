@@ -258,3 +258,28 @@ Edit the `CONFIG` block at the top of `auto_run.py` to switch modes:
 `auto_run.py` does not store the real API key. If you use `hybrid` or `llm`, set `XIAOHU_API_KEY` in your system environment or current shell before running it. The default `rule` backend does not need a key.
 
 Common presets are documented as comments inside `auto_run.py`, including quick `inspired`, quick `discrete_2additive`, full rule training, and LLM hybrid small-sample validation.
+
+## Auto Run Local API Key
+
+`auto_run.py` supports two safe ways to provide the LLM gateway key.
+
+Mode A, recommended: use a system or shell environment variable:
+
+```powershell
+$env:XIAOHU_API_KEY = "your-real-key"
+python auto_run.py
+```
+
+Mode B, convenient local use: fill the key in the editable `CONFIG` block of `auto_run.py`:
+
+```python
+"LLM_API_KEY_ENV": "XIAOHU_API_KEY",
+"LLM_API_KEY_VALUE": "your-real-key",
+```
+
+Notes:
+
+- `LLM_API_KEY_ENV` should remain an environment variable name such as `XIAOHU_API_KEY`; do not put the real key there.
+- `auto_run.py` never prints `LLM_API_KEY_VALUE`; it only prints `API key detected: True/False` and `API key source: CONFIG/environment/missing`.
+- Do not upload or commit an `auto_run.py` that contains a real key. Clear `LLM_API_KEY_VALUE` before sharing or pushing to GitHub.
+- If you prefer a separate private file later, add it to `.gitignore` and keep secrets out of committed files.

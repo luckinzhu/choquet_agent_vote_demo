@@ -1,6 +1,7 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -15,13 +16,13 @@ CONFIG = {
     # Choquet mode:
     # "inspired" = original Choquet-inspired pairwise aggregation
     # "discrete_2additive" = discrete 2-additive Choquet approximation
-    "CHOQUET_MODE": "inspired",
+    "CHOQUET_MODE": "discrete_2additive",
 
     # Agent backend:
     # "rule" = rule agents, no API key needed
     # "hybrid" = prefer LLM, fallback to rule on failure/cache miss
     # "llm" = LLM only, fail fast on errors/cache miss
-    "AGENT_BACKEND": "rule",
+    "AGENT_BACKEND": "llm",
 
     # Fast test settings:
     # "8" means use 8 samples; "" or None means full dataset.
@@ -31,10 +32,15 @@ CONFIG = {
     "EPOCHS": "2",
     "BATCH_SIZE": "2",
 
-    # LLM gateway settings. Do not put the real API key here.
+    # LLM gateway settings.
     "LLM_PROVIDER": "openai_compatible",
     "LLM_MODEL": "gemini-3.1-flash-lite",
     "LLM_API_KEY_ENV": "XIAOHU_API_KEY",
+
+    # Optional local private key. Leave as "" or None to read the system env var.
+    # Do not print this value. Do not commit auto_run.py with a real key filled in.
+    "LLM_API_KEY_VALUE": "sk-LebPbwmUbesvY2o115OPhG0C3phFZEcM4rSWxuo8n8Lx8Bn9",
+
     "LLM_BASE_URL": "https://xiaohumini.site/v1",
 
     # Optional workflow switches:
@@ -55,6 +61,7 @@ CONFIG = {
 #    CHOQUET_MODE="inspired", AGENT_BACKEND="rule", RUN_SAMPLE_LIMIT="", EPOCHS="", BATCH_SIZE=""
 # 4) LLM hybrid small-sample validation:
 #    CHOQUET_MODE="inspired", AGENT_BACKEND="hybrid", RUN_SAMPLE_LIMIT="8", EPOCHS="2", BATCH_SIZE="2",
+#    LLM_API_KEY_ENV="XIAOHU_API_KEY", LLM_API_KEY_VALUE="" or your local key,
 #    RUN_TEST_GATEWAY=True, RUN_PRECOMPUTE_LLM=True, RUN_MAIN=True
 # ===========================================================
 
@@ -78,17 +85,45 @@ def set_or_clear_env(key: str, value: object) -> None:
         os.environ[key] = str(value)
 
 
-def apply_config() -> None:
+def looks_like_inline_api_key(value: object) -> bool:
+    if value is None:
+        return False
+    text = str(value).strip()
+    return bool(re.match(r"^(sk-|AIza|eyJ)[A-Za-z0-9_.-]{12,}$", text))
+
+
+def apply_config() -> tuple[bool, str]:
     for key in ENV_KEYS:
         set_or_clear_env(key, CONFIG.get(key))
 
+    api_key_env = str(CONFIG.get("LLM_API_KEY_ENV") or "XIAOHU_API_KEY").strip()
+    api_key_value = CONFIG.get("LLM_API_KEY_VALUE")
 
-def api_key_present() -> bool:
-    key_env = os.environ.get("LLM_API_KEY_ENV", "XIAOHU_API_KEY")
-    return bool(os.environ.get(key_env))
+    if looks_like_inline_api_key(api_key_env) and not api_key_value:
+        print("ERROR: LLM_API_KEY_ENV appears to contain a real API key.")
+        print('Set LLM_API_KEY_ENV to an env var name like "XIAOHU_API_KEY" and put the key in LLM_API_KEY_VALUE or the system environment.')
+        return False, "invalid_key_env"
+
+    if api_key_value is not None and str(api_key_value).strip() != "":
+        os.environ[api_key_env] = str(api_key_value).strip()
+        return True, "CONFIG"
+    if os.environ.get(api_key_env):
+        return True, "environment"
+    return True, "missing"
+
+
+def api_key_status() -> tuple[bool, str]:
+    api_key_env = os.environ.get("LLM_API_KEY_ENV", "XIAOHU_API_KEY")
+    config_value = CONFIG.get("LLM_API_KEY_VALUE")
+    if config_value is not None and str(config_value).strip() != "":
+        return True, "CONFIG"
+    if os.environ.get(api_key_env):
+        return True, "environment"
+    return False, "missing"
 
 
 def print_config(project_root: Path) -> None:
+    detected, source = api_key_status()
     print("=== auto_run.py configuration ===")
     print(f"Project root     : {project_root}")
     for key in [
@@ -103,7 +138,8 @@ def print_config(project_root: Path) -> None:
         "LLM_API_KEY_ENV",
     ]:
         print(f"{key:16s}: {os.environ.get(key, '')}")
-    print(f"API key detected : {api_key_present()}")
+    print(f"API key detected : {detected}")
+    print(f"API key source   : {source}")
     print("=================================")
 
 
@@ -119,7 +155,9 @@ def run_step(title: str, args: Iterable[str], project_root: Path) -> int:
 def main() -> int:
     project_root = Path(__file__).resolve().parent
     os.chdir(project_root)
-    apply_config()
+    config_ok, _ = apply_config()
+    if not config_ok:
+        return 2
     print_config(project_root)
 
     steps: list[tuple[str, list[str]]] = []
@@ -153,3 +191,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
