@@ -8,6 +8,13 @@ import torch
 from .utils import classification_metrics
 
 
+def _compact_text(value: object, max_chars: int = 300) -> str:
+    text = " ".join(str(value).split())
+    if len(text) <= max_chars:
+        return text
+    return text[: max_chars - 3] + "..."
+
+
 def majority_voting(agent_probs: np.ndarray) -> np.ndarray:
     agent_preds = np.argmax(agent_probs, axis=-1)
     preds = []
@@ -93,7 +100,7 @@ def print_sample_decisions(model, df, n_samples: int = 4, seed: int = 42) -> Non
     for row_idx, row in show_df.iterrows():
         print("\n--- Sample ---")
         print(f"Task: {row['task_name']}")
-        print(f"Text: {row['text']}")
+        print(f"Text: {_compact_text(row['text'])}")
         print(f"Gold label: {row['label']} | Final prediction: {preds[row_idx]} | Final probs: {probs[row_idx].round(4)}")
         print("Agent predictions:")
         for agent_idx, name in enumerate(model.agent_names):

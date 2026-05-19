@@ -2,12 +2,27 @@ import os
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent
-DATA_PATH = PROJECT_ROOT / "data" / "toy_data.csv"
+DEFAULT_DEMO_DATA_PATH = PROJECT_ROOT / "data" / "toy_data.csv"
+
+
+def _resolve_path(value: str) -> Path:
+    path = Path(value)
+    if not path.is_absolute():
+        path = PROJECT_ROOT / path
+    return path
+
+
+DATA_PATH = _resolve_path(os.getenv("DATA_PATH", str(PROJECT_ROOT / "data" / "raw_data" / "clickbait" / "zongxiang.csv")))
+DATA_AUTOGENERATE_DEMO = os.getenv("DATA_AUTOGENERATE_DEMO", "false").strip().lower() in (
+    "1",
+    "true",
+    "yes",
+)
 MODEL_DIR = PROJECT_ROOT / "outputs"
 RUNS_DIR = MODEL_DIR / "runs"
 BEST_MODEL_PATH = MODEL_DIR / "best_choquet_model.pt"
 MODEL_SUMMARY_PATH = MODEL_DIR / "model_summary.json"
-LLM_CACHE_PATH = MODEL_DIR / "llm_cache.json"
+LLM_CACHE_PATH = MODEL_DIR / "llm_cache_zongxiang.json"
 CHOQUET_MODE = os.getenv("CHOQUET_MODE", "inspired").strip().lower()
 
 RANDOM_SEED = 42

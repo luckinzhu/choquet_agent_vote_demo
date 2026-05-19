@@ -50,6 +50,31 @@ class MultiAgentChoquetModel:
         task_descriptions = df["task_description"].tolist()
         run_agents(self.agents, texts, task_descriptions)
 
+    def missing_llm_cache_entries(self, df, limit: int = 20):
+        """Return a small list of missing LLM cache entries for diagnostics."""
+        missing = []
+        texts = df["text"].tolist()
+        task_descriptions = df["task_description"].tolist()
+        for agent in self.agents:
+            cache = getattr(agent, "cache", None)
+            model_name = getattr(agent, "model_name", None)
+            if cache is None or model_name is None:
+                continue
+            for row_idx, (text, task_description) in enumerate(zip(texts, task_descriptions)):
+                cached = cache.get(text, task_description, agent.name, model_name)
+                if cached is None:
+                    missing.append(
+                        {
+                            "row_index": row_idx,
+                            "agent": agent.name,
+                            "model": model_name,
+                            "text_preview": str(text)[:120],
+                        }
+                    )
+                    if len(missing) >= limit:
+                        return missing
+        return missing
+
     def make_inputs(self, df_or_texts, task_descriptions=None) -> Dict[str, object]:
         if hasattr(df_or_texts, "__getitem__") and task_descriptions is None:
             texts = df_or_texts["text"].tolist()

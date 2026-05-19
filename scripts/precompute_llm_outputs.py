@@ -9,6 +9,7 @@ if str(ROOT) not in sys.path:
 
 from config import (  # noqa: E402
     AGENT_BACKEND,
+    DATA_AUTOGENERATE_DEMO,
     DATA_PATH,
     LLM_API_KEY_ENV,
     LLM_CACHE_PATH,
@@ -17,7 +18,7 @@ from config import (  # noqa: E402
     RANDOM_SEED,
     RUN_SAMPLE_LIMIT,
 )
-from src.dataset import ensure_toy_data  # noqa: E402
+from src.dataset import load_dataset  # noqa: E402
 from src.model import MultiAgentChoquetModel  # noqa: E402
 from src.utils import set_seed  # noqa: E402
 
@@ -29,7 +30,7 @@ def main() -> int:
         print(f"Missing API key env var {LLM_API_KEY_ENV}. Set it before precomputing LLM outputs.")
         return 2
 
-    df = ensure_toy_data(DATA_PATH)
+    df = load_dataset(DATA_PATH, allow_generate_demo=DATA_AUTOGENERATE_DEMO)
     if RUN_SAMPLE_LIMIT > 0 and RUN_SAMPLE_LIMIT < len(df):
         df = df.sample(n=RUN_SAMPLE_LIMIT, random_state=RANDOM_SEED).reset_index(drop=True)
         print(f"RUN_SAMPLE_LIMIT active: precomputing {len(df)} rows.")

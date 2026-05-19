@@ -153,20 +153,95 @@ def generate_toy_dataframe(repeats: int = 2, seed: int = 42) -> pd.DataFrame:
     return df.sample(frac=1.0, random_state=seed).reset_index(drop=True)
 
 
-def ensure_toy_data(data_path: Path, min_rows: int = 80) -> pd.DataFrame:
-    data_path.parent.mkdir(parents=True, exist_ok=True)
-    if data_path.exists():
-        try:
-            df = pd.read_csv(data_path)
-            required = {"task_name", "task_description", "text", "label"}
-            if required.issubset(df.columns) and len(df) >= min_rows:
-                return df
-        except pd.errors.ParserError:
-            pass
+def _read_csv(data_path: Path) -> pd.DataFrame:
+    try:
+        return pd.read_csv(data_path, encoding="utf-8-sig")
+    except UnicodeDecodeError:
+        return pd.read_csv(data_path)
 
-    df = generate_toy_dataframe(repeats=2)
-    df.to_csv(data_path, index=False, encoding="utf-8")
-    return df
+
+def _combined_text_from_title_content(df: pd.DataFrame) -> pd.Series:
+    parts = []
+    if "title" in df.columns:
+        parts.append(df["title"].fillna("").astype(str))
+    if "content" in df.columns:
+        parts.append(df["content"].fillna("").astype(str))
+    if not parts:
+        raise ValueError(
+            "Dataset must contain either a 'text' column, or at least one of "
+            "'title'/'content' so text can be built in memory."
+        )
+    text = parts[0]
+    for part in parts[1:]:
+        text = (text + "\n" + part).str.strip()
+    return text.str.strip()
+
+
+def normalize_dataset(df: pd.DataFrame, source: Path | str = "<memory>") -> pd.DataFrame:
+    """Validate and normalize a user dataset without writing back to disk.
+
+    Required semantic fields for the model are task_name, task_description,
+    text, and label. User files may provide text directly, or provide
+    title/content columns; in that case text is assembled only in memory.
+    """
+    df = df.copy()
+    source = str(source)
+    if "task_name" not in df.columns:
+        raise ValueError(f"{source} is missing required column 'task_name'.")
+    if "label" not in df.columns:
+        raise ValueError(f"{source} is missing required column 'label'.")
+
+    if "task_description" not in df.columns:
+        df["task_description"] = df["task_name"].fillna("").astype(str)
+
+    if "text" not in df.columns:
+        df["text"] = _combined_text_from_title_content(df)
+    else:
+        df["text"] = df["text"].fillna("").astype(str).str.strip()
+
+    df["task_name"] = df["task_name"].fillna("").astype(str).str.strip()
+    df["task_description"] = df["task_description"].fillna("").astype(str).str.strip()
+    df["label"] = pd.to_numeric(df["label"], errors="raise").astype(int)
+
+    missing_task = df["task_name"].eq("")
+    missing_text = df["text"].eq("")
+    invalid_label = ~df["label"].isin([0, 1])
+    if missing_task.any() or missing_text.any() or invalid_label.any():
+        raise ValueError(
+            f"{source} has invalid rows: empty task_name={int(missing_task.sum())}, "
+            f"empty text={int(missing_text.sum())}, non-binary label={int(invalid_label.sum())}."
+        )
+
+    if df.empty:
+        raise ValueError(f"{source} contains no rows.")
+    return df.reset_index(drop=True)
+
+
+def load_dataset(data_path: Path, allow_generate_demo: bool = False) -> pd.DataFrame:
+    """Load a dataset exactly from data_path, without overwriting user files.
+
+    The old demo helper generated toy data whenever a file had fewer than 80
+    rows or used title/content instead of text. That was unsafe for real data.
+    This loader only generates demo data when the target path is missing and
+    allow_generate_demo=True.
+    """
+    data_path = Path(data_path)
+    if data_path.exists():
+        return normalize_dataset(_read_csv(data_path), data_path)
+    if allow_generate_demo:
+        data_path.parent.mkdir(parents=True, exist_ok=True)
+        df = generate_toy_dataframe(repeats=2)
+        df.to_csv(data_path, index=False, encoding="utf-8")
+        return normalize_dataset(df, data_path)
+    raise FileNotFoundError(
+        f"Dataset not found: {data_path}. Put your prepared CSV at this path "
+        "or set DATA_PATH to the correct file."
+    )
+
+
+def ensure_toy_data(data_path: Path, allow_generate_demo: bool = False) -> pd.DataFrame:
+    """Backward-compatible wrapper for code that previously loaded toy data."""
+    return load_dataset(data_path, allow_generate_demo=allow_generate_demo)
 
 
 
@@ -207,6 +282,7 @@ def load_and_split(
     train_ratio: float,
     valid_ratio: float,
     seed: int,
+    allow_generate_demo: bool = False,
 ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    df = ensure_toy_data(data_path)
+    df = load_dataset(data_path, allow_generate_demo=allow_generate_demo)
     return split_dataframe(df, train_ratio=train_ratio, valid_ratio=valid_ratio, seed=seed)

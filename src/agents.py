@@ -327,6 +327,16 @@ class LLMBaseAgent(AgentInterface):
             "explanation": "LLM parse failed fallback",
         }
 
+    def _cache_output(
+        self,
+        text: str,
+        task_description: str,
+        output: Dict[str, object],
+        raw_text: str,
+    ) -> None:
+        if self.cache is not None:
+            self.cache.set(text, task_description, self.name, self.model_name, output, raw_text)
+
     def predict_one(
         self,
         text: str,
@@ -358,8 +368,7 @@ class LLMBaseAgent(AgentInterface):
                 ]
             )
             parsed = self._parse_llm_json(raw_text)
-            if self.cache is not None:
-                self.cache.set(text, task_description, self.name, self.model_name, parsed, raw_text)
+            self._cache_output(text, task_description, parsed, raw_text)
             return parsed
         except Exception as exc:
             self.last_error = str(exc)
@@ -367,8 +376,22 @@ class LLMBaseAgent(AgentInterface):
             if self.fallback_agent is not None:
                 fallback = self.fallback_agent.predict_one(text, task_description, label_schema)
                 fallback["explanation"] = f"LLM failed, rule fallback: {fallback['explanation']}"
+                self._cache_output(
+                    text,
+                    task_description,
+                    fallback,
+                    f"FALLBACK_RULE_AFTER_LLM_ERROR: {self.last_error}",
+                )
                 return fallback
-            return self.neutral_fallback()
+            fallback = self.neutral_fallback()
+            fallback["explanation"] = f"LLM failed, neutral fallback: {self.last_error}"
+            self._cache_output(
+                text,
+                task_description,
+                fallback,
+                f"FALLBACK_NEUTRAL_AFTER_LLM_ERROR: {self.last_error}",
+            )
+            return fallback
 
 
 class LLMSemanticAgent(LLMBaseAgent):

@@ -2,6 +2,7 @@
 import os
 import re
 import shutil
+import sys
 from datetime import datetime
 
 import torch
@@ -11,6 +12,7 @@ from config import (
     BEST_MODEL_PATH,
     BATCH_SIZE,
     CHOQUET_MODE,
+    DATA_AUTOGENERATE_DEMO,
     DATA_PATH,
     DEVICE,
     EPOCHS,
@@ -32,7 +34,7 @@ from config import (
     VALID_RATIO,
     WEIGHT_DECAY,
 )
-from src.dataset import ensure_toy_data, load_and_split, split_dataframe
+from src.dataset import load_dataset, split_dataframe
 from src.evaluate import (
     compare_methods,
     export_readable_model_summary,
@@ -46,6 +48,11 @@ from src.utils import format_metrics_table, set_seed
 
 VALID_BACKENDS = {"rule", "llm", "hybrid"}
 VALID_CHOQUET_MODES = {"inspired", "discrete_2additive"}
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
 
 
 def _has_api_key() -> bool:
@@ -102,6 +109,41 @@ def _write_run_json(run_dir, name: str, payload: dict) -> None:
         json.dumps(payload, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
+
+
+class _TeeStream:
+    """Write console output to both the original stream and a run log file."""
+
+    def __init__(self, stream, log_file):
+        self.stream = stream
+        self.log_file = log_file
+        self.encoding = getattr(stream, "encoding", "utf-8")
+        self.errors = getattr(stream, "errors", "replace")
+
+    def write(self, text):
+        self.stream.write(text)
+        self.log_file.write(text)
+        self.flush()
+        return len(text)
+
+    def flush(self):
+        self.stream.flush()
+        self.log_file.flush()
+
+    def isatty(self):
+        return bool(getattr(self.stream, "isatty", lambda: False)())
+
+
+def _start_console_capture(run_dir) -> None:
+    """Mirror all following stdout/stderr output into run_dir/console_out.txt."""
+    log_file = (run_dir / "console_out.txt").open("w", encoding="utf-8", buffering=1)
+    sys.stdout = _TeeStream(sys.stdout, log_file)
+    sys.stderr = _TeeStream(sys.stderr, log_file)
+
+
+def _save_baseline_comparison(rows, run_dir) -> None:
+    """Persist structured baseline metrics for this run."""
+    _write_run_json(run_dir, "baseline_comparison.json", {"rows": rows})
 
 
 def _runtime_snapshot(effective_device: str, extra: dict | None = None) -> dict:
@@ -224,6 +266,7 @@ def main():
     run_dir = _create_run_dir()
     run_model_path = run_dir / "best_choquet_model.pt"
     run_summary_path = run_dir / "model_summary.json"
+    _start_console_capture(run_dir)
     _print_runtime_config(run_dir, effective_device)
     _write_run_json(run_dir, "run_config.json", _runtime_snapshot(effective_device, {"choquet_mode_effective": choquet_mode}))
 
@@ -232,28 +275,21 @@ def main():
         _write_run_json(run_dir, "run_result.json", _runtime_snapshot(effective_device, {"status": "missing_llm_key"}))
         return
 
-    df = ensure_toy_data(DATA_PATH)
+    df = load_dataset(DATA_PATH, allow_generate_demo=DATA_AUTOGENERATE_DEMO)
     if RUN_SAMPLE_LIMIT > 0 and RUN_SAMPLE_LIMIT < len(df):
         df = df.sample(n=RUN_SAMPLE_LIMIT, random_state=RANDOM_SEED).reset_index(drop=True)
         print(f"\nRUN_SAMPLE_LIMIT active: using {len(df)} rows for this run.")
     print(f"\nDataset: {DATA_PATH}")
     print(f"Rows: {len(df)}")
+    print(f"Columns: {', '.join(df.columns.tolist())}")
     print(df.groupby(["task_name", "label"]).size().to_string())
 
-    if RUN_SAMPLE_LIMIT > 0:
-        train_df, valid_df, test_df = split_dataframe(
-            df,
-            train_ratio=TRAIN_RATIO,
-            valid_ratio=VALID_RATIO,
-            seed=RANDOM_SEED,
-        )
-    else:
-        train_df, valid_df, test_df = load_and_split(
-            DATA_PATH,
-            train_ratio=TRAIN_RATIO,
-            valid_ratio=VALID_RATIO,
-            seed=RANDOM_SEED,
-        )
+    train_df, valid_df, test_df = split_dataframe(
+        df,
+        train_ratio=TRAIN_RATIO,
+        valid_ratio=VALID_RATIO,
+        seed=RANDOM_SEED,
+    )
     print(f"\nSplit: train={len(train_df)}, valid={len(valid_df)}, test={len(test_df)}")
 
     model = MultiAgentChoquetModel(
@@ -301,6 +337,20 @@ def main():
         print("\n=== Precomputing LLM Agent Output Cache ===")
         print("LLM calls happen here. Training epochs switch to cache-only reads afterward.")
         model.warm_agent_cache(df)
+        missing_cache = model.missing_llm_cache_entries(df)
+        if missing_cache:
+            print("LLM cache precompute is incomplete. Missing entries:")
+            for item in missing_cache:
+                print(
+                    f"  - row={item['row_index']} agent={item['agent']} "
+                    f"model={item['model']} text={item['text_preview']!r}"
+                )
+            if backend == "llm":
+                raise RuntimeError(
+                    "LLM cache precompute did not produce all required entries. "
+                    "Check gateway errors above or use AGENT_BACKEND=hybrid/rule."
+                )
+            print("Hybrid mode will continue; missing entries can fall back to rule agents.")
         model.set_llm_cache_only(True)
         print(f"LLM cache saved to: {LLM_CACHE_PATH}")
 
@@ -339,7 +389,9 @@ def main():
 
     print("\n=== Baseline Comparison ===")
     rows = compare_methods(model, test_df)
-    print(format_metrics_table(rows))
+    baseline_table = format_metrics_table(rows)
+    print(baseline_table)
+    _save_baseline_comparison(rows, run_dir)
 
     print_interpretability_summary(model, test_df)
     print_sample_decisions(model, test_df, n_samples=5, seed=RANDOM_SEED)
