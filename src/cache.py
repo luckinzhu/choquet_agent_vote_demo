@@ -100,5 +100,6 @@ class LLMCache:
         """Generate all agent outputs once before training begins."""
         texts = df["text"].tolist()
         task_descriptions = df["task_description"].tolist()
+        records = df.to_dict("records")
         for agent in agents:
-            agent.predict_batch(texts, task_descriptions)
+            agent.predict_batch(texts, task_descriptions, records=records)

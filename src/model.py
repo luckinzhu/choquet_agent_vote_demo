@@ -48,27 +48,31 @@ class MultiAgentChoquetModel:
     def warm_agent_cache(self, df) -> None:
         texts = df["text"].tolist()
         task_descriptions = df["task_description"].tolist()
-        run_agents(self.agents, texts, task_descriptions)
+        records = df.to_dict("records")
+        run_agents(self.agents, texts, task_descriptions, records=records)
 
     def missing_llm_cache_entries(self, df, limit: int = 20):
         """Return a small list of missing LLM cache entries for diagnostics."""
         missing = []
         texts = df["text"].tolist()
         task_descriptions = df["task_description"].tolist()
+        records = df.to_dict("records")
         for agent in self.agents:
             cache = getattr(agent, "cache", None)
             model_name = getattr(agent, "model_name", None)
             if cache is None or model_name is None:
                 continue
-            for row_idx, (text, task_description) in enumerate(zip(texts, task_descriptions)):
-                cached = cache.get(text, task_description, agent.name, model_name)
+            input_builder = getattr(agent, "generate_input_text", None)
+            for row_idx, (text, task_description, record) in enumerate(zip(texts, task_descriptions, records)):
+                cache_text = input_builder(text, record) if callable(input_builder) else text
+                cached = cache.get(cache_text, task_description, agent.name, model_name)
                 if cached is None:
                     missing.append(
                         {
                             "row_index": row_idx,
                             "agent": agent.name,
                             "model": model_name,
-                            "text_preview": str(text)[:120],
+                            "text_preview": str(cache_text)[:120],
                         }
                     )
                     if len(missing) >= limit:
@@ -79,11 +83,18 @@ class MultiAgentChoquetModel:
         if hasattr(df_or_texts, "__getitem__") and task_descriptions is None:
             texts = df_or_texts["text"].tolist()
             task_descriptions = df_or_texts["task_description"].tolist()
+            records = df_or_texts.to_dict("records")
         else:
             texts = list(df_or_texts)
             task_descriptions = list(task_descriptions)
+            records = None
 
-        agent_probs, agent_conf, explanations = run_agents(self.agents, texts, task_descriptions)
+        agent_probs, agent_conf, explanations = run_agents(
+            self.agents,
+            texts,
+            task_descriptions,
+            records=records,
+        )
         task_rel = self.relevance.task_relevance(task_descriptions)
         sample_rel = self.relevance.sample_relevance(texts)
         return {

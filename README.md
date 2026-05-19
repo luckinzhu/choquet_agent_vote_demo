@@ -107,6 +107,18 @@ LLM 原始输出必须是严格 JSON：
 
 每个 Agent 只从自己的专家视角判断，不综合其他角度。
 
+### LLM Agent 输入策略
+
+LLM Agent 在 `src/agents.py` 的 `generate_input_text()` 阶段按 agent 类型选择输入来源；规则 Agent 行为保持不变，仍使用归一化后的 `df["text"]`。
+
+| LLM Agent | 输入来源 |
+| --- | --- |
+| `LLMLexicalAgent` | 只使用 `title` |
+| `LLMIntentionAgent` | 只使用 `title` |
+| `LLMEmotionAgent` | 只使用 `title`，不再拼接 `content` |
+| `LLMSemanticAgent` | 使用 `title + content` |
+| `LLMConsistencyAgent` | 使用 `title + content` |
+
 ## 缓存
 
 LLM 输出缓存到：
@@ -115,13 +127,15 @@ LLM 输出缓存到：
 outputs/llm_cache.json
 ```
 
-缓存 key 由 `text + task_description + agent_name + model_name` 生成。训练多个 epoch 时不会重复调用 API，后续训练会直接读取缓存，降低耗时和成本。
+缓存 key 由 agent 专属输入文本、`task_description`、`agent_name`、`model_name` 生成。训练多个 epoch 时不会重复调用 API，后续训练会直接读取缓存，降低耗时和成本。
 
 ## 训练的是什么
 
 项目不会训练 Gemini/LLM。LLM 只负责生成 5 个 Agent 的概率、置信度和解释。
 
 唯一可训练模块仍然是 `ChoquetInspiredVotingLayer`。训练逻辑继续使用 `CrossEntropyLoss` 和 `AdamW`，`task_relevance`、`sample_relevance` 仍由现有 TF-IDF 方法提供。
+
+完整流水线保持为：`src/dataset.py` 加载 `toy_data.csv` 或用户数据集并归一化字段，`split_dataframe()` 划分 train/valid/test，`src/agents.py` 运行规则 Agent 或 LLM Agent 预测，`src/choquet_layer.py` 计算 single-agent contribution 与 pairwise interaction 或 `discrete_2additive` 聚合，`src/train.py` 优化 `ChoquetInspiredVotingLayer` 参数，`src/evaluate.py` 输出 Accuracy/F1/Precision/Recall 与 Baseline Comparison，最后归档到 `outputs/runs/<run_dir>`。
 
 最终输出包括：
 
@@ -195,7 +209,7 @@ python main.py
 outputs/llm_cache.json
 ```
 
-缓存 key 由 `text + task_description + agent_name + model_name` 生成。对于 1000 条样本和 5 个 agent，理论 LLM 调用次数应约为 `1000 * 5 = 5000` 次，和 epoch 数无关。如果每个 epoch 都调用 LLM，成本和耗时会乘以 epoch 数，并且远程模型输出可能引入额外不稳定性。
+缓存 key 由 agent 专属输入文本、`task_description`、`agent_name`、`model_name` 生成。对于 1000 条样本和 5 个 agent，理论 LLM 调用次数应约为 `1000 * 5 = 5000` 次，和 epoch 数无关。如果每个 epoch 都调用 LLM，成本和耗时会乘以 epoch 数，并且远程模型输出可能引入额外不稳定性。
 
 ## Choquet 模式
 

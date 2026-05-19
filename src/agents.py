@@ -90,7 +90,12 @@ class AgentInterface(ABC):
     ) -> Dict[str, object]:
         """Return probs/confidence/explanation for one sample."""
 
-    def predict_batch(self, texts: List[str], task_descriptions: List[str]):
+    def predict_batch(
+        self,
+        texts: List[str],
+        task_descriptions: List[str],
+        records: Optional[List[Dict[str, object]]] = None,
+    ):
         outputs = [
             self.predict_one(t, d, DEFAULT_LABEL_SCHEMA)
             for t, d in zip(texts, task_descriptions)
@@ -247,6 +252,7 @@ class LLMBaseAgent(AgentInterface):
 
     system_role = "通用专家"
     perspective = "从自己的专家视角判断文本是否属于目标类别。"
+    input_mode = "title_content"
 
     def __init__(self, llm_client, cache=None, fallback_agent: Optional[RuleBasedAgent] = None):
         self.llm_client = llm_client
@@ -293,6 +299,40 @@ class LLMBaseAgent(AgentInterface):
         )
 
     @staticmethod
+    def _clean_source_value(value: object) -> str:
+        if value is None:
+            return ""
+        try:
+            if isinstance(value, float) and math.isnan(value):
+                return ""
+        except TypeError:
+            pass
+        return str(value).strip()
+
+    def generate_input_text(
+        self,
+        text: str,
+        record: Optional[Dict[str, object]] = None,
+    ) -> str:
+        """Build the LLM-visible input while leaving rule agents on df["text"].
+
+        LLM input policy:
+        - Lexical, Intention, Emotion: title only.
+        - Semantic, Consistency: title + content.
+        """
+        fallback_text = self._clean_source_value(text)
+        if not record:
+            return fallback_text
+
+        title = self._clean_source_value(record.get("title"))
+        content = self._clean_source_value(record.get("content"))
+        if self.input_mode == "title":
+            return title or fallback_text
+        if title and content:
+            return f"{title}\n{content}".strip()
+        return title or content or fallback_text
+
+    @staticmethod
     def _parse_llm_json(raw_text: str) -> Dict[str, object]:
         try:
             cleaned = _first_json_object(raw_text)
@@ -337,9 +377,10 @@ class LLMBaseAgent(AgentInterface):
         if self.cache is not None:
             self.cache.set(text, task_description, self.name, self.model_name, output, raw_text)
 
-    def predict_one(
+    def _predict_one_prepared(
         self,
-        text: str,
+        llm_text: str,
+        fallback_text: str,
         task_description: str,
         label_schema: Optional[Dict[str, str]] = None,
     ) -> Dict[str, object]:
@@ -347,7 +388,7 @@ class LLMBaseAgent(AgentInterface):
         self.last_used_fallback = False
         label_schema = label_schema or DEFAULT_LABEL_SCHEMA
         if self.cache is not None:
-            cached = self.cache.get(text, task_description, self.name, self.model_name)
+            cached = self.cache.get(llm_text, task_description, self.name, self.model_name)
             if cached is not None:
                 return cached
 
@@ -355,7 +396,7 @@ class LLMBaseAgent(AgentInterface):
             self.last_error = "LLM cache miss during cache-only training. Run scripts/precompute_llm_outputs.py first."
             self.last_used_fallback = True
             if self.fallback_agent is not None:
-                fallback = self.fallback_agent.predict_one(text, task_description, label_schema)
+                fallback = self.fallback_agent.predict_one(fallback_text, task_description, label_schema)
                 fallback["explanation"] = f"LLM cache miss, rule fallback: {fallback['explanation']}"
                 return fallback
             raise LLMAgentError(self.last_error)
@@ -364,20 +405,20 @@ class LLMBaseAgent(AgentInterface):
             raw_text = self.llm_client.complete(
                 messages=[
                     {"role": "system", "content": self.system_prompt()},
-                    {"role": "user", "content": self.user_prompt(text, task_description, label_schema)},
+                    {"role": "user", "content": self.user_prompt(llm_text, task_description, label_schema)},
                 ]
             )
             parsed = self._parse_llm_json(raw_text)
-            self._cache_output(text, task_description, parsed, raw_text)
+            self._cache_output(llm_text, task_description, parsed, raw_text)
             return parsed
         except Exception as exc:
             self.last_error = str(exc)
             self.last_used_fallback = True
             if self.fallback_agent is not None:
-                fallback = self.fallback_agent.predict_one(text, task_description, label_schema)
+                fallback = self.fallback_agent.predict_one(fallback_text, task_description, label_schema)
                 fallback["explanation"] = f"LLM failed, rule fallback: {fallback['explanation']}"
                 self._cache_output(
-                    text,
+                    llm_text,
                     task_description,
                     fallback,
                     f"FALLBACK_RULE_AFTER_LLM_ERROR: {self.last_error}",
@@ -386,12 +427,41 @@ class LLMBaseAgent(AgentInterface):
             fallback = self.neutral_fallback()
             fallback["explanation"] = f"LLM failed, neutral fallback: {self.last_error}"
             self._cache_output(
-                text,
+                llm_text,
                 task_description,
                 fallback,
                 f"FALLBACK_NEUTRAL_AFTER_LLM_ERROR: {self.last_error}",
             )
             return fallback
+
+    def predict_one(
+        self,
+        text: str,
+        task_description: str,
+        label_schema: Optional[Dict[str, str]] = None,
+    ) -> Dict[str, object]:
+        return self._predict_one_prepared(text, text, task_description, label_schema)
+
+    def predict_batch(
+        self,
+        texts: List[str],
+        task_descriptions: List[str],
+        records: Optional[List[Dict[str, object]]] = None,
+    ):
+        records = records or [None] * len(texts)
+        outputs = [
+            self._predict_one_prepared(
+                self.generate_input_text(text, record),
+                text,
+                task_description,
+                DEFAULT_LABEL_SCHEMA,
+            )
+            for text, task_description, record in zip(texts, task_descriptions, records)
+        ]
+        probs = np.stack([np.asarray(o["probs"], dtype=np.float32) for o in outputs], axis=0)
+        confidences = np.array([o["confidence"] for o in outputs], dtype=np.float32)
+        explanations = [str(o["explanation"]) for o in outputs]
+        return probs, confidences, explanations
 
 
 class LLMSemanticAgent(LLMBaseAgent):
@@ -406,6 +476,7 @@ class LLMEmotionAgent(LLMBaseAgent):
     description = EmotionAgent.description
     system_role = "情绪态度专家"
     perspective = "你关注情绪、态度、主观色彩、讽刺和隐含感受。"
+    input_mode = "title"
 
 
 class LLMIntentionAgent(LLMBaseAgent):
@@ -413,6 +484,7 @@ class LLMIntentionAgent(LLMBaseAgent):
     description = IntentionAgent.description
     system_role = "点击诱导/操纵意图专家"
     perspective = "你关注诱导点击、操纵意图、夸张承诺、误导性动机和劝服目的。"
+    input_mode = "title"
 
 
 class LLMLexicalAgent(LLMBaseAgent):
@@ -420,6 +492,7 @@ class LLMLexicalAgent(LLMBaseAgent):
     description = LexicalAgent.description
     system_role = "词汇表层模式专家"
     perspective = "你关注表层词汇、标点、标题党模式、极端修饰和关键词线索。"
+    input_mode = "title"
 
 
 class LLMConsistencyAgent(LLMBaseAgent):
@@ -465,10 +538,15 @@ def build_agents(backend: Optional[str] = None) -> List[AgentInterface]:
     return AgentFactory.build(backend)
 
 
-def run_agents(agents: List[AgentInterface], texts: List[str], task_descriptions: List[str]):
+def run_agents(
+    agents: List[AgentInterface],
+    texts: List[str],
+    task_descriptions: List[str],
+    records: Optional[List[Dict[str, object]]] = None,
+):
     probs, confidences, explanations = [], [], []
     for agent in agents:
-        p, c, e = agent.predict_batch(texts, task_descriptions)
+        p, c, e = agent.predict_batch(texts, task_descriptions, records=records)
         probs.append(p)
         confidences.append(c)
         explanations.append(e)
