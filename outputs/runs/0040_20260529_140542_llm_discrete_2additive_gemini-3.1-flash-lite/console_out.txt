@@ -1,0 +1,192 @@
+=== Runtime Configuration ===
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: gemini-3.1-flash-lite
+LLM_MODEL_CANDIDATES: gemini-3.1-flash-lite, gemini-3.1-flash, gemini-2.5-flash-lite, gemini-2.0-flash-lite, gemini-2.0-flash
+LLM_BASE_URL: https://xiaohumini.site/v1
+LLM_API_KEY_ENV: XIAOHU_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zongxiang.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0040_20260529_140542_llm_discrete_2additive_gemini-3.1-flash-lite
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv
+Rows: 2119
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        1167
+           1         952
+
+Split: train=1483, valid=317, test=319
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型情绪煽动词汇，且通过“忍不住点开”进行直接的点击诱导，属于典型的标题党。
+Emotion      probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型诱导性词汇，并刻意制造悬念以操纵用户点击欲望，属于典型的点击诱导标题。
+Intention    probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型煽动性词汇，并利用“忍不住点开”进行心理暗示，属于典型的点击诱导标题党。
+Lexical      probs=[0.0, 1.0] confidence=1.000 explanation=包含“震惊”、“真相曝光”等典型情绪煽动词，并使用“忍不住点开”诱导点击，符合典型的标题党模式。
+Consistency  probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型情绪煽动词汇，且内容模糊，通过制造悬念诱导点击，符合点击诱导特征。
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+LLM cache saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zongxiang.json
+
+=== Training Choquet Layer (discrete_2additive) ===
+Epoch 01 | train_loss=0.7061 | valid_loss=0.7158 | valid_acc=0.5552 | valid_macro_f1=0.4178
+Epoch 05 | train_loss=0.6855 | valid_loss=0.6890 | valid_acc=0.5552 | valid_macro_f1=0.4178
+Epoch 10 | train_loss=0.6829 | valid_loss=0.6859 | valid_acc=0.5552 | valid_macro_f1=0.4178
+Epoch 15 | train_loss=0.6828 | valid_loss=0.6849 | valid_acc=0.5552 | valid_macro_f1=0.4178
+Epoch 20 | train_loss=0.6840 | valid_loss=0.6846 | valid_acc=0.5552 | valid_macro_f1=0.4178
+
+Best validation: loss=0.6865, acc=0.5647, macro_f1=0.4232
+Saved best model to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0040_20260529_140542_llm_discrete_2additive_gemini-3.1-flash-lite\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=0.6930, acc=0.5486, precision=0.5149, recall=0.5037, macro_f1=0.4091
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.5361 | 0.4810 | 0.4937 | 0.4110 |
+| Average Probability Voting | 0.5361 | 0.4810 | 0.4937 | 0.4110 |
+| Dynamic Single-Agent Weighting | 0.5423 | 0.4927 | 0.4980 | 0.4056 |
+| Choquet-inspired Pairwise Voting | 0.5486 | 0.5149 | 0.5037 | 0.4091 |
+Test predictions saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0040_20260529_140542_llm_discrete_2additive_gemini-3.1-flash-lite\test_predictions.csv
+
+=== Task-level Average Single Weights ===
+
+Task: clickbait
+  Semantic    : 0.2625
+  Emotion     : 0.1489
+  Intention   : 0.1625
+  Lexical     : 0.3098
+  Consistency : 0.1163
+
+=== Task-level Top Pairwise Weights ===
+
+Task: clickbait
+  Semantic + Lexical          : 0.0612
+  Semantic + Intention        : 0.0387
+  Semantic + Emotion          : 0.0371
+  Intention + Lexical         : 0.0108
+  Emotion + Lexical           : 0.0073
+
+=== Sample-level Decision Traces ===
+
+--- Sample ---
+Task: clickbait
+Text: .亚马孙雨林原住民的“黄金劫”：躲不过的新冠，守不住的黄金 撰稿 | 记者 钟书毓过去5年，在亚马孙雨林中心的亚诺玛米部落，非法开采金矿活动急剧增加。亚诺玛米是亚马孙雨林最离群索居的部族之一，也是南美洲最大的部落，他们与外界相对隔离。有超过2.6万的亚诺玛米人生活在委内瑞拉边境附近，一个面积相当于葡萄牙大小的保护区内。亚诺玛米与世无争，但他们脚下土地里含有宝贵的矿物质，其中也包括黄金。因此，几十年来，对黄金的渴望吸引了许多非法勘探者。他们摧毁森林，污染河流，也给当地部落带来了致命的疾病。淘金热正吞噬原始森林来亚马孙雨林淘金的非法勘探者，主要沿着两条河（乌拉里科埃拉河和穆卡贾伊河）寻找黄金...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.5891 0.4109]
+Agent predictions:
+  Semantic     pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Emotion      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Intention    pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Lexical      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Consistency  pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+Single weights:
+  Semantic    : 0.2625
+  Emotion     : 0.1489
+  Intention   : 0.1625
+  Lexical     : 0.3098
+  Consistency : 0.1163
+Top pairwise weights:
+  Semantic + Lexical          : 0.0612
+  Semantic + Intention        : 0.0387
+  Semantic + Emotion          : 0.0371
+
+--- Sample ---
+Task: clickbait
+Text: “一无所知”特朗普，和细思恐极的美国两万流感死者 撰稿 | 记者 单珊早在上个月，日本朝日电视台就作出惊人猜测——“美国1.4万名因流感致死的人中，部分可能死于新冠肺炎”。当时，美国疾控中心（CDC）果断回应：没有证据支持此猜测。然而11日，CDC主任雷德菲尔德在线亲自打脸：“在美国，确实有一些‘流感’死者实际感染的可能是新冠肺炎。”3月11日，美国国会众议院监督委员会就新冠肺炎疫情举行听证会，雷德菲尔德作出上述陈述。同日，特朗普向全国发表电视讲话，公布多项强有力的措施来防控疫情。CNN评价特朗普“只是一无所知”，“这次演讲的特点，与特朗普在担任总统期间的其他危机时刻一样：寻找替罪羊，以...
+Gold label: 1 | Final prediction: 0 | Final probs: [0.5891 0.4109]
+Agent predictions:
+  Semantic     pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Emotion      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Intention    pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Lexical      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Consistency  pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: HTTP 429 from https://xiaohumini.site/v1/chat/completions: {"error":{"message":"当前分组上游负载已饱和，请稍后再试 (request id: 20260524160740308229376PKz1IgCt)","type":"new_api_error","param":"","code":"model_not_found"}}
+Single weights:
+  Semantic    : 0.2625
+  Emotion     : 0.1489
+  Intention   : 0.1625
+  Lexical     : 0.3098
+  Consistency : 0.1163
+Top pairwise weights:
+  Semantic + Lexical          : 0.0612
+  Semantic + Intention        : 0.0387
+  Semantic + Emotion          : 0.0371
+
+--- Sample ---
+Task: clickbait
+Text: 在海外发出华人声音，他躲过明枪暗箭！今天，却没能躲过那颗子弹 记者 | 卞英豪 宋祖礼当地时间11月16日上午，总部位于美国的著名华文媒体《侨报》发生枪击案，《侨报》董事长谢一宁不幸遭枪击身亡，享年58岁。他，曾是改革开放后第一批大学生。为了“新闻理想”，刻苦攻读；他，曾是铁肩担道义的新闻工作者。为了“优质报道”，扎根海外；他，曾是在美侨民最好的信息窗口。为了“中国声音”，奋斗至今。作为东方网长期以来良好的合作伙伴，我们沉痛悼念谢一宁先生不幸离世。今天，东方网·纵相新闻记者也想带您回顾谢一宁先生那段别样的人生。01拿了“两本书”复习，考上了人民大学他说：我是运气好！谈起自己的过往，谢一宁...
+Gold label: 1 | Final prediction: 0 | Final probs: [0.5891 0.4109]
+Agent predictions:
+  Semantic     pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Emotion      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Intention    pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Lexical      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Consistency  pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: HTTP 429 from https://xiaohumini.site/v1/chat/completions: {"error":{"message":"当前分组上游负载已饱和，请稍后再试 (request id: 2026052415572998398328a63V4pVY)","type":"new_api_error","param":"","code":"model_not_found"}}
+Single weights:
+  Semantic    : 0.2625
+  Emotion     : 0.1489
+  Intention   : 0.1625
+  Lexical     : 0.3098
+  Consistency : 0.1163
+Top pairwise weights:
+  Semantic + Lexical          : 0.0612
+  Semantic + Intention        : 0.0387
+  Semantic + Emotion          : 0.0371
+
+--- Sample ---
+Task: clickbait
+Text: 金正恩连续指导军事活动，现场照片透露朝鲜最新防疫形势？ 收录于话题##朝鲜撰稿 | 记者 冯茵伦据韩联社3月3日报道，朝鲜最高领导人金正恩前一天指导了前沿远程炮兵部队发射疑似火箭炮飞行器的训练，并亲自下达开炮命令。而在此前2天，金正恩还指导了朝鲜人民军的联合打击训练。金正恩连续出席军事活动，引起了外界特别是美方的高度关注。而在朝鲜官方公布的相关照片里，还“意外”地出现了朝鲜高层官员佩戴口罩的画面。这也是全球新冠疫情爆发以来，不曾有过的情景。 （图说：朝中社3月3日报道，金正恩于２日视察了朝鲜人民军前线远程炮兵部队火力打击训练场。）据韩军联合参谋本部消息，朝鲜2日中午12时37分左右从江原...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.5891 0.4109]
+Agent predictions:
+  Semantic     pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Emotion      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Intention    pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Lexical      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Consistency  pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+Single weights:
+  Semantic    : 0.2625
+  Emotion     : 0.1489
+  Intention   : 0.1625
+  Lexical     : 0.3098
+  Consistency : 0.1163
+Top pairwise weights:
+  Semantic + Lexical          : 0.0612
+  Semantic + Intention        : 0.0387
+  Semantic + Emotion          : 0.0371
+
+--- Sample ---
+Task: clickbait
+Text: 张扣扣案二审明日开庭，精神病法医鉴定专家出庭申请被驳回 撰稿 | 记者 宋祖礼 4月11日9时，陕西省高级人民法院将在汉中市中级人民法院刑事审判法庭公开开庭审理上诉人张扣扣故意杀人、故意毁坏财物一案。关于此前辩方律师针对有精神病法医专家作出“张扣扣在作案时有急性应激障碍”论证，提出相关专家出庭作证的申请，张扣扣辩护律师邓学平也表示其已被法院驳回。4月9日，邓学平律师在微博中贴出了陕西省高院的通知书，表示精神病法医鉴定专家出庭申请被法院正式驳回。“关于张扣扣作案时精神是否正常，依然会是二审的争议焦点之一，专家出庭作证的申请虽然被驳回，但是专家的审查意见是可以作为证据使用的。” 邓学平在接受...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.5891 0.4109]
+Agent predictions:
+  Semantic     pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Emotion      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Intention    pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Lexical      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Consistency  pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+Single weights:
+  Semantic    : 0.2625
+  Emotion     : 0.1489
+  Intention   : 0.1625
+  Lexical     : 0.3098
+  Consistency : 0.1163
+Top pairwise weights:
+  Semantic + Lexical          : 0.0612
+  Semantic + Intention        : 0.0387
+  Semantic + Emotion          : 0.0371
+
+Readable model summary saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0040_20260529_140542_llm_discrete_2additive_gemini-3.1-flash-lite\model_summary.json
+Latest model copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\best_choquet_model.pt
+Latest summary copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\model_summary.json
+
+=== Capacity Monotonicity Diagnostic ===
+{'checked': 211, 'violations': 4, 'max_violation': 0.04668164253234863}
+Run metadata saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0040_20260529_140542_llm_discrete_2additive_gemini-3.1-flash-lite\run_result.json
+
+Done. Agents produced fixed outputs; only the selected Choquet aggregation layer was trained.

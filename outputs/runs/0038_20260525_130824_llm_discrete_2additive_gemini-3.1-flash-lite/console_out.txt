@@ -1,0 +1,190 @@
+=== Runtime Configuration ===
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: gemini-3.1-flash-lite
+LLM_MODEL_CANDIDATES: gemini-3.1-flash-lite, gemini-3.1-flash, gemini-2.5-flash-lite, gemini-2.0-flash-lite, gemini-2.0-flash
+LLM_BASE_URL: https://xiaohumini.site/v1
+LLM_API_KEY_ENV: XIAOHU_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zongxiang.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0038_20260525_130824_llm_discrete_2additive_gemini-3.1-flash-lite
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv
+Rows: 2119
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        1167
+           1         952
+
+Split: train=1483, valid=317, test=319
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型情绪煽动词汇，且通过“忍不住点开”进行直接的点击诱导，属于典型的标题党。
+Emotion      probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型诱导性词汇，并刻意制造悬念以操纵用户点击欲望，属于典型的点击诱导标题。
+Intention    probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型煽动性词汇，并利用“忍不住点开”进行心理暗示，属于典型的点击诱导标题党。
+Lexical      probs=[0.0, 1.0] confidence=1.000 explanation=包含“震惊”、“真相曝光”等典型情绪煽动词，并使用“忍不住点开”诱导点击，符合典型的标题党模式。
+Consistency  probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型情绪煽动词汇，且内容模糊，通过制造悬念诱导点击，符合点击诱导特征。
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+LLM cache saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zongxiang.json
+
+=== Training Choquet Layer (discrete_2additive) ===
+Epoch 01 | train_loss=0.7051 | valid_loss=0.7264 | valid_acc=0.5079 | valid_macro_f1=0.3425
+Epoch 05 | train_loss=0.6799 | valid_loss=0.7008 | valid_acc=0.5142 | valid_macro_f1=0.3509
+Epoch 08 | train_loss=0.6820 | valid_loss=0.7032 | valid_acc=0.5142 | valid_macro_f1=0.3509
+
+Best validation: loss=0.7014, acc=0.5142, macro_f1=0.3509
+Saved best model to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0038_20260525_130824_llm_discrete_2additive_gemini-3.1-flash-lite\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=0.6911, acc=0.5392, precision=0.4235, recall=0.4906, macro_f1=0.3681
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.5361 | 0.4091 | 0.4878 | 0.3666 |
+| Average Probability Voting | 0.5361 | 0.4091 | 0.4878 | 0.3666 |
+| Dynamic Single-Agent Weighting | 0.5392 | 0.4235 | 0.4906 | 0.3681 |
+| Choquet-inspired Pairwise Voting | 0.5392 | 0.4235 | 0.4906 | 0.3681 |
+Test predictions saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0038_20260525_130824_llm_discrete_2additive_gemini-3.1-flash-lite\test_predictions.csv
+
+=== Task-level Average Single Weights ===
+
+Task: clickbait
+  Semantic    : 0.1549
+  Emotion     : 0.0752
+  Intention   : 0.1287
+  Lexical     : 0.5089
+  Consistency : 0.1322
+
+=== Task-level Top Pairwise Weights ===
+
+Task: clickbait
+  Semantic + Lexical          : 0.0455
+  Lexical + Consistency       : 0.0377
+  Intention + Lexical         : 0.0346
+  Emotion + Lexical           : 0.0139
+  Semantic + Consistency      : -0.0110
+
+=== Sample-level Decision Traces ===
+
+--- Sample ---
+Task: clickbait
+Text: 口罩危机笼罩韩国 撰稿 | 记者 冯茵伦韩国疫情急转直下，确诊病例倍增暴涨。时隔11年后，韩国政府再次发布最高级别的传染病预警。据韩国中央防疫对策本部2月24日通报，截至下午4时，当天新增231例感染新冠病毒的确诊病例，累计确诊增至833例，年龄最小患者仅16个月，死亡病例增至8例。与此同时，疫情引发的口罩难题，也正让当地民众日渐焦虑。 第一次感觉，病毒离得如此之近2月24日凌晨，本应是进入甜美梦乡的时间，但家住首尔江东区的金艺琳（化名）一家，却怎么也睡不着。当天下午，远在大邱的亲戚打来电话，说奶奶所住的医院出现了一名新冠肺炎确诊病例，“接到电话，大家的心瞬间悬了起来。”作为大邱人，自从...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.5355 0.4645]
+Agent predictions:
+  Semantic     pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Emotion      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Intention    pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Lexical      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Consistency  pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+Single weights:
+  Semantic    : 0.1549
+  Emotion     : 0.0752
+  Intention   : 0.1287
+  Lexical     : 0.5089
+  Consistency : 0.1322
+Top pairwise weights:
+  Semantic + Lexical          : 0.0455
+  Lexical + Consistency       : 0.0377
+  Intention + Lexical         : 0.0346
+
+--- Sample ---
+Task: clickbait
+Text: 急缺2000万人！培训火爆！就业抢手！这个专业成“香饽饽”→ 商务部等16部门今天（7月13日）发布《2023年家政兴农行动工作方案》，通过家政服务助力乡村振兴。相关部门将组织开展家政服务招聘季、供需对接活动支持就业；实施家政服务员技能升级行动，为家政服务员免费提供线上培训；落实稳岗返岗政策，强化家政服务员权益保障。培训火爆就业抢手家政专业成“新宠”近年来，家政服务市场需求加速释放，尤其是收纳师、育儿嫂等对家政服务技能要求较高的家政服务员更是抢手，这带动了家政培训市场的热度，部分高校还推出了家政本科专业。△央视财经《天下财经》栏目视频朱春南从事家政行业已经有15年了，她也被雇主亲切地称为...
+Gold label: 1 | Final prediction: 0 | Final probs: [0.5355 0.4645]
+Agent predictions:
+  Semantic     pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Emotion      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Intention    pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Lexical      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Consistency  pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+Single weights:
+  Semantic    : 0.1549
+  Emotion     : 0.0752
+  Intention   : 0.1287
+  Lexical     : 0.5089
+  Consistency : 0.1322
+Top pairwise weights:
+  Semantic + Lexical          : 0.0455
+  Lexical + Consistency       : 0.0377
+  Intention + Lexical         : 0.0346
+
+--- Sample ---
+Task: clickbait
+Text: 惨祸背后，无人清白 撰稿 | 记者 叶承琪当地时间2019年3月10日8时44分，一架由埃塞俄比亚首都亚的斯亚贝巴飞往肯尼亚首都内罗毕的波音737 Max 8型号飞机（埃塞俄比亚航空公司ET302次航班），在起飞6分钟后，就坠毁在了距离机场62公里远的小镇德布雷塞特，机上包括乘客和机组人员在内的157人，全部遇难。没有人会忘记，就在大约5个月前的10月29日，一架一模一样的波音737 Max 8 型号飞机（印尼狮子航空JT610次航班），也是在起飞13分钟后，就“离奇”地在爪哇海坠毁，机上189人无一人生还。狮航空难后打捞到的残骸当这几个月以来，狮航失事的调查结果陆续浮出水面之时，“3·...
+Gold label: 1 | Final prediction: 0 | Final probs: [0.5355 0.4645]
+Agent predictions:
+  Semantic     pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Emotion      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Intention    pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Lexical      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Consistency  pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: HTTP 429 from https://xiaohumini.site/v1/chat/completions: {"error":{"message":"当前分组上游负载已饱和，请稍后再试 (request id: 20260524160408228434229Eqxmq0hv)","type":"new_api_error","param":"","code":"model_not_found"}}
+Single weights:
+  Semantic    : 0.1549
+  Emotion     : 0.0752
+  Intention   : 0.1287
+  Lexical     : 0.5089
+  Consistency : 0.1322
+Top pairwise weights:
+  Semantic + Lexical          : 0.0455
+  Lexical + Consistency       : 0.0377
+  Intention + Lexical         : 0.0346
+
+--- Sample ---
+Task: clickbait
+Text: 神秘序列号“实锤”朝鲜发射弹道导弹？韩国的反应引人遐想 撰稿 | 记者 冯茵伦韩国亚洲经济5月13日报道称，韩国军方迟迟不愿拿出对朝鲜4日和9日发射的新型制导武器的分析报告，但以专家、学者为中心的外界组织正不断拿出证据，表明新型武器就是'弹道导弹'。1神秘的导弹序列号和发射台韩媒称，文在寅政府对朝方发射的新型武器始终采用“发射器”之类的模糊说法，但相关专家都斩钉截铁地称之为“导弹”。 10日，美国外交安全专门杂志《外交学者》（The Deplomat）首席研究员Ankit Panda在社交平台上传了一张朝鲜中央通讯社报道9日火力打击训练时公开的发射器放大图片。Ankit写道，照片增亮后，...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.5355 0.4645]
+Agent predictions:
+  Semantic     pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Emotion      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Intention    pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Lexical      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Consistency  pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+Single weights:
+  Semantic    : 0.1549
+  Emotion     : 0.0752
+  Intention   : 0.1287
+  Lexical     : 0.5089
+  Consistency : 0.1322
+Top pairwise weights:
+  Semantic + Lexical          : 0.0455
+  Lexical + Consistency       : 0.0377
+  Intention + Lexical         : 0.0346
+
+--- Sample ---
+Task: clickbait
+Text: ​“吉祥三宝”痛失“阿爸” 今天，可能每个人都值得再听一次这首歌：脍炙人口的歌曲《吉祥三宝》是布仁巴雅尔为女儿生日创作的作品，灵感来源于与女儿的一段对话。“吉祥三宝”并不具体指代什么，蒙语中的意思就是：“每个家庭都由爸爸、妈妈、孩子组成，希望家家都吉祥如意。”1994年6月21日这天，布仁将这首《吉祥三宝》作为生日礼物送给了女儿。2004年，布仁一家演唱的歌曲已经走出了朋友圈子，在较大范围有了影响。布仁巴雅尔专辑《天边》2006年春晚，布仁巴雅尔一家凭借《吉祥三宝》（演唱者为布仁巴雅尔和他的妻子乌日娜以及他们的小侄女英格玛）登上了春晚。《吉祥三宝》在央视春晚亮相后，受到全国亿万观众的好评...
+Gold label: 1 | Final prediction: 0 | Final probs: [0.5355 0.4645]
+Agent predictions:
+  Semantic     pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Emotion      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Intention    pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Lexical      pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://xiaohumini.site/v1/chat/completions: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+  Consistency  pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: HTTP 429 from https://xiaohumini.site/v1/chat/completions: {"error":{"message":"当前分组上游负载已饱和，请稍后再试 (request id: 202605241609368678214308P7lMlIG)","type":"new_api_error","param":"","code":"model_not_found"}}
+Single weights:
+  Semantic    : 0.1549
+  Emotion     : 0.0752
+  Intention   : 0.1287
+  Lexical     : 0.5089
+  Consistency : 0.1322
+Top pairwise weights:
+  Semantic + Lexical          : 0.0455
+  Lexical + Consistency       : 0.0377
+  Intention + Lexical         : 0.0346
+
+Readable model summary saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0038_20260525_130824_llm_discrete_2additive_gemini-3.1-flash-lite\model_summary.json
+Latest model copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\best_choquet_model.pt
+Latest summary copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\model_summary.json
+
+=== Capacity Monotonicity Diagnostic ===
+{'checked': 211, 'violations': 10, 'max_violation': 0.11212235689163208}
+Run metadata saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0038_20260525_130824_llm_discrete_2additive_gemini-3.1-flash-lite\run_result.json
+
+Done. Agents produced fixed outputs; only the selected Choquet aggregation layer was trained.

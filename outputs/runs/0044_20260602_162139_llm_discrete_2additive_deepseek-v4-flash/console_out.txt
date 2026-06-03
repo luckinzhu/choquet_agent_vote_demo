@@ -1,0 +1,136 @@
+=== Runtime Configuration ===
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: deepseek-v4-flash
+LLM_MODEL_CANDIDATES: deepseek-v4-pro
+LLM_BASE_URL: https://api.deepseek.com/v1
+LLM_API_KEY_ENV: XIAOHU_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_ds.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0044_20260602_162139_llm_discrete_2additive_deepseek-v4-flash
+
+RUN_SAMPLE_LIMIT active: using 10 rows for this run.
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv
+Rows: 10
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        4
+           1        6
+
+Split: train=7, valid=1, test=2
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.05, 0.95] confidence=0.900 explanation=包含'震惊'、'忍不住点开'、'曝光'等典型点击诱导用语
+Emotion      probs=[0.0, 1.0] confidence=0.950 explanation=使用'震惊'、'忍不住点开'、'真相曝光'等夸张悬念词汇，典型情绪操控标题党
+Intention    probs=[0.01, 0.99] confidence=0.970 explanation=使用'震惊'、'忍不住点开'及'真相曝光'等典型标题党手法，意图吸引点击
+Lexical      probs=[0.02, 0.98] confidence=0.950 explanation='震惊！'搭配'忍不住点开''真相曝光'，典型标题党模式
+Consistency  probs=[0.05, 0.95] confidence=0.850 explanation=标题使用'震惊'、'忍不住点开'、'真相曝光'等煽动性词汇，典型标题党手法
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+
+=== Dataset Integrity Check ===
+Total Samples: 10
+Complete Samples : 10
+Incomplete Samples : 0
+LLM cache saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_ds.json
+
+=== Training Choquet Layer (discrete_2additive) ===
+Epoch 01 | train_loss=0.5872 | valid_loss=0.0247 | valid_acc=1.0000 | valid_macro_f1=1.0000
+Epoch 05 | train_loss=0.5616 | valid_loss=0.0239 | valid_acc=1.0000 | valid_macro_f1=1.0000
+Epoch 10 | train_loss=0.5347 | valid_loss=0.0232 | valid_acc=1.0000 | valid_macro_f1=1.0000
+Epoch 15 | train_loss=0.5121 | valid_loss=0.0234 | valid_acc=1.0000 | valid_macro_f1=1.0000
+Epoch 20 | train_loss=0.4912 | valid_loss=0.0248 | valid_acc=1.0000 | valid_macro_f1=1.0000
+
+Best validation: loss=0.0247, acc=1.0000, macro_f1=1.0000
+Saved best model to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0044_20260602_162139_llm_discrete_2additive_deepseek-v4-flash\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=1.7479, acc=0.5000, precision=0.5000, recall=0.2500, macro_f1=0.3333
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.5000 | 0.5000 | 0.2500 | 0.3333 |
+| Average Probability Voting | 0.5000 | 0.5000 | 0.2500 | 0.3333 |
+| Dynamic Single-Agent Weighting | 0.5000 | 0.5000 | 0.2500 | 0.3333 |
+| Choquet-inspired Pairwise Voting | 0.5000 | 0.5000 | 0.2500 | 0.3333 |
+Test predictions saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0044_20260602_162139_llm_discrete_2additive_deepseek-v4-flash\test_predictions.csv
+
+=== Task-level Average Single Weights ===
+
+Task: clickbait
+  Semantic    : 0.1976
+  Emotion     : 0.2016
+  Intention   : 0.1976
+  Lexical     : 0.2016
+  Consistency : 0.2016
+
+=== Task-level Top Pairwise Weights ===
+
+Task: clickbait
+  Lexical + Consistency       : 0.0010
+  Emotion + Lexical           : 0.0010
+  Emotion + Consistency       : 0.0010
+  Intention + Lexical         : 0.0010
+  Intention + Consistency     : 0.0010
+
+=== Sample-level Decision Traces ===
+
+--- Sample ---
+Task: clickbait
+Text: 上海服务+中国制造，外国人在这里也忍不住“剁手” | 买在上海 记者 | 董怡虹 卞英豪 汪鹏翀编者按进博会，海内外宾客齐聚上海，这些来自世界各地的外国友人，吃喝玩乐哪里去？尝过了上海美食，游遍了大街小巷，大家又会带些什么特产回到自己家乡？东方网•纵相新闻今天推出“沪游好感”系列报道第三篇，也是最后一篇——我们来聊聊“买”，上海能否令老外开启“剁手”模式。提起上海，大家一定会想到“繁华”二字。夜色中闪亮的霓虹灯，鳞次栉比的商铺。从开埠伊始，这儿就享有“购物天堂”的美誉。无论时代变迁、兴衰起伏，商业始终是上海的招牌之一。今天，就请大家跟着我们的镜头，去瞧一瞧老外给上海的商业打几分，什么东西...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.1278 0.8722]
+Agent predictions:
+  Semantic     pred=0 conf=0.900 prob=[0.85 0.15] | 标题使用网络用语但整体为正常新闻报道，非点击诱导
+  Emotion      pred=1 conf=0.850 prob=[0.1 0.9] | 使用'剁手'等网络流行语，带有情绪化夸张，制造好奇和点击欲望
+  Intention    pred=1 conf=0.850 prob=[0.1 0.9] | 使用'忍不住剁手'等夸张网络用语，制造好奇心，有明显点击诱导意图
+  Lexical      pred=1 conf=0.750 prob=[0.2 0.8] | 使用'剁手'网络流行语制造好奇，有诱导点击意图
+  Consistency  pred=1 conf=0.850 prob=[0.05 0.95] | 标题用“忍不住剁手”夸张诱导，内容仅个别案例，前后不一致。
+Single weights:
+  Semantic    : 0.1976
+  Emotion     : 0.2016
+  Intention   : 0.1976
+  Lexical     : 0.2016
+  Consistency : 0.2016
+Top pairwise weights:
+  Lexical + Consistency       : 0.0010
+  Emotion + Lexical           : 0.0010
+  Emotion + Consistency       : 0.0010
+
+--- Sample ---
+Task: clickbait
+Text: 16年教书育人，她用大爱上完最后一课 近日新疆的小琴（化名）因脑出血不幸离世家人强忍悲痛遵照她生前意愿捐出她的肝脏、肾脏和一对眼角膜挽救了3名器官衰竭的危重症患者帮助2名眼疾患者重见光明小琴生前是一名教师已经教书育人16年她的父亲说道“如果她捐献的器官能够救回5个病人让5个家庭都幸福这是她能做的最后一件好事我们也同意捐献我和孩子她妈都不后悔！”小琴老师的丈夫说“小琴生前我们就曾聊起过关于器官捐献的事情我们也都有意成为器官捐献志愿者如今小琴因为意外永远地离开了我我愿意尊重她生前的意愿办理器官捐献手续”这个月小琴原本将迎来36岁生日但病魔无情地夺走她年轻的生命在生命的最后一刻她用无私的捐献上...
+Gold label: 1 | Final prediction: 0 | Final probs: [0.9652 0.0348]
+Agent predictions:
+  Semantic     pred=0 conf=0.950 prob=[0.9 0.1] | 标题情感正面，无诱导性词汇，内容与标题一致，非标题党
+  Emotion      pred=0 conf=0.800 prob=[0.85 0.15] | 正面情感但语调平和，没有夸张或操纵意图，非标题党
+  Intention    pred=0 conf=0.900 prob=[0.95 0.05] | 标题正面陈述事实，没有夸张或诱导语言，属于非标题党。
+  Lexical      pred=0 conf=0.900 prob=[0.92 0.08] | 平实叙事，无极端修饰词、感叹号或好奇心缺口，非标题党
+  Consistency  pred=0 conf=0.900 prob=[0.95 0.05] | 标题与内容一致，均描述教师捐献器官的感人事迹，无误导或矛盾
+Single weights:
+  Semantic    : 0.1976
+  Emotion     : 0.2016
+  Intention   : 0.1976
+  Lexical     : 0.2016
+  Consistency : 0.2016
+Top pairwise weights:
+  Lexical + Consistency       : 0.0010
+  Emotion + Lexical           : 0.0010
+  Emotion + Consistency       : 0.0010
+
+Readable model summary saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0044_20260602_162139_llm_discrete_2additive_deepseek-v4-flash\model_summary.json
+Latest model copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\best_choquet_model.pt
+Latest summary copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\model_summary.json
+
+=== Capacity Monotonicity Diagnostic ===
+{'checked': 211, 'violations': 0, 'max_violation': 0.0}
+Run metadata saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0044_20260602_162139_llm_discrete_2additive_deepseek-v4-flash\run_result.json
+
+Done. Agents produced fixed outputs; only the selected Choquet aggregation layer was trained.

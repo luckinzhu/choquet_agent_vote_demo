@@ -1,0 +1,190 @@
+=== Runtime Configuration ===
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: gemini-3.1-flash-lite
+LLM_MODEL_CANDIDATES: gemini-3.1-flash-lite, gemini-3.1-flash, gemini-2.5-flash-lite, gemini-2.0-flash-lite, gemini-2.0-flash
+LLM_BASE_URL: https://xiaohumini.site/v1
+LLM_API_KEY_ENV: XIAOHU_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zongxiang.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0034_20260519_203030_llm_discrete_2additive_gemini-3.1-flash-lite
+
+RUN_SAMPLE_LIMIT active: using 200 rows for this run.
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv
+Rows: 200
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        108
+           1         92
+
+Split: train=140, valid=29, test=31
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型情绪煽动词汇，且通过“忍不住点开”进行直接的点击诱导，属于典型的标题党。
+Emotion      probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型诱导性词汇，并刻意制造悬念以操纵用户点击欲望，属于典型的点击诱导标题。
+Intention    probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型煽动性词汇，并利用“忍不住点开”进行心理暗示，属于典型的点击诱导标题党。
+Lexical      probs=[0.0, 1.0] confidence=1.000 explanation=包含“震惊”、“真相曝光”等典型情绪煽动词，并使用“忍不住点开”诱导点击，符合典型的标题党模式。
+Consistency  probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型情绪煽动词汇，且内容模糊，通过制造悬念诱导点击，符合点击诱导特征。
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+LLM cache saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zongxiang.json
+
+=== Training Choquet Layer (discrete_2additive) ===
+Epoch 01 | train_loss=0.8736 | valid_loss=0.7420 | valid_acc=0.6207 | valid_macro_f1=0.6207
+Epoch 02 | train_loss=0.6950 | valid_loss=0.6828 | valid_acc=0.6552 | valid_macro_f1=0.6548
+
+Best validation: loss=0.6828, acc=0.6552, macro_f1=0.6548
+Saved best model to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0034_20260519_203030_llm_discrete_2additive_gemini-3.1-flash-lite\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=0.7319, acc=0.6129, precision=0.6239, recall=0.6218, macro_f1=0.6125
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.5484 | 0.5833 | 0.5693 | 0.5363 |
+| Average Probability Voting | 0.5161 | 0.5381 | 0.5336 | 0.5079 |
+| Dynamic Single-Agent Weighting | 0.6129 | 0.6239 | 0.6218 | 0.6125 |
+| Choquet-inspired Pairwise Voting | 0.6129 | 0.6239 | 0.6218 | 0.6125 |
+
+=== Task-level Average Single Weights ===
+
+Task: clickbait
+  Semantic    : 0.1557
+  Emotion     : 0.2155
+  Intention   : 0.2332
+  Lexical     : 0.2746
+  Consistency : 0.1211
+
+=== Task-level Top Pairwise Weights ===
+
+Task: clickbait
+  Intention + Lexical         : 0.0491
+  Emotion + Lexical           : 0.0401
+  Emotion + Intention         : 0.0241
+  Semantic + Intention        : 0.0206
+  Semantic + Lexical          : 0.0144
+
+=== Sample-level Decision Traces ===
+
+--- Sample ---
+Task: clickbait
+Text: 四部门部署！遏制这一“天价”现象→ 近期，国家发展改革委、工业和信息化部、商务部、市场监管总局等四部门，就抓好今年遏制“天价”月饼工作进行了专题研究部署。2022年，四部门联合发布《关于遏制“天价”月饼、促进行业健康发展的公告》（以下简称《公告》）并狠抓落实，中秋月饼市场发生积极变化。为持续做好2023年遏制“天价”月饼工作，四部门年初即作出安排，明确重点任务和工作要求；分阶段加强对生产企业政策宣贯，强化源头治理；推动行业自律，引导企业依法合规经营。目前，距离中秋节还有一个多月，四部门将继续狠抓《公告》落实，密切合作，强化市场巡查和监测，加大监督检查力度，严厉查处违法违规行为，促进月饼行...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.2957 0.7043]
+Agent predictions:
+  Semantic     pred=1 conf=0.950 prob=[0.2 0.8] | 标题使用“这一”制造悬念，通过指代不明的词汇诱导点击，属于典型的点击诱导策略。
+  Emotion      pred=1 conf=0.950 prob=[0. 1.] | 使用了“这一”制造悬念，通过“天价”等煽动性词汇引发焦虑，并以箭头符号引导点击，属于典型的点击诱导。
+  Intention    pred=1 conf=0.950 prob=[0. 1.] | 使用了典型的“好奇心鸿沟”策略，通过“这一”指代不明的词汇制造悬念，诱导用户点击以获取具体信息。
+  Lexical      pred=1 conf=0.950 prob=[0. 1.] | 使用了典型的“信息缺口”策略，通过“这一”指代不明词汇制造悬念，并配合箭头符号诱导点击。
+  Consistency  pred=1 conf=0.950 prob=[0. 1.] | 标题使用“这一”制造悬念，通过指代不明的词汇诱导点击，属于典型的点击诱导式标题。
+Single weights:
+  Semantic    : 0.1557
+  Emotion     : 0.2155
+  Intention   : 0.2332
+  Lexical     : 0.2746
+  Consistency : 0.1211
+Top pairwise weights:
+  Intention + Lexical         : 0.0491
+  Emotion + Lexical           : 0.0401
+  Emotion + Intention         : 0.0241
+
+--- Sample ---
+Task: clickbait
+Text: “一个‘木箱’能卖2000？我们也能做！”从农村到年产6万台钢琴，这个小镇了不起！ 收录于话题#《了不起的小镇》特别策划撰稿 | 记者 卞英豪 程靖 视频 | 记者 汪鹏翀 丁一涵88个琴键，220多根琴弦，300道工序，8000个零部件……60岁的韩国整音师李炳男，仔细聆听着每一次击打所回荡出的旋律，或清脆，或悠扬，或深沉。挂弦，拨音、调律……农民工林明飞熟悉这台钢琴制作的每一个流程。沉醉于'乐器之王'的魅力，她的指尖情不自禁地在黑白琴键上律动着。90后'琴二代'潘鸿凯，穿梭于前辈们精耕细作的生产车间。走到一台钢琴前，他打开手机直播，这位'后浪'尝试为一台台小镇的钢琴寻找全新的'出路'...
+Gold label: 0 | Final prediction: 1 | Final probs: [0.4401 0.5599]
+Agent predictions:
+  Semantic     pred=0 conf=0.900 prob=[0.8 0.2] | 标题虽引用了口语化表达，但核心内容为深度报道，旨在展现产业发展历程，非恶意诱导点击。
+  Emotion      pred=1 conf=0.950 prob=[0. 1.] | 使用了典型的“好奇心缺口”策略，通过反差设问和感叹号营造悬念，诱导用户点击以揭开“木箱”变钢琴的真相。
+  Intention    pred=1 conf=0.950 prob=[0. 1.] | 标题使用“木箱卖2000”制造认知冲突，通过夸张对比和感叹号营造悬念，具有典型的诱导点击意图。
+  Lexical      pred=1 conf=0.950 prob=[0.1 0.9] | 使用了典型的悬念式诱导（“木箱”卖2000）和感叹号强化情绪，通过反差制造好奇心缺口，属于典型的点击诱导标题。
+  Consistency  pred=1 conf=0.900 prob=[0.2 0.8] | 标题采用“一个木箱卖2000”的悬念式反差，利用好奇心缺口诱导点击，属于典型的软文标题党手法。
+Single weights:
+  Semantic    : 0.1557
+  Emotion     : 0.2155
+  Intention   : 0.2332
+  Lexical     : 0.2746
+  Consistency : 0.1211
+Top pairwise weights:
+  Intention + Lexical         : 0.0491
+  Emotion + Lexical           : 0.0401
+  Emotion + Intention         : 0.0241
+
+--- Sample ---
+Task: clickbait
+Text: “血腥的双手” 撰稿 | 记者 单珊当地时间5月17日，美国总统拜登与以色列总理内塔尼亚胡通话，首次公开呼吁巴以两方结束暴力冲突。但美国一边呼吁和平，一边又向以色列出口武器，土耳其总统埃尔多安批评：美国正以“血腥的双手”书写加沙地带的历史。白宫新闻发言人普萨基在17日的声明中称，拜登表示支持双方停火，美国与埃及和其他合作伙伴正在为此进行讨论。但对于美国的调和，以色列似乎并不买账，内塔尼亚胡17日当天就表示，他已下令国防军继续对加沙地带的目标进行打击。“在完成对当前局势的评估后”，他下达了继续打击恐怖主义目标的命令，“以色列政府将继续采取必要行动，恢复以色列的和平与安全”。根据加沙卫生部门...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.2672 0.7328]
+Agent predictions:
+  Semantic     pred=1 conf=0.950 prob=[0. 1.] | 标题引用埃尔多安的激烈言辞，通过极具冲击力的感性词汇制造悬念，属于典型的通过情绪化表达吸引点击的标题党行为。
+  Emotion      pred=1 conf=0.950 prob=[0. 1.] | 该标题使用极具视觉冲击力和恐怖暗示的词汇，制造强烈悬念与情绪煽动，属于典型的点击诱导。
+  Intention    pred=1 conf=0.950 prob=[0. 1.] | 该标题使用极具视觉冲击力和恐怖暗示的词汇，制造强烈的悬念与好奇心缺口，属于典型的煽动性点击诱导。
+  Lexical      pred=1 conf=0.950 prob=[0. 1.] | 使用了极端的感官刺激词汇，通过制造恐怖悬念和视觉冲击力诱导点击，属于典型的标题党修辞。
+  Consistency  pred=1 conf=0.950 prob=[0. 1.] | 标题“血腥的双手”仅摘取文中埃尔多安的指责性言论，具有强烈的煽动性和情绪化色彩，属于典型的点击诱导式标题。
+Single weights:
+  Semantic    : 0.1557
+  Emotion     : 0.2155
+  Intention   : 0.2332
+  Lexical     : 0.2746
+  Consistency : 0.1211
+Top pairwise weights:
+  Intention + Lexical         : 0.0491
+  Emotion + Lexical           : 0.0401
+  Emotion + Intention         : 0.0241
+
+--- Sample ---
+Task: clickbait
+Text: 韩国人，又要从地球上消失了？ 撰稿 | 记者 单珊“听说过结婚穷（wedding poor）吗？”36岁的金善奎谈“婚”色变。“在韩国，结婚的所有费用加起来，男人需要七千万（约合人民币42万元），女人需要五千万（约合人民币30万），这还是两三年前的数据”，金善奎向东方网·纵相新闻记者介绍。△韩式传统婚礼 本文图片均来自网络居住在首尔的金善奎已经独自生活了10多年，结婚生子却迟迟没有出现在他的人生计划中。出于对“结婚穷”的无名恐惧，他决定在年富力强的阶段“集中精力挣钱”。“为了办婚礼、买房，像我这样的平头老百姓不得不找银行贷款。为了让未来的生活无虞，我们越来越晚结婚。”金善奎向记者诉述了自...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.2772 0.7228]
+Agent predictions:
+  Semantic     pred=1 conf=0.950 prob=[0. 1.] | 标题使用“从地球上消失”等夸张修辞制造恐慌与悬念，属于典型的点击诱导式标题党。
+  Emotion      pred=1 conf=0.980 prob=[0.05 0.95] | 使用极具煽动性的夸张表述制造生存焦虑，通过反问句式设置悬念，诱导读者点击以获取所谓“消失”的解释。
+  Intention    pred=1 conf=1.000 prob=[0. 1.] | 使用了极度夸张的末日叙事和反问句式，制造强烈的悬念与恐慌感，属于典型的点击诱导标题党。
+  Lexical      pred=1 conf=1.000 prob=[0. 1.] | 使用了极端的修辞夸张（消失）制造生存焦虑，并配合反问句式构建强烈的悬念缺口，属于典型的煽动性标题党。
+  Consistency  pred=1 conf=0.950 prob=[0. 1.] | 标题使用“从地球上消失”等夸张叙事制造恐慌与好奇，属于典型的点击诱导式标题党。
+Single weights:
+  Semantic    : 0.1557
+  Emotion     : 0.2155
+  Intention   : 0.2332
+  Lexical     : 0.2746
+  Consistency : 0.1211
+Top pairwise weights:
+  Intention + Lexical         : 0.0491
+  Emotion + Lexical           : 0.0401
+  Emotion + Intention         : 0.0241
+
+--- Sample ---
+Task: clickbait
+Text: 老师用一张纸讲述语言暴力：不做揉纸团的人！ 近日，山东一名小女孩被班里的男生嘲笑衣服丑后伤心不已老师用一张纸言简意赅地为同学们讲述了语言暴力的危害性“你长得真丑你学习真差你衣服真难看……”伴随着一句句伤人的语言一张白纸被揉得满是褶皱随口的戏谑可能对别人造成无法弥补的伤害说了无数声对不起但褶皱的纸团永远变不回平整的样子网友留言良言一句三冬暖恶语伤人六月寒拒绝语言暴力不做揉纸团的人！┃来源：中国青年网综合整理自人民日报、网友“是靖靖”、网友评论┃责编：张玘云┃审核：曾繁华┃复核：王海©中国青年网出品（ID：youthzqw），转载相关文章请注明出处。长按指纹一键关注点亮“在看”，让更多人看到...
+Gold label: 1 | Final prediction: 0 | Final probs: [0.9039 0.0961]
+Agent predictions:
+  Semantic     pred=0 conf=0.950 prob=[0.95 0.05] | 标题准确概括了新闻核心事件，语言平实且具有教育意义，未利用悬念或夸张手段诱导点击。
+  Emotion      pred=0 conf=0.900 prob=[0.85 0.15] | 该标题属于典型的教育类叙事，通过具体案例传达正向价值观，不具备误导性或夸张的点击诱导意图。
+  Intention    pred=1 conf=0.900 prob=[0.2 0.8] | 标题通过“一张纸”的悬念设置引发好奇心，并使用感叹号增强情绪煽动性，具有典型的点击诱导特征。
+  Lexical      pred=0 conf=0.900 prob=[0.85 0.15] | 标题描述了具体的教育场景与核心观点，属于正常的叙事性标题，不具备夸张修饰或刻意制造悬念的点击诱导特征。
+  Consistency  pred=0 conf=0.950 prob=[0.9 0.1] | 标题准确概括了新闻核心内容，未采用夸张、悬念或误导性词汇，属于正常的叙事性标题。
+Single weights:
+  Semantic    : 0.1557
+  Emotion     : 0.2155
+  Intention   : 0.2332
+  Lexical     : 0.2746
+  Consistency : 0.1211
+Top pairwise weights:
+  Intention + Lexical         : 0.0491
+  Emotion + Lexical           : 0.0401
+  Emotion + Intention         : 0.0241
+
+Readable model summary saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0034_20260519_203030_llm_discrete_2additive_gemini-3.1-flash-lite\model_summary.json
+Latest model copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\best_choquet_model.pt
+Latest summary copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\model_summary.json
+
+=== Capacity Monotonicity Diagnostic ===
+{'checked': 211, 'violations': 0, 'max_violation': 0.0}
+Run metadata saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0034_20260519_203030_llm_discrete_2additive_gemini-3.1-flash-lite\run_result.json
+
+Done. Agents produced fixed outputs; only the selected Choquet aggregation layer was trained.

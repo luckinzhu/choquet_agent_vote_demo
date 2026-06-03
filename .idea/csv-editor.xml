@@ -31,6 +31,41 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\outputs\runs\0037_20260525_130243_rule_inspired_gemini-3.1-flash-lite\test_predictions.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\outputs\runs\0038_20260525_130824_llm_discrete_2additive_gemini-3.1-flash-lite\test_predictions.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\outputs\runs\0041_20260601_115326_llm_discrete_2additive_gemini-3.1-flash-lite\test_predictions.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\outputs\runs\0043_20260601_141835_llm_discrete_2additive_deepseek-v4-flash\test_predictions.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\outputs\runs\0044_20260602_162139_llm_discrete_2additive_deepseek-v4-flash\test_predictions.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
       </map>
     </option>
   </component>

@@ -1,0 +1,52 @@
+{
+  "agent_backend_requested": "rule",
+  "choquet_mode": "inspired",
+  "llm_provider": "openai_compatible",
+  "llm_model": "gemini-3.1-flash-lite",
+  "llm_model_candidates": [
+    "gemini-3.1-flash-lite",
+    "gemini-3.1-flash",
+    "gemini-2.5-flash-lite",
+    "gemini-2.0-flash-lite",
+    "gemini-2.0-flash"
+  ],
+  "llm_base_url": "https://xiaohumini.site/v1",
+  "llm_api_key_env": "XIAOHU_API_KEY",
+  "api_key_detected": false,
+  "llm_cache_enabled": true,
+  "llm_cache_path": "F:\\PY_projects\\03_STCLABS\\Choquet\\choquet_agent_vote_demo\\outputs\\llm_cache_zx.json",
+  "epochs": 1,
+  "batch_size": 8,
+  "learning_rate": 0.035,
+  "weight_decay": 0.0001,
+  "device_requested": "auto",
+  "device_effective": "cpu",
+  "cuda_available": false,
+  "run_sample_limit": 40,
+  "status": "completed",
+  "effective_backend": "rule",
+  "choquet_mode_effective": "inspired",
+  "smoke_ok": null,
+  "smoke_failures": [],
+  "best_validation": {
+    "accuracy": 0.4,
+    "precision": 0.25,
+    "recall": 0.3333333333333333,
+    "macro_f1": 0.2857142857142857,
+    "loss": 0.8517076373100281
+  },
+  "test_metrics": {
+    "accuracy": 0.7142857142857143,
+    "precision": 0.7083333333333333,
+    "recall": 0.7083333333333333,
+    "macro_f1": 0.7083333333333333,
+    "loss": 0.8053921461105347
+  },
+  "monotonicity_diagnostic": {
+    "checked": 0,
+    "violations": 0,
+    "max_violation": 0.0
+  },
+  "run_model_path": "F:\\PY_projects\\03_STCLABS\\Choquet\\choquet_agent_vote_demo\\outputs\\runs\\0026_20260518_174137_rule_inspired_gemini-3.1-flash-lite\\best_choquet_model.pt",
+  "run_summary_path": "F:\\PY_projects\\03_STCLABS\\Choquet\\choquet_agent_vote_demo\\outputs\\runs\\0026_20260518_174137_rule_inspired_gemini-3.1-flash-lite\\model_summary.json"
+}

@@ -1,0 +1,78 @@
+{
+  "note": "best_choquet_model.pt is a binary PyTorch checkpoint. Open this JSON file for a readable UTF-8 summary.",
+  "agent_names": [
+    "Semantic",
+    "Emotion",
+    "Intention",
+    "Lexical",
+    "Consistency"
+  ],
+  "pair_names": [
+    "Semantic + Emotion",
+    "Semantic + Intention",
+    "Semantic + Lexical",
+    "Semantic + Consistency",
+    "Emotion + Intention",
+    "Emotion + Lexical",
+    "Emotion + Consistency",
+    "Intention + Lexical",
+    "Intention + Consistency",
+    "Lexical + Consistency"
+  ],
+  "trainable_parameters": {
+    "raw_single_m": [
+      0.012174000032246113,
+      0.006508000195026398,
+      0.0021830000914633274,
+      -0.08020900189876556,
+      -0.05006900057196617
+    ],
+    "raw_pair_m": [
+      0.09886600077152252,
+      0.09081300348043442,
+      0.007447000127285719,
+      -0.0005239999736659229,
+      0.005735999904572964,
+      0.0014100000262260437,
+      0.02251799963414669,
+      -0.0058200000785291195,
+      -0.053978998214006424,
+      -0.05605800077319145
+    ],
+    "logit_scale": 3.9032530784606934,
+    "logit_bias": [
+      0.1032790020108223,
+      -0.1032790020108223
+    ]
+  },
+  "task_level_average_weights": {
+    "clickbait": {
+      "single_weights": {
+        "Semantic": 0.20679,
+        "Emotion": 0.205622,
+        "Intention": 0.204735,
+        "Lexical": 0.188542,
+        "Consistency": 0.194311
+      },
+      "pair_weights": {
+        "Semantic + Emotion": 0.009855,
+        "Semantic + Intention": 0.009056,
+        "Semantic + Lexical": 0.000745,
+        "Semantic + Consistency": -5.2e-05,
+        "Emotion + Intention": 0.000574,
+        "Emotion + Lexical": 0.000141,
+        "Emotion + Consistency": 0.002251,
+        "Intention + Lexical": -0.000582,
+        "Intention + Consistency": -0.005393,
+        "Lexical + Consistency": -0.0056
+      },
+      "top_pair_weights": {
+        "Semantic + Emotion": 0.009855,
+        "Semantic + Intention": 0.009056,
+        "Emotion + Consistency": 0.002251,
+        "Semantic + Lexical": 0.000745,
+        "Emotion + Intention": 0.000574
+      }
+    }
+  }
+}

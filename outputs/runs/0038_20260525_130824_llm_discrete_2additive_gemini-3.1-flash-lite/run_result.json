@@ -1,0 +1,55 @@
+{
+  "agent_backend_requested": "llm",
+  "choquet_mode": "discrete_2additive",
+  "llm_provider": "openai_compatible",
+  "llm_model": "gemini-3.1-flash-lite",
+  "llm_model_candidates": [
+    "gemini-3.1-flash-lite",
+    "gemini-3.1-flash",
+    "gemini-2.5-flash-lite",
+    "gemini-2.0-flash-lite",
+    "gemini-2.0-flash"
+  ],
+  "llm_base_url": "https://xiaohumini.site/v1",
+  "llm_api_key_env": "XIAOHU_API_KEY",
+  "api_key_detected": true,
+  "llm_cache_enabled": true,
+  "llm_cache_path": "F:\\PY_projects\\03_STCLABS\\Choquet\\choquet_agent_vote_demo\\outputs\\llm_cache_zongxiang.json",
+  "epochs": 8,
+  "batch_size": 16,
+  "learning_rate": 0.035,
+  "weight_decay": 0.0001,
+  "device_requested": "auto",
+  "device_effective": "cuda",
+  "cuda_available": true,
+  "run_sample_limit": 0,
+  "status": "completed",
+  "effective_backend": "llm",
+  "choquet_mode_effective": "discrete_2additive",
+  "smoke_ok": true,
+  "smoke_failures": [],
+  "best_validation": {
+    "accuracy": 0.5141955835962145,
+    "precision": 0.3332229580573951,
+    "recall": 0.46963668515392654,
+    "macro_f1": 0.35089352196574836,
+    "loss": 0.7013606190681457
+  },
+  "test_metrics": {
+    "accuracy": 0.5391849529780565,
+    "precision": 0.4234627831715211,
+    "recall": 0.4906031468531468,
+    "macro_f1": 0.36806145138467755,
+    "loss": 0.6910972625017167
+  },
+  "monotonicity_diagnostic": {
+    "checked": 211,
+    "violations": 10,
+    "max_violation": 0.11212235689163208
+  },
+  "run_model_path": "F:\\PY_projects\\03_STCLABS\\Choquet\\choquet_agent_vote_demo\\outputs\\runs\\0038_20260525_130824_llm_discrete_2additive_gemini-3.1-flash-lite\\best_choquet_model.pt",
+  "run_summary_path": "F:\\PY_projects\\03_STCLABS\\Choquet\\choquet_agent_vote_demo\\outputs\\runs\\0038_20260525_130824_llm_discrete_2additive_gemini-3.1-flash-lite\\model_summary.json",
+  "test_predictions_path": "F:\\PY_projects\\03_STCLABS\\Choquet\\choquet_agent_vote_demo\\outputs\\runs\\0038_20260525_130824_llm_discrete_2additive_gemini-3.1-flash-lite\\test_predictions.csv",
+  "baseline_comparison_path": "F:\\PY_projects\\03_STCLABS\\Choquet\\choquet_agent_vote_demo\\outputs\\runs\\0038_20260525_130824_llm_discrete_2additive_gemini-3.1-flash-lite\\baseline_comparison.json",
+  "baseline_comparison_txt_path": "F:\\PY_projects\\03_STCLABS\\Choquet\\choquet_agent_vote_demo\\outputs\\runs\\0038_20260525_130824_llm_discrete_2additive_gemini-3.1-flash-lite\\baseline_comparison.txt"
+}

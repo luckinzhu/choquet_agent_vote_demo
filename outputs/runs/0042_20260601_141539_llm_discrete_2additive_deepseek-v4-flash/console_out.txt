@@ -1,0 +1,101 @@
+=== Runtime Configuration ===
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: deepseek-v4-flash
+LLM_MODEL_CANDIDATES: gemini-3.1-flash-lite, gemini-3.1-flash, gemini-2.5-flash-lite, gemini-2.0-flash-lite, gemini-2.0-flash
+LLM_BASE_URL: https://api.deepseek.com/v1
+LLM_API_KEY_ENV: XIAOHU_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_ds.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0042_20260601_141539_llm_discrete_2additive_deepseek-v4-flash
+
+RUN_SAMPLE_LIMIT active: using 50 rows for this run.
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv
+Rows: 50
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        25
+           1        25
+
+Split: train=35, valid=7, test=8
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.05, 0.95] confidence=0.900 explanation=包含'震惊'、'忍不住点开'、'曝光'等典型点击诱导用语
+Emotion      probs=[0.0, 1.0] confidence=0.950 explanation=使用'震惊'、'忍不住点开'、'真相曝光'等夸张悬念词汇，典型情绪操控标题党
+Intention    probs=[0.01, 0.99] confidence=0.970 explanation=使用'震惊'、'忍不住点开'及'真相曝光'等典型标题党手法，意图吸引点击
+Lexical      probs=[0.02, 0.98] confidence=0.950 explanation='震惊！'搭配'忍不住点开''真相曝光'，典型标题党模式
+Consistency  probs=[0.05, 0.95] confidence=0.850 explanation=标题使用'震惊'、'忍不住点开'、'真相曝光'等煽动性词汇，典型标题党手法
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+Traceback (most recent call last):
+  File "D:\environment\anaconda3\envs\pytorch\Lib\http\client.py", line 573, in _get_chunk_left
+    chunk_left = self._read_next_chunk_size()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\environment\anaconda3\envs\pytorch\Lib\http\client.py", line 540, in _read_next_chunk_size
+    return int(line, 16)
+           ^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 16: b''
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\environment\anaconda3\envs\pytorch\Lib\http\client.py", line 590, in _read_chunked
+    chunk_left = self._get_chunk_left()
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\environment\anaconda3\envs\pytorch\Lib\http\client.py", line 575, in _get_chunk_left
+    raise IncompleteRead(b'')
+http.client.IncompleteRead: IncompleteRead(0 bytes read)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\src\llm_client.py", line 115, in _post_chat_completions
+    body = response.read().decode("utf-8", errors="replace")
+           ^^^^^^^^^^^^^^^
+  File "D:\environment\anaconda3\envs\pytorch\Lib\http\client.py", line 467, in read
+    return self._read_chunked(amt)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\environment\anaconda3\envs\pytorch\Lib\http\client.py", line 605, in _read_chunked
+    raise IncompleteRead(b''.join(value)) from exc
+http.client.IncompleteRead: IncompleteRead(0 bytes read)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\src\llm_client.py", line 94, in complete
+    return self._post_chat_completions(self.chat_completions_url, payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\src\llm_client.py", line 124, in _post_chat_completions
+    raise LLMClientError(f"Unexpected error calling {url}: {exc}") from exc
+src.llm_client.LLMClientError: Unexpected error calling https://api.deepseek.com/v1/chat/completions: IncompleteRead(0 bytes read)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\main.py", line 453, in <module>
+    main()
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\main.py", line 345, in main
+    model.warm_agent_cache(df)
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\src\model.py", line 52, in warm_agent_cache
+    run_agents(self.agents, texts, task_descriptions, records=records)
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\src\agents.py", line 595, in run_agents
+    p, c, e = agent.predict_batch(texts, task_descriptions, records=records)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\src\agents.py", line 493, in predict_batch
+    outputs = [
+              ^
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\src\agents.py", line 494, in <listcomp>
+    self._predict_one_prepared(
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\src\agents.py", line 446, in _predict_one_prepared
+    raw_text = self.llm_client.complete(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\src\llm_client.py", line 99, in complete
+    time.sleep(min(2.0 * (attempt + 1), 8.0))
+KeyboardInterrupt

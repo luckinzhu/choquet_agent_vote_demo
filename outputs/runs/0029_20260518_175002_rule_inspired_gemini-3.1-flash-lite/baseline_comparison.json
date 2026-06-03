@@ -1,0 +1,32 @@
+{
+  "rows": [
+    {
+      "method": "Majority Voting",
+      "accuracy": 0.5714285714285714,
+      "precision": 0.55,
+      "recall": 0.5416666666666666,
+      "macro_f1": 0.5333333333333333
+    },
+    {
+      "method": "Average Probability Voting",
+      "accuracy": 0.7142857142857143,
+      "precision": 0.7083333333333333,
+      "recall": 0.7083333333333333,
+      "macro_f1": 0.7083333333333333
+    },
+    {
+      "method": "Dynamic Single-Agent Weighting",
+      "accuracy": 0.7142857142857143,
+      "precision": 0.7083333333333333,
+      "recall": 0.7083333333333333,
+      "macro_f1": 0.7083333333333333
+    },
+    {
+      "method": "Choquet-inspired Pairwise Voting",
+      "accuracy": 0.7142857142857143,
+      "precision": 0.7083333333333333,
+      "recall": 0.7083333333333333,
+      "macro_f1": 0.7083333333333333
+    }
+  ]
+}

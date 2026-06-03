@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import os
 import re
@@ -9,6 +9,24 @@ from typing import Iterable
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(line_buffering=True)
+
+
+PROJECT_ROOT = Path(__file__).resolve().parent
+
+
+def load_project_env() -> None:
+    env_path = PROJECT_ROOT / ".env"
+    if not env_path.exists():
+        return
+    for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+        if key and key not in os.environ:
+            os.environ[key] = value
 
 
 # ===================== Editable CONFIG =====================
@@ -24,28 +42,36 @@ CONFIG = {
     # "llm" = LLM only, fail fast on errors/cache miss
     "AGENT_BACKEND": "llm",
 
+    # Few-shot configuration:
+    # "true" = enable few-shot examples for LLM agents
+    # "false" = disable few-shot examples
+    "FEWSHOT_ENABLED": "true",
+
     # Fast test settings:
     # "8" means use 8 samples; "" or None means full dataset.
-    "RUN_SAMPLE_LIMIT": "8",
+    "RUN_SAMPLE_LIMIT": "",
 
     # "2" means quick test; "" or None uses config.py defaults.
-    "EPOCHS": "2",
-    "BATCH_SIZE": "2",
+    "EPOCHS": "50",
+    "BATCH_SIZE": "16",
 
     # LLM gateway settings.
     "LLM_PROVIDER": "openai_compatible",
-    "LLM_MODEL": "gemini-3.1-flash-lite",
-    "LLM_API_KEY_ENV": "XIAOHU_API_KEY",
+    # "LLM_MODEL": "gemini-3.1-flash-lite",
+    "LLM_MODEL": "deepseek-v4-flash",
+    "LLM_API_KEY_ENV": "LLM_API_KEY",
 
-    # Optional local private key. Leave as "" or None to read the system env var.
-    # Do not print this value. Do not commit auto_run.py with a real key filled in.
-    "LLM_API_KEY_VALUE": "sk-LebPbwmUbesvY2o115OPhG0C3phFZEcM4rSWxuo8n8Lx8Bn9",
+    # Optional local private key. Prefer PROJECT_ROOT/.env instead of this field.
+    # Leave as "" or None to read LLM_API_KEY from .env or the system environment.
+    "LLM_API_KEY_VALUE": "",
 
-    "LLM_BASE_URL": "https://xiaohumini.site/v1",
+    # "LLM_BASE_URL": "https://xiaohumini.site/v1",
+    "LLM_BASE_URL": "https://api.deepseek.com/v1",
 
     # Optional workflow switches:
     "RUN_TEST_GATEWAY": False,
-    "RUN_PRECOMPUTE_LLM": False,
+    "RUN_PRECOMPUTE_LLM": True,
+    "RUN_TEST_FEWSHOT": False,  # Test few-shot functionality
     "RUN_MAIN": True,
 
     # Stop remaining steps if one subprocess fails.
@@ -61,7 +87,7 @@ CONFIG = {
 #    CHOQUET_MODE="inspired", AGENT_BACKEND="rule", RUN_SAMPLE_LIMIT="", EPOCHS="", BATCH_SIZE=""
 # 4) LLM hybrid small-sample validation:
 #    CHOQUET_MODE="inspired", AGENT_BACKEND="hybrid", RUN_SAMPLE_LIMIT="8", EPOCHS="2", BATCH_SIZE="2",
-#    LLM_API_KEY_ENV="XIAOHU_API_KEY", LLM_API_KEY_VALUE="" or your local key,
+#    LLM_API_KEY_ENV="LLM_API_KEY", LLM_API_KEY_VALUE="" or your local key,
 #    RUN_TEST_GATEWAY=True, RUN_PRECOMPUTE_LLM=True, RUN_MAIN=True
 # ===========================================================
 
@@ -75,6 +101,7 @@ ENV_KEYS = [
     "LLM_MODEL",
     "LLM_API_KEY_ENV",
     "LLM_BASE_URL",
+    "FEWSHOT_ENABLED",
 ]
 
 
@@ -96,12 +123,12 @@ def apply_config() -> tuple[bool, str]:
     for key in ENV_KEYS:
         set_or_clear_env(key, CONFIG.get(key))
 
-    api_key_env = str(CONFIG.get("LLM_API_KEY_ENV") or "XIAOHU_API_KEY").strip()
+    api_key_env = str(CONFIG.get("LLM_API_KEY_ENV") or "LLM_API_KEY").strip()
     api_key_value = CONFIG.get("LLM_API_KEY_VALUE")
 
     if looks_like_inline_api_key(api_key_env) and not api_key_value:
         print("ERROR: LLM_API_KEY_ENV appears to contain a real API key.")
-        print('Set LLM_API_KEY_ENV to an env var name like "XIAOHU_API_KEY" and put the key in LLM_API_KEY_VALUE or the system environment.')
+        print('Set LLM_API_KEY_ENV to an env var name like "LLM_API_KEY" and put the key in PROJECT_ROOT/.env or the system environment.')
         return False, "invalid_key_env"
 
     if api_key_value is not None and str(api_key_value).strip() != "":
@@ -113,12 +140,14 @@ def apply_config() -> tuple[bool, str]:
 
 
 def api_key_status() -> tuple[bool, str]:
-    api_key_env = os.environ.get("LLM_API_KEY_ENV", "XIAOHU_API_KEY")
+    api_key_env = os.environ.get("LLM_API_KEY_ENV", "LLM_API_KEY")
     config_value = CONFIG.get("LLM_API_KEY_VALUE")
     if config_value is not None and str(config_value).strip() != "":
         return True, "CONFIG"
     if os.environ.get(api_key_env):
         return True, "environment"
+    if os.environ.get("XIAOHU_API_KEY"):
+        return True, "legacy XIAOHU_API_KEY"
     return False, "missing"
 
 
@@ -129,6 +158,7 @@ def print_config(project_root: Path) -> None:
     for key in [
         "AGENT_BACKEND",
         "CHOQUET_MODE",
+        "FEWSHOT_ENABLED",
         "RUN_SAMPLE_LIMIT",
         "EPOCHS",
         "BATCH_SIZE",
@@ -153,8 +183,9 @@ def run_step(title: str, args: Iterable[str], project_root: Path) -> int:
 
 
 def main() -> int:
-    project_root = Path(__file__).resolve().parent
+    project_root = PROJECT_ROOT
     os.chdir(project_root)
+    load_project_env()
     config_ok, _ = apply_config()
     if not config_ok:
         return 2
@@ -163,6 +194,8 @@ def main() -> int:
     steps: list[tuple[str, list[str]]] = []
     if CONFIG.get("RUN_TEST_GATEWAY"):
         steps.append(("Gateway smoke test", ["scripts/test_llm_gateway.py"]))
+    if CONFIG.get("RUN_TEST_FEWSHOT"):
+        steps.append(("Test few-shot functionality", ["scripts/test_fewshot.py"]))
     if CONFIG.get("RUN_PRECOMPUTE_LLM"):
         steps.append(("Precompute LLM outputs", ["scripts/precompute_llm_outputs.py"]))
     if CONFIG.get("RUN_MAIN"):
@@ -191,5 +224,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
-

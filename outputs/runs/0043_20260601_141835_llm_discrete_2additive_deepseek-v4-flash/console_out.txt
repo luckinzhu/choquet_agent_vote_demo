@@ -1,0 +1,194 @@
+=== Runtime Configuration ===
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: deepseek-v4-flash
+LLM_MODEL_CANDIDATES: deepseek-v4-pro
+LLM_BASE_URL: https://api.deepseek.com/v1
+LLM_API_KEY_ENV: XIAOHU_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_ds.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0043_20260601_141835_llm_discrete_2additive_deepseek-v4-flash
+
+RUN_SAMPLE_LIMIT active: using 50 rows for this run.
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv
+Rows: 50
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        25
+           1        25
+
+Split: train=35, valid=7, test=8
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.05, 0.95] confidence=0.900 explanation=包含'震惊'、'忍不住点开'、'曝光'等典型点击诱导用语
+Emotion      probs=[0.0, 1.0] confidence=0.950 explanation=使用'震惊'、'忍不住点开'、'真相曝光'等夸张悬念词汇，典型情绪操控标题党
+Intention    probs=[0.01, 0.99] confidence=0.970 explanation=使用'震惊'、'忍不住点开'及'真相曝光'等典型标题党手法，意图吸引点击
+Lexical      probs=[0.02, 0.98] confidence=0.950 explanation='震惊！'搭配'忍不住点开''真相曝光'，典型标题党模式
+Consistency  probs=[0.05, 0.95] confidence=0.850 explanation=标题使用'震惊'、'忍不住点开'、'真相曝光'等煽动性词汇，典型标题党手法
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+LLM cache saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_ds.json
+
+=== Training Choquet Layer (discrete_2additive) ===
+Epoch 01 | train_loss=0.8889 | valid_loss=0.8680 | valid_acc=0.7143 | valid_macro_f1=0.6500
+Epoch 05 | train_loss=0.8446 | valid_loss=0.8677 | valid_acc=0.7143 | valid_macro_f1=0.6500
+Epoch 10 | train_loss=1.0356 | valid_loss=0.8618 | valid_acc=0.7143 | valid_macro_f1=0.6500
+Epoch 15 | train_loss=0.8264 | valid_loss=0.8643 | valid_acc=0.7143 | valid_macro_f1=0.6500
+Epoch 20 | train_loss=0.7643 | valid_loss=0.8431 | valid_acc=0.7143 | valid_macro_f1=0.6500
+
+Best validation: loss=0.8680, acc=0.7143, macro_f1=0.6500
+Saved best model to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0043_20260601_141835_llm_discrete_2additive_deepseek-v4-flash\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=0.7010, acc=0.7500, precision=0.7500, recall=0.7500, macro_f1=0.7500
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.7500 | 0.7500 | 0.7500 | 0.7500 |
+| Average Probability Voting | 0.7500 | 0.7500 | 0.7500 | 0.7500 |
+| Dynamic Single-Agent Weighting | 0.7500 | 0.7500 | 0.7500 | 0.7500 |
+| Choquet-inspired Pairwise Voting | 0.7500 | 0.7500 | 0.7500 | 0.7500 |
+Test predictions saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0043_20260601_141835_llm_discrete_2additive_deepseek-v4-flash\test_predictions.csv
+
+=== Task-level Average Single Weights ===
+
+Task: clickbait
+  Semantic    : 0.2053
+  Emotion     : 0.2006
+  Intention   : 0.1943
+  Lexical     : 0.1976
+  Consistency : 0.2022
+
+=== Task-level Top Pairwise Weights ===
+
+Task: clickbait
+  Semantic + Consistency      : 0.0039
+  Semantic + Emotion          : 0.0022
+  Semantic + Lexical          : 0.0012
+  Semantic + Intention        : 0.0008
+  Emotion + Consistency       : 0.0002
+
+=== Sample-level Decision Traces ===
+
+--- Sample ---
+Task: clickbait
+Text: 金正恩和普京的晚宴取消了，或许跟这场火有关 收录于话题##朝鲜撰稿 | 记者 东方网·纵相新闻朝鲜最高领导人金正恩于当地时间昨天（4月24日）下午6时乘坐专列抵达符拉迪沃斯托克后，在俄方安保车辆的护送下，入住位于俄罗斯岛的远东联邦大学宿舍楼。 但是，据韩联社报道，与预想不同的是，昨天晚上，金正恩并未与俄罗斯总统普京共进晚餐。据了解，远东联邦大学内有共有5栋招待外国贵宾的高级宿舍楼。每栋都有几间总统套房，基础设施先进完善，丝毫不输五星酒店。 东方网·纵相新闻前日实地探访时发现，每一栋高级宿舍楼都有近百间房间。曾进出过这里的学生表示，每一栋都至少可以住200人。1号宿舍楼侧面现场韩媒介绍称，...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.0596 0.9404]
+Agent predictions:
+  Semantic     pred=1 conf=0.850 prob=[0.05 0.95] | 标题使用'取消了'和'或许跟这场火有关'制造悬念，诱导点击以了解不确定原因
+  Emotion      pred=1 conf=0.850 prob=[0.1 0.9] | 利用悬念和未明确指代的事件制造好奇心缺口，诱导点击，属典型标题党
+  Intention    pred=1 conf=0.900 prob=[0.05 0.95] | 使用'或许'制造好奇心缺口，提及名人事件但未说明原因，诱导点击
+  Lexical      pred=1 conf=0.850 prob=[0.1 0.9] | '或许'制造悬念，暗示未明关联，典型好奇心缺口标题党
+  Consistency  pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Network error calling https://api.deepseek.com/v1/chat/completions: [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1016)
+Single weights:
+  Semantic    : 0.2053
+  Emotion     : 0.2006
+  Intention   : 0.1943
+  Lexical     : 0.1976
+  Consistency : 0.2022
+Top pairwise weights:
+  Semantic + Consistency      : 0.0039
+  Semantic + Emotion          : 0.0022
+  Semantic + Lexical          : 0.0012
+
+--- Sample ---
+Task: clickbait
+Text: 底薪上万！他们招到大批“优秀”员工，几个月后却傻眼了… 公司发布招聘信息，来的都是带着优秀履历的应聘者，可入职后这些人却消极怠工拿了底薪就走，甚至在多个企业同时就职……4月6日，上海警方召开新闻发布会，披露近期侦破的上海首例“套路应聘”诈骗案。此案中，犯罪团伙53名嫌疑人全部落网，有力维护了企业合法权益和地区营商环境。央视财经《天下财经》栏目视频“销冠”新员工3个月没业绩还同时在其他公司任职据警民直通车上海，今年1月，一家网络科技公司负责人向上海市公安局浦东分局报案。去年10月，这家公司为了推广产品，通过网络发布了急招销售的招聘信息，要求应聘者有丰富销售经验。很快，王某、李某等8人前来应...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.0533 0.9467]
+Agent predictions:
+  Semantic     pred=1 conf=0.900 prob=[0.1 0.9] | 标题使用感叹号、反讽引号和悬念省略，具有强烈点击诱导意图。
+  Emotion      pred=1 conf=0.900 prob=[0.05 0.95] | 用'底薪上万'作诱饵，'傻眼了'制造悬念和转折，典型好奇缺口诱导点击
+  Intention    pred=1 conf=0.950 prob=[0.02 0.98] | 夸张承诺'底薪上万'加悬念反转'傻眼了'，强烈诱导点击。
+  Lexical      pred=1 conf=0.920 prob=[0.05 0.95] | 夸张数字‘上万’加感叹号，引号暗示和省略号制造悬念，经典好奇心缺口模式
+  Consistency  pred=0 conf=0.300 prob=[0.5 0.5] | LLM failed, neutral fallback: LLM request failed after retries: Unexpected error calling https://api.deepseek.com/v1/chat/completions: IncompleteRead(0 bytes read)
+Single weights:
+  Semantic    : 0.2053
+  Emotion     : 0.2006
+  Intention   : 0.1943
+  Lexical     : 0.1976
+  Consistency : 0.2022
+Top pairwise weights:
+  Semantic + Consistency      : 0.0039
+  Semantic + Emotion          : 0.0022
+  Semantic + Lexical          : 0.0012
+
+--- Sample ---
+Task: clickbait
+Text: 美国大法官确认听证会启动，巴雷特面临“炮火质询” 撰稿 | 记者 周安娜当地时间12日，美国参议院司法委员将为特朗普提名的最高法院大法官人选巴雷特举行为期4天的确认听证会，这位保守派法官将在参议院介绍自己为何胜任，并接受议员质询。在按照例行程序拜访完参院两党议员后，巴雷特将于12日9时首次面对参院司法委员会的审核。据悉，司法委员会成员和巴雷特将在首日进行开场陈述；周二、周三两天，巴雷特需针对议员们的尖锐问题做出应答；最后一天则是进行程序审定。根据福克斯新闻获得的巴雷特开场陈述文稿，除了感谢总统特朗普的提名以及家人的支持外，巴雷特还会特别感谢自己的导师、已故联邦最高法院大法官安东宁·斯卡利...
+Gold label: 1 | Final prediction: 0 | Final probs: [0.6315 0.3685]
+Agent predictions:
+  Semantic     pred=0 conf=0.900 prob=[0.85 0.15] | 标题使用引号强调'炮火质询'，但整体为正式新闻，无典型标题党手法
+  Emotion      pred=1 conf=0.800 prob=[0.15 0.85] | 使用战争比喻'炮火质询'，夸大冲突感，煽动情绪，典型点击诱导
+  Intention    pred=0 conf=0.900 prob=[0.85 0.15] | 标题描述客观事件，'炮火质询'虽有修辞但无夸张操纵，非点击诱导。
+  Lexical      pred=0 conf=0.800 prob=[0.85 0.15] | 虽有引号强调‘炮火质询’，但整体为事实陈述，无极端修饰或感叹号
+  Consistency  pred=1 conf=0.850 prob=[0.2 0.8] | 标题用'炮火质询'煽动性词语制造冲突感，属 sensational wording
+Single weights:
+  Semantic    : 0.2053
+  Emotion     : 0.2006
+  Intention   : 0.1943
+  Lexical     : 0.1976
+  Consistency : 0.2022
+Top pairwise weights:
+  Semantic + Consistency      : 0.0039
+  Semantic + Emotion          : 0.0022
+  Semantic + Lexical          : 0.0012
+
+--- Sample ---
+Task: clickbait
+Text: 你笑起来真好看，今日的朝鲜女人！ 收录于话题##朝鲜撰稿 | 记者 冯茵伦今年的3月8日“国际妇女节”，在全球疫情防控最严峻的形势下，悄然来临。在朝鲜，今天也是一个重大的节日。（本文所有图片均由朝鲜驻中国大使馆提供）今年，突然爆发的疫情，令朝鲜上下进入高度警戒状态。此前，朝鲜女性们被捕捉到投身于口罩工厂、卫生防疫等一线。为了避免群聚带来的风险，朝鲜今天并未举行相关大规模活动，节日氛围淡了不少。但前往花店买花的市民不少，万寿台创作社和平壤美术大学也推出了纪念”妇女节”110周年的贺卡。事实上，往年，妇女节的节日氛围热烈浓郁，通常会持续几天。各地都会举行不同形式的庆祝活动，为辛劳的女性们送上...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.7749 0.2251]
+Agent predictions:
+  Semantic     pred=0 conf=0.800 prob=[0.85 0.15] | 标题虽有情感化表达，但内容为客观新闻报道，无误导性悬念或虚假诱导
+  Emotion      pred=0 conf=0.700 prob=[0.6 0.4] | 语气正面但略带刻意强调群体，有一定诱导倾向，但未使用强烈情绪词汇
+  Intention    pred=1 conf=0.850 prob=[0.1 0.9] | 利用好奇心缺口，'今日的朝鲜女人'暗示特殊内容，带有情感诱导
+  Lexical      pred=0 conf=0.850 prob=[0.9 0.1] | 正面陈述加感叹号，缺极端聚焦标签或明显悬念，非典型标题党
+  Consistency  pred=0 conf=0.820 prob=[0.85 0.15] | 标题‘你笑起来真好看’与内容描述朝鲜女性节日氛围一致，无明显矛盾或转折
+Single weights:
+  Semantic    : 0.2053
+  Emotion     : 0.2006
+  Intention   : 0.1943
+  Lexical     : 0.1976
+  Consistency : 0.2022
+Top pairwise weights:
+  Semantic + Consistency      : 0.0039
+  Semantic + Emotion          : 0.0022
+  Semantic + Lexical          : 0.0012
+
+--- Sample ---
+Task: clickbait
+Text: 俄罗斯胜利日阅兵：女兵惊艳，“叙利亚之光”抢眼！ 收录于话题##俄罗斯撰稿 | 记者 单珊5月9日10时(北京时间15时)，俄罗斯卫国战争胜利74周年阅兵在莫斯科红场举行。俄罗斯总统普京在阅兵式上发表讲话，呼吁国际社会建立统一的应对安全威胁的机制。讲话以默哀一分钟结束，以致敬在卫国战争中死去的人们。随后，35个徒步阅兵方队以分列式通过红场，方阵由陆军、海军、空军、空降兵、紧急情况部和爱国青年组织等组成，共计1.3万余名军人。武器装备方阵则由“阿玛塔”坦克、“虎式”装甲车、“S—400”防空导弹发射车、“姆斯塔河—S”自行榴弹炮等各式重型武器装备组成，总数超过130辆(台)。当天，由于天气...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.5449 0.4551]
+Agent predictions:
+  Semantic     pred=1 conf=0.850 prob=[0.1 0.9] | 标题使用'惊艳'、'抢眼'等煽动词汇，有吸引点击的意图
+  Emotion      pred=1 conf=0.850 prob=[0.05 0.95] | 使用'惊艳'、'抢眼'等情绪化词汇制造视觉刺激，诱导点击
+  Intention    pred=0 conf=0.900 prob=[0.85 0.15] | 标题使用'惊艳'、'抢眼'等常见吸引词汇，但无编造悬念或操纵意图，属于正常新闻标题。
+  Lexical      pred=0 conf=0.900 prob=[0.85 0.15] | 虽用'惊艳'、'抢眼'等词，但整体为客观新闻标题，无极端修饰或诱导模式
+  Consistency  pred=0 conf=0.900 prob=[0.85 0.15] | 标题与内容一致，描述阅兵细节，没有误导性夸张或矛盾。
+Single weights:
+  Semantic    : 0.2053
+  Emotion     : 0.2006
+  Intention   : 0.1943
+  Lexical     : 0.1976
+  Consistency : 0.2022
+Top pairwise weights:
+  Semantic + Consistency      : 0.0039
+  Semantic + Emotion          : 0.0022
+  Semantic + Lexical          : 0.0012
+
+Readable model summary saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0043_20260601_141835_llm_discrete_2additive_deepseek-v4-flash\model_summary.json
+Latest model copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\best_choquet_model.pt
+Latest summary copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\model_summary.json
+
+=== Capacity Monotonicity Diagnostic ===
+{'checked': 211, 'violations': 0, 'max_violation': 0.0}
+Run metadata saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0043_20260601_141835_llm_discrete_2additive_deepseek-v4-flash\run_result.json
+
+Done. Agents produced fixed outputs; only the selected Choquet aggregation layer was trained.

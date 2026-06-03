@@ -10,6 +10,7 @@
     "gemini-2.0-flash-lite",
     "gemini-2.0-flash"
   ],
+
   "llm_base_url": "https://xiaohumini.site/v1",
   "llm_api_key_env": "XIAOHU_API_KEY",
   "api_key_detected": false,

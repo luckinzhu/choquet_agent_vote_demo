@@ -1,0 +1,23 @@
+[
+  {
+    "example": "标题：这个方法能解决所有问题\n内容：但实际上只适用于特定情况，很多人使用后并没有效果...",
+    "class_0_probability": 0.1,
+    "class_1_probability": 0.9,
+    "confidence": 0.88,
+    "explanation": "标题承诺'解决所有问题'与内容'只适用特定情况'存在明显不一致"
+  },
+  {
+    "example": "标题：市政府公布新政策\n内容：根据官方文件，新政策将从下月开始实施...",
+    "class_0_probability": 0.85,
+    "class_1_probability": 0.15,
+    "confidence": 0.87,
+    "explanation": "标题与内容保持一致，都是关于政策发布的客观信息"
+  },
+  {
+    "example": "标题：专家推荐这个产品\n内容：然而调查发现该产品存在多项质量问题，专家并未推荐...",
+    "class_0_probability": 0.05,
+    "class_1_probability": 0.95,
+    "confidence": 0.93,
+    "explanation": "标题声称'专家推荐'但内容显示'并未推荐'，严重的前后矛盾"
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "example": "点击这里，你必须知道的五个秘密！",
+    "class_0_probability": 0.05,
+    "class_1_probability": 0.95,
+    "confidence": 0.95,
+    "explanation": "直接使用'点击'、'必须知道'等强烈的行动召唤词，明确的点击诱导意图"
+  },
+  {
+    "example": "公司发布新产品功能说明",
+    "class_0_probability": 0.85,
+    "class_1_probability": 0.15,
+    "confidence": 0.88,
+    "explanation": "中性的信息发布，没有诱导性或操纵性语言"
+  },
+  {
+    "example": "医生不想让你知道的减肥秘诀，速看！",
+    "class_0_probability": 0.02,
+    "class_1_probability": 0.98,
+    "confidence": 0.96,
+    "explanation": "结合阴谋论'医生不想让你知道'和紧迫感'速看'，双重操纵手法"
+  }
+]

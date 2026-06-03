@@ -8,6 +8,11 @@ from .choquet_layer import ChoquetInspiredVotingLayer
 from .embeddings import AGENT_DESCRIPTIONS, TfidfRelevanceEstimator
 from .utils import to_tensor
 
+try:
+    from tqdm import tqdm
+except ImportError:  # pragma: no cover - optional progress display
+    tqdm = None
+
 
 class MultiAgentChoquetModel:
     """Thin orchestration wrapper around fixed agents + trainable aggregator.
@@ -49,7 +54,48 @@ class MultiAgentChoquetModel:
         texts = df["text"].tolist()
         task_descriptions = df["task_description"].tolist()
         records = df.to_dict("records")
-        run_agents(self.agents, texts, task_descriptions, records=records)
+        todo = []
+        existing_success = 0
+
+        for agent in self.agents:
+            cache = getattr(agent, "cache", None)
+            model_name = getattr(agent, "model_name", None)
+            input_builder = getattr(agent, "generate_input_text", None)
+            for row_idx, (text, task_description, record) in enumerate(zip(texts, task_descriptions, records)):
+                cache_text = input_builder(text, record) if callable(input_builder) else text
+                if cache is not None and model_name is not None:
+                    cached = cache.get(cache_text, task_description, agent.name, model_name)
+                    if cached is not None:
+                        existing_success += 1
+                        continue
+                todo.append((agent, row_idx, text, cache_text, task_description))
+
+        total_expected = len(texts) * len(self.agents)
+        print(
+            f"LLM cache warm plan: total={total_expected}, "
+            f"existing_success={existing_success}, need_requests={len(todo)}"
+        )
+
+        iterator = todo
+        progress = None
+        if tqdm is not None and todo:
+            progress = tqdm(todo, desc="Precomputing LLM cache", unit="req")
+            iterator = progress
+
+        for agent, row_idx, text, cache_text, task_description in iterator:
+            if progress is not None:
+                progress.set_postfix(row=row_idx, agent=agent.name)
+            try:
+                prepared = getattr(agent, "_predict_one_prepared", None)
+                if callable(prepared):
+                    prepared(cache_text, text, task_description)
+                else:
+                    agent.predict_one(text, task_description)
+            except Exception as exc:
+                print(f"Cache warm failed: row={row_idx} agent={agent.name} error={exc}")
+
+        if progress is None and todo:
+            print(f"LLM cache warm completed requests: {len(todo)}")
 
     def missing_llm_cache_entries(self, df, limit: int = 20):
         """Return a small list of missing LLM cache entries for diagnostics."""

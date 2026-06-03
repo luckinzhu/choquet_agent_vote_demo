@@ -253,6 +253,7 @@ class LLMBaseAgent(AgentInterface):
     system_role = "通用专家"
     perspective = "从自己的专家视角判断文本是否属于目标类别。"
     input_mode = "title_content"
+    fewshot_file = None
 
     def __init__(self, llm_client, cache=None, fallback_agent: Optional[RuleBasedAgent] = None):
         self.llm_client = llm_client
@@ -261,9 +262,29 @@ class LLMBaseAgent(AgentInterface):
         self.cache_only = False
         self.last_error = None
         self.last_used_fallback = False
+        self.fewshot_examples = self._load_fewshot_examples()
     def set_cache_only(self, cache_only: bool = True) -> None:
         self.cache_only = cache_only
 
+    def _load_fewshot_examples(self) -> Optional[List[Dict]]:
+        """Load few-shot examples from JSON file if specified."""
+        if not self.fewshot_file:
+            return None
+        
+        try:
+            from config import FEWSHOT_ENABLED, FEWSHOT_DIR
+            if not FEWSHOT_ENABLED:
+                return None
+            
+            filepath = FEWSHOT_DIR / self.fewshot_file
+            if filepath.exists():
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    examples = json.load(f)
+                return examples
+        except Exception as e:
+            print(f"Warning: Failed to load few-shot examples for {self.name}: {e}")
+        
+        return None
 
     @property
     def model_name(self) -> str:
@@ -281,22 +302,42 @@ class LLMBaseAgent(AgentInterface):
         )
 
     def user_prompt(self, text: str, task_description: str, label_schema: Dict[str, str]) -> str:
-        return (
-            "任务描述：\n"
-            f"{task_description}\n\n"
-            "标签定义：\n"
-            f"class_0 = {label_schema.get('class_0', DEFAULT_LABEL_SCHEMA['class_0'])}\n"
-            f"class_1 = {label_schema.get('class_1', DEFAULT_LABEL_SCHEMA['class_1'])}\n\n"
-            "待判断文本：\n"
-            f"{text}\n\n"
-            "请从你的专家视角输出严格 JSON：\n"
-            "{\n"
-            '  "class_0_probability": 0.0,\n'
-            '  "class_1_probability": 1.0,\n'
-            '  "confidence": 0.0,\n'
-            '  "explanation": "不超过50字的中文解释"\n'
-            "}"
-        )
+        prompt_parts = []
+        
+        prompt_parts.append("任务描述：\n")
+        prompt_parts.append(f"{task_description}\n\n")
+        
+        prompt_parts.append("标签定义：\n")
+        prompt_parts.append(f"class_0 = {label_schema.get('class_0', DEFAULT_LABEL_SCHEMA['class_0'])}\n")
+        prompt_parts.append(f"class_1 = {label_schema.get('class_1', DEFAULT_LABEL_SCHEMA['class_1'])}\n\n")
+        
+        if self.fewshot_examples:
+            prompt_parts.append("以下是一些示例，供你参考判断标准：\n\n")
+            for idx, example in enumerate(self.fewshot_examples, 1):
+                prompt_parts.append(f"示例 {idx}：\n")
+                prompt_parts.append(f"文本：{example['example']}\n")
+                prompt_parts.append(f"输出：\n")
+                prompt_parts.append(json.dumps({
+                    "class_0_probability": example["class_0_probability"],
+                    "class_1_probability": example["class_1_probability"],
+                    "confidence": example["confidence"],
+                    "explanation": example["explanation"]
+                }, ensure_ascii=False, indent=2))
+                prompt_parts.append("\n\n")
+            
+            prompt_parts.append("请按照上述示例的判断标准，对待判断文本进行分析。\n\n")
+        
+        prompt_parts.append("待判断文本：\n")
+        prompt_parts.append(f"{text}\n\n")
+        prompt_parts.append("请从你的专家视角输出严格 JSON：\n")
+        prompt_parts.append("{\n")
+        prompt_parts.append('  "class_0_probability": 0.0,\n')
+        prompt_parts.append('  "class_1_probability": 1.0,\n')
+        prompt_parts.append('  "confidence": 0.0,\n')
+        prompt_parts.append('  "explanation": "不超过50字的中文解释"\n')
+        prompt_parts.append("}")
+        
+        return "".join(prompt_parts)
 
     @staticmethod
     def _clean_source_value(value: object) -> str:
@@ -361,11 +402,7 @@ class LLMBaseAgent(AgentInterface):
 
     @staticmethod
     def neutral_fallback() -> Dict[str, object]:
-        return {
-            "probs": np.array([0.5, 0.5], dtype=np.float32),
-            "confidence": 0.3,
-            "explanation": "LLM parse failed fallback",
-        }
+        raise LLMAgentError("Neutral LLM fallback is disabled because it contaminates training data.")
 
     def _cache_output(
         self,
@@ -376,6 +413,15 @@ class LLMBaseAgent(AgentInterface):
     ) -> None:
         if self.cache is not None:
             self.cache.set(text, task_description, self.name, self.model_name, output, raw_text)
+
+    def _cache_failure(
+        self,
+        text: str,
+        task_description: str,
+        error_message: object,
+    ) -> None:
+        if self.cache is not None:
+            self.cache.set_failed(text, task_description, self.name, self.model_name, error_message)
 
     def _predict_one_prepared(
         self,
@@ -395,10 +441,6 @@ class LLMBaseAgent(AgentInterface):
         if self.cache_only:
             self.last_error = "LLM cache miss during cache-only training. Run scripts/precompute_llm_outputs.py first."
             self.last_used_fallback = True
-            if self.fallback_agent is not None:
-                fallback = self.fallback_agent.predict_one(fallback_text, task_description, label_schema)
-                fallback["explanation"] = f"LLM cache miss, rule fallback: {fallback['explanation']}"
-                return fallback
             raise LLMAgentError(self.last_error)
 
         try:
@@ -414,25 +456,12 @@ class LLMBaseAgent(AgentInterface):
         except Exception as exc:
             self.last_error = str(exc)
             self.last_used_fallback = True
+            self._cache_failure(llm_text, task_description, self.last_error)
             if self.fallback_agent is not None:
                 fallback = self.fallback_agent.predict_one(fallback_text, task_description, label_schema)
                 fallback["explanation"] = f"LLM failed, rule fallback: {fallback['explanation']}"
-                self._cache_output(
-                    llm_text,
-                    task_description,
-                    fallback,
-                    f"FALLBACK_RULE_AFTER_LLM_ERROR: {self.last_error}",
-                )
                 return fallback
-            fallback = self.neutral_fallback()
-            fallback["explanation"] = f"LLM failed, neutral fallback: {self.last_error}"
-            self._cache_output(
-                llm_text,
-                task_description,
-                fallback,
-                f"FALLBACK_NEUTRAL_AFTER_LLM_ERROR: {self.last_error}",
-            )
-            return fallback
+            raise LLMAgentError(self.last_error) from exc
 
     def predict_one(
         self,
@@ -469,6 +498,7 @@ class LLMSemanticAgent(LLMBaseAgent):
     description = SemanticAgent.description
     system_role = "语义上下文专家"
     perspective = "你关注语义上下文、隐含意义、事实指向和文本整体含义。"
+    fewshot_file = "semantic.json"
 
 
 class LLMEmotionAgent(LLMBaseAgent):
@@ -477,6 +507,7 @@ class LLMEmotionAgent(LLMBaseAgent):
     system_role = "情绪态度专家"
     perspective = "你关注情绪、态度、主观色彩、讽刺和隐含感受。"
     input_mode = "title"
+    fewshot_file = "emotion.json"
 
 
 class LLMIntentionAgent(LLMBaseAgent):
@@ -485,6 +516,7 @@ class LLMIntentionAgent(LLMBaseAgent):
     system_role = "点击诱导/操纵意图专家"
     perspective = "你关注诱导点击、操纵意图、夸张承诺、误导性动机和劝服目的。"
     input_mode = "title"
+    fewshot_file = "intention.json"
 
 
 class LLMLexicalAgent(LLMBaseAgent):
@@ -493,6 +525,7 @@ class LLMLexicalAgent(LLMBaseAgent):
     system_role = "词汇表层模式专家"
     perspective = "你关注表层词汇、标点、标题党模式、极端修饰和关键词线索。"
     input_mode = "title"
+    fewshot_file = "lexical.json"
 
 
 class LLMConsistencyAgent(LLMBaseAgent):
@@ -500,6 +533,7 @@ class LLMConsistencyAgent(LLMBaseAgent):
     description = ConsistencyAgent.description
     system_role = "一致性/矛盾/转折专家"
     perspective = "你关注文本内部一致性、矛盾、转折、前后不匹配和叙述落差。"
+    fewshot_file = "consistency.json"
 
 
 class AgentFactory:

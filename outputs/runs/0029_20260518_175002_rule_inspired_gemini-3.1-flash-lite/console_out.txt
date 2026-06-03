@@ -1,0 +1,174 @@
+=== Runtime Configuration ===
+AGENT_BACKEND: rule
+CHOQUET_MODE: inspired
+DEVICE requested/effective: auto / cpu
+CUDA available: False
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: gemini-3.1-flash-lite
+LLM_MODEL_CANDIDATES: gemini-3.1-flash-lite, gemini-3.1-flash, gemini-2.5-flash-lite, gemini-2.0-flash-lite, gemini-2.0-flash
+LLM_BASE_URL: https://xiaohumini.site/v1
+LLM_API_KEY_ENV: XIAOHU_API_KEY
+API key detected: False
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zongxiang.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0029_20260518_175002_rule_inspired_gemini-3.1-flash-lite
+
+RUN_SAMPLE_LIMIT active: using 40 rows for this run.
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv
+Rows: 40
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        20
+           1        20
+
+Split: train=28, valid=5, test=7
+
+=== Training Choquet Layer (inspired) ===
+Epoch 01 | train_loss=0.8153 | valid_loss=0.8517 | valid_acc=0.4000 | valid_macro_f1=0.2857
+
+Best validation: loss=0.8517, acc=0.4000, macro_f1=0.2857
+Saved best model to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0029_20260518_175002_rule_inspired_gemini-3.1-flash-lite\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=0.8054, acc=0.7143, precision=0.7083, recall=0.7083, macro_f1=0.7083
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.5714 | 0.5500 | 0.5417 | 0.5333 |
+| Average Probability Voting | 0.7143 | 0.7083 | 0.7083 | 0.7083 |
+| Dynamic Single-Agent Weighting | 0.7143 | 0.7083 | 0.7083 | 0.7083 |
+| Choquet-inspired Pairwise Voting | 0.7143 | 0.7083 | 0.7083 | 0.7083 |
+
+=== Task-level Average Single Weights ===
+
+Task: clickbait
+  Semantic    : 0.1641
+  Emotion     : 0.1909
+  Intention   : 0.2648
+  Lexical     : 0.2011
+  Consistency : 0.1791
+
+=== Task-level Top Pairwise Weights ===
+
+Task: clickbait
+  Emotion + Lexical           : 0.5826
+  Lexical + Consistency       : 0.5740
+  Emotion + Consistency       : 0.5678
+  Semantic + Lexical          : 0.5592
+  Semantic + Consistency      : 0.5475
+
+=== Sample-level Decision Traces ===
+
+--- Sample ---
+Task: clickbait
+Text: 从1到470000，特朗普的失责致数十万美国家庭悲剧 撰稿 | 记者 谢斯河2020年2月6日，57岁的帕特里夏·多德在家中去世，没有人知道这是新冠病毒所致。她是目前能够确认的美国首例新冠死亡病例。此时的美国正暗流涌动，政府也没预料到这场灾难正悄然酝酿。特朗普甚至在多德去世后的第四天公开表示，“到了四月，天气变暖时，疫情会奇迹般地消失。”（图说：科学的声音被关进权利的牢笼，我们只能遗憾的祭奠这些被新冠夺走生命的逝者。图/CNN）然而奇迹并未发生，在接下来的一年里，超过47万的美国人相继去世，而政府却在混乱、谎言、推卸、扯皮中目睹一个个家庭承受新冠带来的震惊和伤痛。拯救他人却拯救不了自己：...
+Gold label: 0 | Final prediction: 1 | Final probs: [0.2314 0.7686]
+Agent predictions:
+  Semantic     pred=0 conf=0.537 prob=[0.537 0.463] | semantic hidden-meaning=0, neutral-news=0
+  Emotion      pred=1 conf=0.634 prob=[0.366 0.634] | emotional sensationality=1, emotion=1
+  Intention    pred=0 conf=0.525 prob=[0.525 0.475] | click intent=0, manipulation=0, calm-info=0
+  Lexical      pred=1 conf=0.701 prob=[0.299 0.701] | lexical sensational=1, punctuation=0, plain=0
+  Consistency  pred=1 conf=0.750 prob=[0.25 0.75] | mismatch cues=1, contrast=1, stable-news=0
+Single weights:
+  Semantic    : 0.1442
+  Emotion     : 0.2071
+  Intention   : 0.2250
+  Lexical     : 0.2284
+  Consistency : 0.1953
+Top pairwise weights:
+  Lexical + Consistency       : 0.5910
+  Emotion + Lexical           : 0.5830
+  Emotion + Consistency       : 0.5803
+
+--- Sample ---
+Task: clickbait
+Text: 塔利班大赦天下，拜登：天公不作美 撰稿 | 记者 周安娜据法新社最新报道，阿富汗塔利班8月17日宣布大赦所有政府官员，并敦促其返回工作岗位。此外，塔利班还敦促妇女加入政府组建。塔利班正努力以最快的速度让阿富汗恢复正常运转。拜登则在公开讲话中表示，美国是正确的，可惜掌声未至，嘘声一片。当地时间16日下午，美国总统拜登从戴维营返回华盛顿，近一周来首次就阿富汗局势发表全国电视公开讲话。然而，这番讲话除了因不断为自己找理由开脱而受到讽刺外，还遭到了前总统小布什的助理国务卿的批判，他指责拜登模糊焦点，转移注意力，完全不知问题所在。列清单为自己开脱拜登在讲话中承认，阿富汗政府的溃败和塔利班重新掌权的...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.4922 0.5078]
+Agent predictions:
+  Semantic     pred=0 conf=0.721 prob=[0.721 0.279] | semantic hidden-meaning=0, neutral-news=1
+  Emotion      pred=0 conf=0.550 prob=[0.55 0.45] | emotional sensationality=0, emotion=0
+  Intention    pred=0 conf=0.525 prob=[0.525 0.475] | click intent=0, manipulation=0, calm-info=0
+  Lexical      pred=1 conf=0.550 prob=[0.45 0.55] | lexical sensational=0, punctuation=2, plain=0
+  Consistency  pred=1 conf=0.750 prob=[0.25 0.75] | mismatch cues=1, contrast=1, stable-news=0
+Single weights:
+  Semantic    : 0.1991
+  Emotion     : 0.1558
+  Intention   : 0.3243
+  Lexical     : 0.1674
+  Consistency : 0.1535
+Top pairwise weights:
+  Semantic + Intention        : 0.5858
+  Emotion + Lexical           : 0.5802
+  Lexical + Consistency       : 0.5778
+
+--- Sample ---
+Task: clickbait
+Text: 宛若大片！被监控拍到10次，“脱北者”依然轻松返回朝鲜？ 收录于话题##朝鲜撰稿 | 记者 冯茵伦据韩媒报道，当地时间7月31日，针对'江华岛越北事件'，韩国联合参谋本部发布调查结果，承认军方掌握脱北者动向，但未能正确识别。目前已追究军方责任，并提出严重警告。据联合参谋本部当天表示，现年25岁的脱北者金某于18日凌晨2时至5时之间，趁着涨潮时间，通过仁川市江华邑燕尾亭附近的排水管道北上入朝，全程以藻类等浮游物遮掩。江华岛位于朝鲜半岛西侧的汉江入海口位置，是韩国的第四大岛屿，附近水流相对比较缓慢。这里与开城之间只有一条汉江之隔，距离仅约1.3至2.5公里，一直以来都是'脱北热门路线'之一。...
+Gold label: 1 | Final prediction: 0 | Final probs: [0.8292 0.1708]
+Agent predictions:
+  Semantic     pred=0 conf=0.721 prob=[0.721 0.279] | semantic hidden-meaning=0, neutral-news=1
+  Emotion      pred=0 conf=0.550 prob=[0.55 0.45] | emotional sensationality=0, emotion=0
+  Intention    pred=0 conf=0.870 prob=[0.87 0.13] | click intent=0, manipulation=0, calm-info=2
+  Lexical      pred=0 conf=0.657 prob=[0.657 0.343] | lexical sensational=0, punctuation=2, plain=1
+  Consistency  pred=0 conf=0.550 prob=[0.55 0.45] | mismatch cues=0, contrast=0, stable-news=0
+Single weights:
+  Semantic    : 0.1534
+  Emotion     : 0.1976
+  Intention   : 0.2475
+  Lexical     : 0.2231
+  Consistency : 0.1782
+Top pairwise weights:
+  Emotion + Consistency       : 0.5902
+  Lexical + Consistency       : 0.5860
+  Emotion + Lexical           : 0.5796
+
+--- Sample ---
+Task: clickbait
+Text: “取消节假日高速免费”的提案上热搜，委员点赞网友：你们的建议更精彩！ 撰稿 | 记者 卞英豪“丁委员，你的建议上热搜啦！”昨日，一则关于“取消节假日高速免费”的委员提案登上热搜，引发全网热议。得知消息后，提案的作者，在沪全国政协委员丁佐宏告诉记者，很荣幸能得到网友的广泛关注。同时，通过仔细浏览网友们留言，丁佐宏委员也表示，一些网友的建议很有针对性，也很接地气，值得各方研究和探讨。（图说：高速节假日免费通行。资料图）这份“热搜提案”讲了什么？全国政协十三届四次会议期间，丁佐宏委员向大会提交了一份题为《关于取消重大节假日高速公路免费通行政策的提案》。值得一提的是，热搜中提到的“取消节假日高速...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.6408 0.3592]
+Agent predictions:
+  Semantic     pred=0 conf=0.721 prob=[0.721 0.279] | semantic hidden-meaning=0, neutral-news=1
+  Emotion      pred=0 conf=0.550 prob=[0.55 0.45] | emotional sensationality=0, emotion=0
+  Intention    pred=0 conf=0.731 prob=[0.731 0.269] | click intent=0, manipulation=0, calm-info=1
+  Lexical      pred=0 conf=0.611 prob=[0.611 0.389] | lexical sensational=0, punctuation=3, plain=1
+  Consistency  pred=1 conf=0.750 prob=[0.25 0.75] | mismatch cues=1, contrast=1, stable-news=0
+Single weights:
+  Semantic    : 0.1531
+  Emotion     : 0.1972
+  Intention   : 0.2374
+  Lexical     : 0.2179
+  Consistency : 0.1943
+Top pairwise weights:
+  Emotion + Lexical           : 0.5835
+  Emotion + Consistency       : 0.5644
+  Lexical + Consistency       : 0.5637
+
+--- Sample ---
+Task: clickbait
+Text: 亚洲杯出局都没说对不起的韩国足协，居然为了这部电视剧道歉了！ 撰稿丨记者 单珊 冯茵伦有什么事情能让韩国足协出面道歉？是未能挺进亚洲杯四强，输的还是卡塔尔？不不不，是韩国队耽误了韩剧迷们看剧。在周五晚（1月25日）刚刚结束的比赛中，韩国队以0:1不敌卡塔尔，为亚洲杯之旅画上句号。但相较于比赛，韩国吃瓜群众更关心的，明显是被比赛耽误的韩剧《天空之城》大结局。1韩国足协：身为八强，我们很抱歉韩国队的亚洲杯之旅，是从进八强开始被疯狂diss的。在1/8决赛前，甚至有韩国剧迷发文祈祷，希望韩国队尽快出局。因为接下来的1/4决赛，时间刚好和韩剧《天空之城》播出相冲突。剧迷无国界，这股热度甚至延伸到...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.2135 0.7865]
+Agent predictions:
+  Semantic     pred=1 conf=0.690 prob=[0.31 0.69] | semantic hidden-meaning=1, neutral-news=0
+  Emotion      pred=0 conf=0.550 prob=[0.55 0.45] | emotional sensationality=0, emotion=0
+  Intention    pred=0 conf=0.525 prob=[0.525 0.475] | click intent=0, manipulation=0, calm-info=0
+  Lexical      pred=1 conf=0.599 prob=[0.401 0.599] | lexical sensational=0, punctuation=3, plain=0
+  Consistency  pred=1 conf=0.959 prob=[0.041 0.959] | mismatch cues=3, contrast=2, stable-news=0
+Single weights:
+  Semantic    : 0.2259
+  Emotion     : 0.2143
+  Intention   : 0.2201
+  Lexical     : 0.1799
+  Consistency : 0.1598
+Top pairwise weights:
+  Emotion + Lexical           : 0.5845
+  Semantic + Lexical          : 0.5738
+  Lexical + Consistency       : 0.5643
+
+Readable model summary saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0029_20260518_175002_rule_inspired_gemini-3.1-flash-lite\model_summary.json
+Latest model copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\best_choquet_model.pt
+Latest summary copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\model_summary.json
+Run metadata saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0029_20260518_175002_rule_inspired_gemini-3.1-flash-lite\run_result.json
+
+Done. Agents produced fixed outputs; only the selected Choquet aggregation layer was trained.

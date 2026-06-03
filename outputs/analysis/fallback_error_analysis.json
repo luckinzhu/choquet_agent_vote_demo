@@ -1,0 +1,86 @@
+{
+  "total_predictions": 319,
+  "total_correct": 175,
+  "total_errors": 144,
+  "error_type_distribution": {
+    "false_negative": 133,
+    "false_positive": 11
+  },
+  "strict_neutral_fallback_errors": 1,
+  "strict_neutral_fallback_percentage": 0.6944444444444444,
+  "wider_neutral_fallback_errors": 2,
+  "wider_neutral_fallback_percentage": 1.3888888888888888,
+  "explicit_fallback_in_cache": 9609,
+  "fallback_details": [
+    {
+      "key": "4fdf387983bfd582cb5a7c27db671cdbe271ba1e07d71d16bc7173044f449f2a",
+      "text": "国际特稿 | 各国领导人怎么过生日？\n撰稿 | 记者 冯茵伦8日凌晨，朝鲜最高领导人金正恩在驶向北京的绿色火车专列上，迎来了自己35岁生日。当天上午，金正恩携夫人李雪主和朝鲜众高级官员抵达北京，开展国",
+      "agent_name": "Semantic",
+      "model_name": "gemini-3.1-flash-lite",
+      "raw_text_preview": "FALLBACK_NEUTRAL_AFTER_LLM_ERROR: LLM request failed after retries: HTTP 500 from https://xiaohumini.site/v1/chat/completions: {\"error\":{\"message\":\"sensitive words detected (request id: 20260518180237"
+    },
+    {
+      "key": "2dbb80582c313a17f32b574ac996e149c6d5e64115d1262b17aba7d1ba19624a",
+      "text": "国际特稿 | 各国领导人怎么过生日？\n撰稿 | 记者 冯茵伦8日凌晨，朝鲜最高领导人金正恩在驶向北京的绿色火车专列上，迎来了自己35岁生日。当天上午，金正恩携夫人李雪主和朝鲜众高级官员抵达北京，开展国",
+      "agent_name": "Emotion",
+      "model_name": "gemini-3.1-flash-lite",
+      "raw_text_preview": "FALLBACK_NEUTRAL_AFTER_LLM_ERROR: LLM request failed after retries: HTTP 500 from https://xiaohumini.site/v1/chat/completions: {\"error\":{\"message\":\"sensitive words detected (request id: 20260518180251"
+    },
+    {
+      "key": "91ede7cbf6eb8129871fa115c280390357def64669a148be36d3ed024aa6cb3f",
+      "text": "国际特稿 | 各国领导人怎么过生日？\n撰稿 | 记者 冯茵伦8日凌晨，朝鲜最高领导人金正恩在驶向北京的绿色火车专列上，迎来了自己35岁生日。当天上午，金正恩携夫人李雪主和朝鲜众高级官员抵达北京，开展国",
+      "agent_name": "Intention",
+      "model_name": "gemini-3.1-flash-lite",
+      "raw_text_preview": "FALLBACK_NEUTRAL_AFTER_LLM_ERROR: LLM request failed after retries: HTTP 500 from https://xiaohumini.site/v1/chat/completions: {\"error\":{\"message\":\"sensitive words detected (request id: 20260518180306"
+    },
+    {
+      "key": "4ad67155a538c811aae7f6db05d9fb55e71a4b0afaf07e97242651d311bcac80",
+      "text": "国际特稿 | 各国领导人怎么过生日？\n撰稿 | 记者 冯茵伦8日凌晨，朝鲜最高领导人金正恩在驶向北京的绿色火车专列上，迎来了自己35岁生日。当天上午，金正恩携夫人李雪主和朝鲜众高级官员抵达北京，开展国",
+      "agent_name": "Lexical",
+      "model_name": "gemini-3.1-flash-lite",
+      "raw_text_preview": "FALLBACK_NEUTRAL_AFTER_LLM_ERROR: LLM request failed after retries: HTTP 500 from https://xiaohumini.site/v1/chat/completions: {\"error\":{\"message\":\"sensitive words detected (request id: 20260518180321"
+    },
+    {
+      "key": "e1a34644689a0548029c882118ff55d839567dad7eb3cb3d4dc9058b5c826ecb",
+      "text": "国际特稿 | 各国领导人怎么过生日？\n撰稿 | 记者 冯茵伦8日凌晨，朝鲜最高领导人金正恩在驶向北京的绿色火车专列上，迎来了自己35岁生日。当天上午，金正恩携夫人李雪主和朝鲜众高级官员抵达北京，开展国",
+      "agent_name": "Consistency",
+      "model_name": "gemini-3.1-flash-lite",
+      "raw_text_preview": "FALLBACK_NEUTRAL_AFTER_LLM_ERROR: LLM request failed after retries: HTTP 500 from https://xiaohumini.site/v1/chat/completions: {\"error\":{\"message\":\"sensitive words detected (request id: 20260518180336"
+    },
+    {
+      "key": "cf4a20e2a5f7dd81ed3c532891be1e1396f8c9783ca68cbf240536412dd4a2fc",
+      "text": "进博外媒荟 | 马克龙为中国进博会站台，法媒：他和特朗普很不一样！\n撰稿 | 东方网·纵相新闻第二届中国国际进口博览会（CIIE）11月5日拉开帷幕，今天上午，国家主席习近平出席开幕式并发表主旨演讲。",
+      "agent_name": "Semantic",
+      "model_name": "gemini-3.1-flash-lite",
+      "raw_text_preview": "FALLBACK_NEUTRAL_AFTER_LLM_ERROR: LLM request failed after retries: HTTP 500 from https://xiaohumini.site/v1/chat/completions: {\"error\":{\"message\":\"sensitive words detected (request id: 20260519203237"
+    },
+    {
+      "key": "1671b96fd50c277e1631baa1fcd65a2a6d0116cefc64a807a30503bcaf261248",
+      "text": "中国更开放！世界期待第二届中国国际进口博览会\n撰稿 | 东方智库首席研究员 周锡生第二届中国国际进口博览会（下称“进博会”）即将在上海开幕，各项准备工作进入最后冲刺，一系列好消息不断传来，参会外国政要",
+      "agent_name": "Semantic",
+      "model_name": "gemini-3.1-flash-lite",
+      "raw_text_preview": "FALLBACK_NEUTRAL_AFTER_LLM_ERROR: LLM request failed after retries: HTTP 500 from https://xiaohumini.site/v1/chat/completions: {\"error\":{\"message\":\"sensitive words detected (request id: 20260519203538"
+    },
+    {
+      "key": "1d0758245b4961e4d37621d0789b67692a6bc7930c1725a2cce190ed390c3a68",
+      "text": "起中文名，说中国话，写中国字……外国驻华大使们这样亲近中国\n撰稿 |  实习生 孔宁婧 记者 高兴 盛琬婷罗班松、方澜意、王纯万、潘迪、马磊、高洋、吴若兰、谢胜文、潘绮瑞、牛望道……一些看似“平平无奇",
+      "agent_name": "Semantic",
+      "model_name": "gemini-3.1-flash-lite",
+      "raw_text_preview": "FALLBACK_NEUTRAL_AFTER_LLM_ERROR: LLM request failed after retries: HTTP 500 from https://xiaohumini.site/v1/chat/completions: {\"error\":{\"message\":\"sensitive words detected (request id: 20260519203558"
+    },
+    {
+      "key": "f28f516a2415446afb7e08ef2040eb5ff90cbcc67b30c5dab7e23717ef6ceec6",
+      "text": "世界聚光灯下的中国阅兵场！这波来自全球的夸赞我们收了！\n东方网·纵相新闻 出品10月1日上午，庆祝中华人民共和国成立70周年大会在北京天安门广场隆重举行。1.5万名官兵、15个徒步方队、32个装备方队",
+      "agent_name": "Semantic",
+      "model_name": "gemini-3.1-flash-lite",
+      "raw_text_preview": "FALLBACK_NEUTRAL_AFTER_LLM_ERROR: LLM request failed after retries: HTTP 500 from https://xiaohumini.site/v1/chat/completions: {\"error\":{\"message\":\"sensitive words detected (request id: 20260519203740"
+    },
+    {
+      "key": "4356828c0c05165d5237e2a253a79d4c06f8879993df16b791a7c54acac933fb",
+      "text": "生亦何欢，“伊斯兰国”废墟里的童子军何去何从\n撰稿 | 记者 林怡龄“我想问，”一个来自南美洲国家苏里南的男孩在牢房里说，“我们接下来会怎样？会出来吗？”男孩被囚禁的监狱里，牢犯们正像地毯一般横竖“铺",
+      "agent_name": "Semantic",
+      "model_name": "gemini-3.1-flash-lite",
+      "raw_text_preview": "FALLBACK_NEUTRAL_AFTER_LLM_ERROR: LLM request failed after retries: Unexpected error calling https://xiaohumini.site/v1/chat/completions: Remote end closed connection without response"
+    }
+  ]
+}

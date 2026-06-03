@@ -1,0 +1,7 @@
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.5714 | 0.5500 | 0.5417 | 0.5333 |
+| Average Probability Voting | 0.7143 | 0.7083 | 0.7083 | 0.7083 |
+| Dynamic Single-Agent Weighting | 0.7143 | 0.7083 | 0.7083 | 0.7083 |
+| Choquet-inspired Pairwise Voting | 0.7143 | 0.7083 | 0.7083 | 0.7083 |

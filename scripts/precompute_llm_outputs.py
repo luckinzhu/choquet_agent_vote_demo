@@ -17,6 +17,7 @@ from config import (  # noqa: E402
     LLM_PROVIDER,
     RANDOM_SEED,
     RUN_SAMPLE_LIMIT,
+    has_llm_api_key,
 )
 from src.dataset import load_dataset  # noqa: E402
 from src.model import MultiAgentChoquetModel  # noqa: E402
@@ -26,8 +27,8 @@ from src.utils import set_seed  # noqa: E402
 def main() -> int:
     set_seed(RANDOM_SEED)
     backend = AGENT_BACKEND if AGENT_BACKEND in {"llm", "hybrid"} else "hybrid"
-    if LLM_PROVIDER != "local" and not os.getenv(LLM_API_KEY_ENV):
-        print(f"Missing API key env var {LLM_API_KEY_ENV}. Set it before precomputing LLM outputs.")
+    if LLM_PROVIDER != "local" and not has_llm_api_key():
+        print(f"Missing API key. Set LLM_API_KEY in .env or environment before precomputing LLM outputs.")
         return 2
 
     df = load_dataset(DATA_PATH, allow_generate_demo=DATA_AUTOGENERATE_DEMO)

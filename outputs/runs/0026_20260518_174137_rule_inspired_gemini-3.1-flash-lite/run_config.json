@@ -1,0 +1,27 @@
+{
+  "agent_backend_requested": "rule",
+  "choquet_mode": "inspired",
+  "llm_provider": "openai_compatible",
+  "llm_model": "gemini-3.1-flash-lite",
+  "llm_model_candidates": [
+    "gemini-3.1-flash-lite",
+    "gemini-3.1-flash",
+    "gemini-2.5-flash-lite",
+    "gemini-2.0-flash-lite",
+    "gemini-2.0-flash"
+  ],
+  "llm_base_url": "https://xiaohumini.site/v1",
+  "llm_api_key_env": "XIAOHU_API_KEY",
+  "api_key_detected": false,
+  "llm_cache_enabled": true,
+  "llm_cache_path": "F:\\PY_projects\\03_STCLABS\\Choquet\\choquet_agent_vote_demo\\outputs\\llm_cache_zx.json",
+  "epochs": 1,
+  "batch_size": 8,
+  "learning_rate": 0.035,
+  "weight_decay": 0.0001,
+  "device_requested": "auto",
+  "device_effective": "cpu",
+  "cuda_available": false,
+  "run_sample_limit": 40,
+  "choquet_mode_effective": "inspired"
+}

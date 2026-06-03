@@ -72,7 +72,9 @@ class LLMClient:
         return f"{self.base_url}/chat/completions"
 
     def api_key(self) -> Optional[str]:
-        return os.getenv(self.api_key_env)
+        from config import get_llm_api_key
+
+        return get_llm_api_key()
 
     def validate_ready(self) -> None:
         if self.provider != "local" and not self.api_key():

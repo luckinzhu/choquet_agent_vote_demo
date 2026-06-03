@@ -1,0 +1,32 @@
+{
+  "rows": [
+    {
+      "method": "Majority Voting",
+      "accuracy": 0.75,
+      "precision": 0.75,
+      "recall": 0.75,
+      "macro_f1": 0.75
+    },
+    {
+      "method": "Average Probability Voting",
+      "accuracy": 0.75,
+      "precision": 0.75,
+      "recall": 0.75,
+      "macro_f1": 0.75
+    },
+    {
+      "method": "Dynamic Single-Agent Weighting",
+      "accuracy": 0.75,
+      "precision": 0.75,
+      "recall": 0.75,
+      "macro_f1": 0.75
+    },
+    {
+      "method": "Choquet-inspired Pairwise Voting",
+      "accuracy": 0.75,
+      "precision": 0.75,
+      "recall": 0.75,
+      "macro_f1": 0.75
+    }
+  ]
+}

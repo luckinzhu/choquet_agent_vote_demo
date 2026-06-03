@@ -1,0 +1,23 @@
+[
+  {
+    "example": "万万没想到！竟然发生了这种事！！！",
+    "class_0_probability": 0.05,
+    "class_1_probability": 0.95,
+    "confidence": 0.93,
+    "explanation": "极端修饰词'万万没想到'、'竟然'配合多个感叹号，典型的标题党词汇模式"
+  },
+  {
+    "example": "会议将于下周一上午九点召开",
+    "class_0_probability": 0.9,
+    "class_1_probability": 0.1,
+    "confidence": 0.92,
+    "explanation": "平实的信息陈述，无特殊标点或极端词汇"
+  },
+  {
+    "example": "震惊！这个简单方法让你瘦10斤！",
+    "class_0_probability": 0.03,
+    "class_1_probability": 0.97,
+    "confidence": 0.95,
+    "explanation": "'震惊'+'简单方法'+'具体数字承诺'的组合是经典标题党模式"
+  }
+]

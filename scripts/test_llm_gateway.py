@@ -4,6 +4,13 @@ import re
 import sys
 import urllib.error
 import urllib.request
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from config import get_llm_api_key  # noqa: E402
 
 
 DEFAULT_MODELS = [
@@ -107,15 +114,15 @@ def call_gateway(base_url: str, model: str, api_key: str, timeout: int) -> tuple
 
 def main() -> int:
     base_url = os.getenv("LLM_BASE_URL", "https://xiaohumini.site/v1")
-    api_key_env = os.getenv("LLM_API_KEY_ENV", "XIAOHU_API_KEY")
-    api_key = os.getenv(api_key_env)
+    api_key_env = os.getenv("LLM_API_KEY_ENV", "LLM_API_KEY")
+    api_key = get_llm_api_key()
     timeout = int(os.getenv("LLM_TIMEOUT", "60"))
 
     print(f"base_url: {base_url}")
     print(f"api_key_env: {api_key_env}")
     print(f"api_key_present: {bool(api_key)}")
     if not api_key:
-        print(f"ERROR: missing API key environment variable {api_key_env}")
+        print("ERROR: missing API key. Set LLM_API_KEY in .env or environment.")
         return 2
 
     last_error = None

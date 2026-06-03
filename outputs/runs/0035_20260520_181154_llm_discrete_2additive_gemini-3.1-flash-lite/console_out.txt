@@ -1,0 +1,190 @@
+=== Runtime Configuration ===
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: gemini-3.1-flash-lite
+LLM_MODEL_CANDIDATES: gemini-3.1-flash-lite, gemini-3.1-flash, gemini-2.5-flash-lite, gemini-2.0-flash-lite, gemini-2.0-flash
+LLM_BASE_URL: https://xiaohumini.site/v1
+LLM_API_KEY_ENV: XIAOHU_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zongxiang.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0035_20260520_181154_llm_discrete_2additive_gemini-3.1-flash-lite
+
+RUN_SAMPLE_LIMIT active: using 50 rows for this run.
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv
+Rows: 50
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        27
+           1        23
+
+Split: train=35, valid=7, test=8
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型情绪煽动词汇，且通过“忍不住点开”进行直接的点击诱导，属于典型的标题党。
+Emotion      probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型诱导性词汇，并刻意制造悬念以操纵用户点击欲望，属于典型的点击诱导标题。
+Intention    probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型煽动性词汇，并利用“忍不住点开”进行心理暗示，属于典型的点击诱导标题党。
+Lexical      probs=[0.0, 1.0] confidence=1.000 explanation=包含“震惊”、“真相曝光”等典型情绪煽动词，并使用“忍不住点开”诱导点击，符合典型的标题党模式。
+Consistency  probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型情绪煽动词汇，且内容模糊，通过制造悬念诱导点击，符合点击诱导特征。
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+LLM cache saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zongxiang.json
+
+=== Training Choquet Layer (discrete_2additive) ===
+Epoch 01 | train_loss=0.8745 | valid_loss=1.1179 | valid_acc=0.5714 | valid_macro_f1=0.5714
+Epoch 05 | train_loss=0.8362 | valid_loss=1.0005 | valid_acc=0.5714 | valid_macro_f1=0.5714
+
+Best validation: loss=1.1179, acc=0.5714, macro_f1=0.5714
+Saved best model to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0035_20260520_181154_llm_discrete_2additive_gemini-3.1-flash-lite\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=1.0989, acc=0.5000, precision=0.5000, recall=0.5000, macro_f1=0.4667
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.5000 | 0.5000 | 0.5000 | 0.4667 |
+| Average Probability Voting | 0.5000 | 0.5000 | 0.5000 | 0.4667 |
+| Dynamic Single-Agent Weighting | 0.5000 | 0.5000 | 0.5000 | 0.4667 |
+| Choquet-inspired Pairwise Voting | 0.5000 | 0.5000 | 0.5000 | 0.4667 |
+
+=== Task-level Average Single Weights ===
+
+Task: clickbait
+  Semantic    : 0.2068
+  Emotion     : 0.2056
+  Intention   : 0.2047
+  Lexical     : 0.1885
+  Consistency : 0.1943
+
+=== Task-level Top Pairwise Weights ===
+
+Task: clickbait
+  Semantic + Emotion          : 0.0099
+  Semantic + Intention        : 0.0091
+  Emotion + Consistency       : 0.0023
+  Semantic + Lexical          : 0.0007
+  Emotion + Intention         : 0.0006
+
+=== Sample-level Decision Traces ===
+
+--- Sample ---
+Task: clickbait
+Text: 桂航董事长自签自罚3个月绩效，业内人士：还差监管部门发声 撰稿 | 记者 陈浩洲女乘客晒驾驶舱照片事件持续引发关注。11月5日上午，一份《关于给予桂林航空乘客进入驾驶舱违规事件责任人处分的通报》在网上曝光：给予桂林航空董事长胥昕严重警告处分，扣罚3个月绩效。有意思的是，签发这则处罚通报的正是桂林航空董事长胥昕本人。不过，一位资深民航观察人士告诉东方网·纵相新闻记者，民航监管部门的处理意见，目前还没有看到。 网传的桂林航空乘客进入驾驶舱违规事件责任人处罚通报网传通报文件上方标有桂林航空的标志，显示文件“密级”为公开，签发人为胥昕。通报称：“2019年1月4日，GT1011（桂林-扬州）航班...
+Gold label: 0 | Final prediction: 1 | Final probs: [0.2184 0.7816]
+Agent predictions:
+  Semantic     pred=0 conf=0.950 prob=[0.9 0.1] | 标题客观陈述了事件核心事实（自罚）及业内观点（监管部门态度），未采用夸张修辞或制造悬念，属于正常新闻报道。
+  Emotion      pred=1 conf=0.950 prob=[0.1 0.9] | 标题通过“自签自罚”的戏剧性冲突制造悬念，并引入“业内人士”暗示后续有更深层内幕，具有明显的点击诱导倾向。
+  Intention    pred=1 conf=0.900 prob=[0.2 0.8] | 标题通过“自签自罚”的戏剧性行为制造悬念，并引入“业内人士”暗示后续监管介入，具有明显的诱导点击意图。
+  Lexical      pred=1 conf=0.900 prob=[0.2 0.8] | 标题通过“自签自罚”制造冲突感，并利用“业内人士”引出悬念，暗示监管介入的必要性，具有明显的点击诱导倾向。
+  Consistency  pred=1 conf=0.950 prob=[0.1 0.9] | 标题通过“自签自罚”制造反差感，并以“还差监管部门发声”暗示后续悬念，具有明显的点击诱导倾向。
+Single weights:
+  Semantic    : 0.2068
+  Emotion     : 0.2056
+  Intention   : 0.2047
+  Lexical     : 0.1885
+  Consistency : 0.1943
+Top pairwise weights:
+  Semantic + Emotion          : 0.0099
+  Semantic + Intention        : 0.0091
+  Emotion + Consistency       : 0.0023
+
+--- Sample ---
+Task: clickbait
+Text: 仗义！这群抬车救人的英雄 近日，四川成都十字路口突发车祸一位大叔被卷入轿车车底危急时刻20多人瞬间集结合力抬车救援1月5日中午成都市成华区一十字路口一辆小轿车与两辆电瓶车发生碰撞导致一辆电瓶车连车带人摔倒路边另一辆电瓶车驾驶员被卷入车底巨大的撞击声引来路人关注过往的汽车、电瓶车、行人纷纷停了下来一个人、两个人、三个人……越来越多的人从四面八方冲到事故现场短短时间有20多人赶来合力抬车一分钟左右卷进车底的大叔被成功拉出据了解参与此次抬车救人的有街边商铺的商家也有路过此处的陌生人第一批赶到现场救援的田女士是附近一家包子铺的老板娘她回忆说当时情况很紧急就怕压车底那个大叔出事她和丈夫顾不上太多第...
+Gold label: 1 | Final prediction: 0 | Final probs: [0.887 0.113]
+Agent predictions:
+  Semantic     pred=0 conf=0.950 prob=[0.95 0.05] | 标题客观陈述事实，情感表达适度，未利用悬念或误导性信息诱导点击，属于正向新闻报道。
+  Emotion      pred=0 conf=0.900 prob=[0.8 0.2] | 该标题属于正向情感叙事，虽有感叹词，但核心信息明确，未利用悬念或误导性信息诱导点击，属于常规新闻报道风格。
+  Intention    pred=1 conf=0.900 prob=[0.2 0.8] | 使用了“仗义”、“英雄”等强情感色彩词汇，通过制造道德悬念和情绪共鸣诱导点击，属于典型的感性诱导式标题。
+  Lexical      pred=0 conf=0.900 prob=[0.85 0.15] | 该标题属于正向叙事，虽有感叹词，但核心信息明确，未利用悬念或误导性信息诱导点击，属于常规新闻报道风格。
+  Consistency  pred=0 conf=0.950 prob=[0.9 0.1] | 标题如实概括了正能量新闻事件，未采用夸张、悬念或误导性词汇，属于正常的新闻报道标题。
+Single weights:
+  Semantic    : 0.2068
+  Emotion     : 0.2056
+  Intention   : 0.2047
+  Lexical     : 0.1885
+  Consistency : 0.1943
+Top pairwise weights:
+  Semantic + Emotion          : 0.0099
+  Semantic + Intention        : 0.0091
+  Emotion + Consistency       : 0.0023
+
+--- Sample ---
+Task: clickbait
+Text: 抗疫和抗议，美国“无法呼吸的痛” 收录于话题##特朗普 #美国撰稿 | 记者 钟书毓最新消息：据CNN报道，在当地时间29日晚的抗议活动中，加利福尼亚州奥克兰市两名联邦保卫局的执法人员中枪，其中一人因枪伤身亡。当晚至少有7500名示威者上街抗议示威，并在全市进行破坏。因非裔男子乔治·弗洛伊德被白人警察德雷克·乔文'膝盖锁喉'致死，美国明尼苏达州的抗议活动持续进行。时至今日，骚乱加剧，全美各地都出现了抗议活动，局面不仅没有平息，还呈现出升级态势。白宫封了、明尼苏达州长道歉了，但抗议者的'怒火'并没有因此消退。有美媒评论，当下美国正面临两种致命病毒——新冠和歧视。抗议活动在美国蔓延，白宫也封...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.0795 0.9205]
+Agent predictions:
+  Semantic     pred=1 conf=0.950 prob=[0.1 0.9] | 标题使用“无法呼吸的痛”等感性修辞，将抗疫与抗议并列制造悬念，具有明显的点击诱导倾向。
+  Emotion      pred=1 conf=0.900 prob=[0.2 0.8] | 使用了“无法呼吸的痛”这种极具煽动性和修辞色彩的短语，通过情绪化表达制造悬念与共鸣，具有明显的点击诱导倾向。
+  Intention    pred=1 conf=0.900 prob=[0.2 0.8] | 使用了“无法呼吸的痛”这种极具煽动性和修辞色彩的短语，通过制造情感共鸣和悬念来诱导点击，属于典型的标题党手法。
+  Lexical      pred=1 conf=0.900 prob=[0.2 0.8] | 使用了“无法呼吸的痛”这种极具煽动性和修辞色彩的短语，通过制造悬念和情感共鸣诱导点击，具有典型的标题党特征。
+  Consistency  pred=1 conf=0.950 prob=[0.1 0.9] | 标题使用“无法呼吸的痛”等感性修辞，虽有一定概括性，但带有明显的煽动性与点击诱导倾向。
+Single weights:
+  Semantic    : 0.2068
+  Emotion     : 0.2056
+  Intention   : 0.2047
+  Lexical     : 0.1885
+  Consistency : 0.1943
+Top pairwise weights:
+  Semantic + Emotion          : 0.0099
+  Semantic + Intention        : 0.0091
+  Emotion + Consistency       : 0.0023
+
+--- Sample ---
+Task: clickbait
+Text: G7峰会碰瓷中国，美国归去来兮？ 撰稿 | 记者 单珊6月11日，在风光旖旎的英国康沃尔郡，一群活动人士头戴G7首脑形象的头盔，在海滩上“争夺”疫苗。当天，G7峰会在该郡海滨度假村卡比斯贝开幕，而群众自发组织的抗议七国集团在气候变化、环境保护、疫苗分配、社会公平等领域“承诺多于行动”，成为开幕式的最强“杂音”。这场约翰逊精心攒的“国际局”，是英国正式脱离欧盟后真正意义上的首场大型“主场外交”，也是英国、美国、法国、德国、意大利、加拿大和日本的领导人在新冠疫情暴发后的首次面对面会谈。为此，英国政府斥资7000万英镑（约合人民币6.3亿元）安保费用，筹备数月之久，调动数千名警察、警犬、警用快...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.0592 0.9408]
+Agent predictions:
+  Semantic     pred=1 conf=0.900 prob=[0.2 0.8] | 标题使用“碰瓷”、“归去来兮”等情绪化及修辞性词汇，带有明显的立场导向和点击诱导倾向，属于典型的时政类标题党。
+  Emotion      pred=1 conf=0.950 prob=[0. 1.] | 使用了“碰瓷”、“归去来兮”等情绪化、夸张的修辞，通过制造冲突感和悬念诱导点击，具有明显的标题党特征。
+  Intention    pred=1 conf=0.950 prob=[0.1 0.9] | 使用了“碰瓷”、“归去来兮”等情绪化、夸张的修辞手法，通过制造政治对立的悬念诱导点击，具有明显的煽动性。
+  Lexical      pred=1 conf=0.950 prob=[0.1 0.9] | 使用了“碰瓷”等情绪化、贬义的修辞手法，并以反问句制造悬念，具有明显的煽动性和点击诱导倾向。
+  Consistency  pred=1 conf=0.900 prob=[0.2 0.8] | 标题使用“碰瓷”、“归去来兮”等情绪化、修辞性词汇，具有明显的点击诱导倾向，旨在通过争议性表述吸引关注。
+Single weights:
+  Semantic    : 0.2068
+  Emotion     : 0.2056
+  Intention   : 0.2047
+  Lexical     : 0.1885
+  Consistency : 0.1943
+Top pairwise weights:
+  Semantic + Emotion          : 0.0099
+  Semantic + Intention        : 0.0091
+  Emotion + Consistency       : 0.0023
+
+--- Sample ---
+Task: clickbait
+Text: 这群“天使”的名字叫战友！ 撰稿 | 通讯员 李燕 记者 冯茵伦 10月1日上午的庆祝中华人民共和国成立70周年大会上，受阅方阵里军人们，眼神坚毅，口号铿锵有力，令观者为之热血沸腾，圈粉无数。光鲜的镜头背后，饱含军人的不易和汗水。而在武警上海总队医院，有这样一个特殊的区域——“军人病区”，这里有50张病床，主要收治患有内科疾病和术后康复的基层军人。 当军人脱下军装，换上病服，他们是什么样的？这里发生了什么故事？让我们推开军人病区的大门，一同看看！谁都躲不掉的内务检查“19床，你的被子再整整。大角、小角都有点歪，抓紧时间叠好”、“28床，被子面还有点不平，角还要捏一下捏”...... 一大...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.73 0.27]
+Agent predictions:
+  Semantic     pred=0 conf=0.900 prob=[0.9 0.1] | 标题虽带有感性色彩，但属于正向情感表达，正文内容为纪实报道，未见误导性悬念或夸张诱导，不属于典型标题党。
+  Emotion      pred=1 conf=0.900 prob=[0.2 0.8] | 使用了“天使”等煽情修辞，通过制造悬念和情感共鸣诱导点击，具有典型的标题党特征。
+  Intention    pred=1 conf=0.900 prob=[0.2 0.8] | 使用了情感化修辞（“天使”）和悬念式表达，通过模糊主体身份诱导读者点击以获取具体信息，具有典型的标题党特征。
+  Lexical      pred=0 conf=0.900 prob=[0.85 0.15] | 使用了比喻修辞（天使），但属于常规情感表达，未利用悬念或极端夸张诱导点击，不构成典型的标题党。
+  Consistency  pred=0 conf=0.900 prob=[0.9 0.1] | 标题虽带有情感色彩，但属于正向叙事，内容为军人病区纪实报道，不属于误导性点击诱导。
+Single weights:
+  Semantic    : 0.2068
+  Emotion     : 0.2056
+  Intention   : 0.2047
+  Lexical     : 0.1885
+  Consistency : 0.1943
+Top pairwise weights:
+  Semantic + Emotion          : 0.0099
+  Semantic + Intention        : 0.0091
+  Emotion + Consistency       : 0.0023
+
+Readable model summary saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0035_20260520_181154_llm_discrete_2additive_gemini-3.1-flash-lite\model_summary.json
+Latest model copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\best_choquet_model.pt
+Latest summary copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\model_summary.json
+
+=== Capacity Monotonicity Diagnostic ===
+{'checked': 211, 'violations': 0, 'max_violation': 0.0}
+Run metadata saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0035_20260520_181154_llm_discrete_2additive_gemini-3.1-flash-lite\run_result.json
+
+Done. Agents produced fixed outputs; only the selected Choquet aggregation layer was trained.

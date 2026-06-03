@@ -1,0 +1,23 @@
+[
+  {
+    "example": "震惊！这个结果让人难以置信！",
+    "class_0_probability": 0.05,
+    "class_1_probability": 0.95,
+    "confidence": 0.92,
+    "explanation": "强烈的情绪词汇'震惊'、'难以置信'制造感官刺激，典型的标题党手法"
+  },
+  {
+    "example": "社区志愿者活动温暖人心",
+    "class_0_probability": 0.8,
+    "class_1_probability": 0.2,
+    "confidence": 0.75,
+    "explanation": "正面情绪表达但语调平和，没有夸张或操纵意图"
+  },
+  {
+    "example": "太感人了！看完这个故事我哭了整整一晚",
+    "class_0_probability": 0.15,
+    "class_1_probability": 0.85,
+    "confidence": 0.8,
+    "explanation": "过度情绪化表达'哭了整整一晚'带有明显的情感操控色彩"
+  }
+]

@@ -1,0 +1,51 @@
+{
+  "agent_backend_requested": "llm",
+  "choquet_mode": "discrete_2additive",
+  "llm_provider": "openai_compatible",
+  "llm_model": "deepseek-v4-flash",
+  "llm_model_candidates": [
+    "deepseek-v4-pro"
+  ],
+  "llm_base_url": "https://api.deepseek.com/v1",
+  "llm_api_key_env": "XIAOHU_API_KEY",
+  "api_key_detected": true,
+  "llm_cache_enabled": true,
+  "llm_cache_path": "F:\\PY_projects\\03_STCLABS\\Choquet\\choquet_agent_vote_demo\\outputs\\llm_cache_zx_ds.json",
+  "epochs": 20,
+  "batch_size": 8,
+  "learning_rate": 0.01,
+  "weight_decay": 1e-05,
+  "device_requested": "auto",
+  "device_effective": "cuda",
+  "cuda_available": true,
+  "run_sample_limit": 50,
+  "status": "completed",
+  "effective_backend": "llm",
+  "choquet_mode_effective": "discrete_2additive",
+  "smoke_ok": true,
+  "smoke_failures": [],
+  "best_validation": {
+    "accuracy": 0.7142857142857143,
+    "precision": 0.8333333333333333,
+    "recall": 0.6666666666666666,
+    "macro_f1": 0.65,
+    "loss": 0.8680222630500793
+  },
+  "test_metrics": {
+    "accuracy": 0.75,
+    "precision": 0.75,
+    "recall": 0.75,
+    "macro_f1": 0.75,
+    "loss": 0.7009657621383667
+  },
+  "monotonicity_diagnostic": {
+    "checked": 211,
+    "violations": 0,
+    "max_violation": 0.0
+  },
+  "run_model_path": "F:\\PY_projects\\03_STCLABS\\Choquet\\choquet_agent_vote_demo\\outputs\\runs\\0043_20260601_141835_llm_discrete_2additive_deepseek-v4-flash\\best_choquet_model.pt",
+  "run_summary_path": "F:\\PY_projects\\03_STCLABS\\Choquet\\choquet_agent_vote_demo\\outputs\\runs\\0043_20260601_141835_llm_discrete_2additive_deepseek-v4-flash\\model_summary.json",
+  "test_predictions_path": "F:\\PY_projects\\03_STCLABS\\Choquet\\choquet_agent_vote_demo\\outputs\\runs\\0043_20260601_141835_llm_discrete_2additive_deepseek-v4-flash\\test_predictions.csv",
+  "baseline_comparison_path": "F:\\PY_projects\\03_STCLABS\\Choquet\\choquet_agent_vote_demo\\outputs\\runs\\0043_20260601_141835_llm_discrete_2additive_deepseek-v4-flash\\baseline_comparison.json",
+  "baseline_comparison_txt_path": "F:\\PY_projects\\03_STCLABS\\Choquet\\choquet_agent_vote_demo\\outputs\\runs\\0043_20260601_141835_llm_discrete_2additive_deepseek-v4-flash\\baseline_comparison.txt"
+}

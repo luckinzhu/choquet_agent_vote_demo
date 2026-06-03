@@ -2,6 +2,7 @@
 import os
 import re
 import shutil
+import subprocess
 import sys
 from datetime import datetime
 
@@ -33,15 +34,23 @@ from config import (
     TRAIN_RATIO,
     VALID_RATIO,
     WEIGHT_DECAY,
+    has_llm_api_key,
+)
+from integrity_checker import (
+    check_dataset_integrity,
+    print_training_integrity_summary,
+    raise_if_incomplete,
 )
 from src.dataset import load_dataset, split_dataframe
 from src.evaluate import (
     compare_methods,
     export_readable_model_summary,
+    export_test_predictions,
     print_interpretability_summary,
     print_sample_decisions,
 )
 from src.model import MultiAgentChoquetModel
+from src.cache import LLMCache
 from src.train import evaluate_model, train_choquet_model
 from src.utils import format_metrics_table, set_seed
 
@@ -56,7 +65,7 @@ if hasattr(sys.stderr, "reconfigure"):
 
 
 def _has_api_key() -> bool:
-    return bool(os.getenv(LLM_API_KEY_ENV))
+    return has_llm_api_key()
 
 def _looks_like_inline_api_key(value: object) -> bool:
     if value is None:
@@ -141,9 +150,14 @@ def _start_console_capture(run_dir) -> None:
     sys.stderr = _TeeStream(sys.stderr, log_file)
 
 
-def _save_baseline_comparison(rows, run_dir) -> None:
+def _save_baseline_comparison(rows, run_dir, table_text: str | None = None) -> dict:
     """Persist structured baseline metrics for this run."""
-    _write_run_json(run_dir, "baseline_comparison.json", {"rows": rows})
+    json_path = run_dir / "baseline_comparison.json"
+    txt_path = run_dir / "baseline_comparison.txt"
+    _write_run_json(run_dir, json_path.name, {"rows": rows})
+    if table_text is not None:
+        txt_path.write_text(table_text + "\n", encoding="utf-8")
+    return {"json": str(json_path), "txt": str(txt_path)}
 
 
 def _runtime_snapshot(effective_device: str, extra: dict | None = None) -> dict:
@@ -230,7 +244,12 @@ def _smoke_test_llm_agents(model: MultiAgentChoquetModel) -> tuple[bool, list[st
     task_description = "中文点击诱导/标题党检测：class_0=非标题党，class_1=标题党或点击诱导"
     failures = []
     for agent in model.agents:
-        output = agent.predict_one(text, task_description)
+        try:
+            output = agent.predict_one(text, task_description)
+        except Exception as exc:
+            failures.append(f"{agent.name}: {exc}")
+            print(f"{agent.name:12s} FAILED error={exc}")
+            continue
         probs = output["probs"]
         conf = float(output["confidence"])
         explanation = str(output["explanation"])
@@ -255,6 +274,44 @@ def _copy_latest_artifacts(run_model_path, run_summary_path) -> None:
         shutil.copy2(run_model_path, BEST_MODEL_PATH)
     if run_summary_path.exists():
         shutil.copy2(run_summary_path, MODEL_SUMMARY_PATH)
+
+
+def _failed_cache_records() -> int:
+    cache = LLMCache(LLM_CACHE_PATH)
+    return sum(1 for item in cache._items.values() if isinstance(item, dict) and item.get("status") == "FAILED")
+
+
+def _run_auto_retry_failed_cache() -> int:
+    script = LLM_CACHE_PATH.parent.parent / "scripts" / "retry_failed_cache.py"
+    print("\nAuto retry started...")
+    result = subprocess.run([sys.executable, str(script)])
+    print(f"Auto retry exit code: {result.returncode}")
+    return int(result.returncode)
+
+
+def _ensure_dataset_integrity_or_retry(df, model) -> dict:
+    print("\n=== Dataset Integrity Check ===")
+    integrity = check_dataset_integrity(df, model.agents, LLM_CACHE_PATH)
+    print_training_integrity_summary(integrity)
+    if int(integrity["missing_records"]) <= 0:
+        return integrity
+
+    failed_records = _failed_cache_records()
+    print("\nDataset integrity failed.")
+    print(f"FAILED cache records: {failed_records}")
+    if failed_records <= 0:
+        print("Training blocked.")
+        raise_if_incomplete(integrity)
+
+    _run_auto_retry_failed_cache()
+
+    print("\n=== Dataset Integrity Recheck ===")
+    integrity = check_dataset_integrity(df, model.agents, LLM_CACHE_PATH)
+    print_training_integrity_summary(integrity)
+    if int(integrity["missing_records"]) > 0:
+        print("Training blocked.")
+        raise_if_incomplete(integrity)
+    return integrity
 
 
 def main():
@@ -345,12 +402,7 @@ def main():
                     f"  - row={item['row_index']} agent={item['agent']} "
                     f"model={item['model']} text={item['text_preview']!r}"
                 )
-            if backend == "llm":
-                raise RuntimeError(
-                    "LLM cache precompute did not produce all required entries. "
-                    "Check gateway errors above or use AGENT_BACKEND=hybrid/rule."
-                )
-            print("Hybrid mode will continue; missing entries can fall back to rule agents.")
+        _ensure_dataset_integrity_or_retry(df, model)
         model.set_llm_cache_only(True)
         print(f"LLM cache saved to: {LLM_CACHE_PATH}")
 
@@ -391,7 +443,17 @@ def main():
     rows = compare_methods(model, test_df)
     baseline_table = format_metrics_table(rows)
     print(baseline_table)
-    _save_baseline_comparison(rows, run_dir)
+    baseline_comparison_paths = _save_baseline_comparison(rows, run_dir, baseline_table)
+
+    test_predictions_path = run_dir / "test_predictions.csv"
+    export_test_predictions(
+        model=model,
+        test_df=test_df,
+        output_path=test_predictions_path,
+        batch_size=BATCH_SIZE,
+        device=effective_device,
+    )
+    print(f"Test predictions saved to: {test_predictions_path}")
 
     print_interpretability_summary(model, test_df)
     print_sample_decisions(model, test_df, n_samples=5, seed=RANDOM_SEED)
@@ -422,6 +484,9 @@ def main():
                 "monotonicity_diagnostic": monotonicity,
                 "run_model_path": str(run_model_path),
                 "run_summary_path": str(run_summary_path),
+                "test_predictions_path": str(test_predictions_path),
+                "baseline_comparison_path": baseline_comparison_paths["json"],
+                "baseline_comparison_txt_path": baseline_comparison_paths["txt"],
             },
         ),
     )

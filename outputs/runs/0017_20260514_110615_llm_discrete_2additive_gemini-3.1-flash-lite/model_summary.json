@@ -1,0 +1,106 @@
+{
+  "note": "best_choquet_model.pt is a binary PyTorch checkpoint. Open this JSON file for a readable UTF-8 summary.",
+  "agent_names": [
+    "Semantic",
+    "Emotion",
+    "Intention",
+    "Lexical",
+    "Consistency"
+  ],
+  "pair_names": [
+    "Semantic + Emotion",
+    "Semantic + Intention",
+    "Semantic + Lexical",
+    "Semantic + Consistency",
+    "Emotion + Intention",
+    "Emotion + Lexical",
+    "Emotion + Consistency",
+    "Intention + Lexical",
+    "Intention + Consistency",
+    "Lexical + Consistency"
+  ],
+  "trainable_parameters": {
+    "raw_single_m": [
+      -0.33315300941467285,
+      -0.2086620032787323,
+      0.29589399695396423,
+      0.297311007976532,
+      -0.3284200131893158
+    ],
+    "raw_pair_m": [
+      -0.29406800866127014,
+      0.18755100667476654,
+      -0.012242999859154224,
+      -0.3327440023422241,
+      0.3349500000476837,
+      0.19567400217056274,
+      -0.2923229932785034,
+      0.3036220073699951,
+      0.16255900263786316,
+      -0.016109000891447067
+    ],
+    "logit_scale": 3.639008045196533,
+    "logit_bias": [
+      -0.1568319946527481,
+      0.1568319946527481
+    ]
+  },
+  "task_level_average_weights": {
+    "clickbait": {
+      "single_weights": {
+        "Semantic": 0.145104,
+        "Emotion": 0.16434,
+        "Intention": 0.272189,
+        "Lexical": 0.272575,
+        "Consistency": 0.145792
+      },
+      "pair_weights": {
+        "Semantic + Emotion": -0.028587,
+        "Semantic + Intention": 0.018538,
+        "Semantic + Lexical": -0.001224,
+        "Semantic + Consistency": -0.032098,
+        "Emotion + Intention": 0.032296,
+        "Emotion + Lexical": 0.019321,
+        "Emotion + Consistency": -0.028427,
+        "Intention + Lexical": 0.029462,
+        "Intention + Consistency": 0.016114,
+        "Lexical + Consistency": -0.001611
+      },
+      "top_pair_weights": {
+        "Emotion + Intention": 0.032296,
+        "Intention + Lexical": 0.029462,
+        "Emotion + Lexical": 0.019321,
+        "Semantic + Intention": 0.018538,
+        "Intention + Consistency": 0.016114
+      }
+    },
+    "implicit_sentiment": {
+      "single_weights": {
+        "Semantic": 0.145104,
+        "Emotion": 0.16434,
+        "Intention": 0.272189,
+        "Lexical": 0.272575,
+        "Consistency": 0.145792
+      },
+      "pair_weights": {
+        "Semantic + Emotion": -0.028587,
+        "Semantic + Intention": 0.018538,
+        "Semantic + Lexical": -0.001224,
+        "Semantic + Consistency": -0.032098,
+        "Emotion + Intention": 0.032296,
+        "Emotion + Lexical": 0.019321,
+        "Emotion + Consistency": -0.028427,
+        "Intention + Lexical": 0.029462,
+        "Intention + Consistency": 0.016114,
+        "Lexical + Consistency": -0.001611
+      },
+      "top_pair_weights": {
+        "Emotion + Intention": 0.032296,
+        "Intention + Lexical": 0.029462,
+        "Emotion + Lexical": 0.019321,
+        "Semantic + Intention": 0.018538,
+        "Intention + Consistency": 0.016114
+      }
+    }
+  }
+}

@@ -1,0 +1,127 @@
+=== Runtime Configuration ===
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: gemini-3.1-flash-lite
+LLM_MODEL_CANDIDATES: gemini-3.1-flash-lite, gemini-3.1-flash, gemini-2.5-flash-lite, gemini-2.0-flash-lite, gemini-2.0-flash
+LLM_BASE_URL: https://xiaohumini.site/v1
+LLM_API_KEY_ENV: XIAOHU_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zongxiang.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0031_20260519_101654_llm_discrete_2additive_gemini-3.1-flash-lite
+
+RUN_SAMPLE_LIMIT active: using 8 rows for this run.
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv
+Rows: 8
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        5
+           1        3
+
+Split: train=5, valid=1, test=2
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型情绪煽动词汇，且通过“忍不住点开”进行直接的点击诱导，属于典型的标题党。
+Emotion      probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型诱导性词汇，并刻意制造悬念以操纵用户点击欲望，属于典型的点击诱导标题。
+Intention    probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型煽动性词汇，并利用“忍不住点开”进行心理暗示，属于典型的点击诱导标题党。
+Lexical      probs=[0.0, 1.0] confidence=1.000 explanation=包含“震惊”、“真相曝光”等典型情绪煽动词，并使用“忍不住点开”诱导点击，符合典型的标题党模式。
+Consistency  probs=[0.0, 1.0] confidence=1.000 explanation=使用了“震惊”、“真相曝光”等典型情绪煽动词汇，且内容模糊，通过制造悬念诱导点击，符合点击诱导特征。
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+LLM cache saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zongxiang.json
+
+=== Training Choquet Layer (discrete_2additive) ===
+Epoch 01 | train_loss=1.9219 | valid_loss=2.8752 | valid_acc=0.0000 | valid_macro_f1=0.0000
+Epoch 02 | train_loss=1.2975 | valid_loss=2.9680 | valid_acc=0.0000 | valid_macro_f1=0.0000
+
+Best validation: loss=2.8752, acc=0.0000, macro_f1=0.0000
+Saved best model to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0031_20260519_101654_llm_discrete_2additive_gemini-3.1-flash-lite\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=2.6487, acc=0.0000, precision=0.0000, recall=0.0000, macro_f1=0.0000
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| Average Probability Voting | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| Dynamic Single-Agent Weighting | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| Choquet-inspired Pairwise Voting | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+
+=== Task-level Average Single Weights ===
+
+Task: clickbait
+  Semantic    : 0.1931
+  Emotion     : 0.1946
+  Intention   : 0.2260
+  Lexical     : 0.1931
+  Consistency : 0.1931
+
+=== Task-level Top Pairwise Weights ===
+
+Task: clickbait
+  Emotion + Intention         : 0.0079
+  Intention + Consistency     : 0.0077
+  Semantic + Intention        : 0.0077
+  Intention + Lexical         : 0.0077
+  Emotion + Lexical           : -0.0076
+
+=== Sample-level Decision Traces ===
+
+--- Sample ---
+Task: clickbait
+Text: 拜登上任第二天，福奇回白宫喜笑颜开：我终于解放了 撰稿 | 记者 程靖 当地时间1月21日，在拜登上任总统的第二天，年逾80岁的“美国钟南山”、美国国家过敏症和传染病研究所所长安东尼•福奇博士也回到了工作岗位。福奇坦言，与特朗普相比，在拜登政府工作的感觉“是一种解放”。 （图说：安东尼•福奇博士21日在白宫回答记者提问。图/AP）过去一年中，作为白宫新冠疫情特别工作组成员的福奇屡次公开表达与特朗普意见不和，特朗普则多次批评福奇，在疫情工作组中排挤福奇，甚至威胁要“炒掉”他。福奇更是收到过特朗普支持者的死亡威胁。但如今情况已大有不同。拜登于就职当天（20日）宣布撤销退出世卫组织的计划，并承...
+Gold label: 0 | Final prediction: 1 | Final probs: [0.1017 0.8983]
+Agent predictions:
+  Semantic     pred=1 conf=0.900 prob=[0.2 0.8] | 标题使用“喜笑颜开”、“终于解放了”等情绪化、戏剧性词汇，通过夸张描述福奇的心理状态来吸引点击，具有明显的点击诱导倾向。
+  Emotion      pred=1 conf=0.950 prob=[0.2 0.8] | 标题使用“喜笑颜开”、“终于解放了”等情绪化、戏剧性词汇，通过夸张的心理描写制造好奇心，具有明显的点击诱导倾向。
+  Intention    pred=1 conf=0.950 prob=[0.2 0.8] | 标题使用“喜笑颜开”、“终于解放了”等情绪化、戏剧性词汇，通过夸张描述福奇的心理状态来制造冲突感，具有明显的点击诱导倾向。
+  Lexical      pred=1 conf=0.900 prob=[0.2 0.8] | 标题使用“喜笑颜开”、“终于解放了”等情绪化修饰词，通过夸张的心理描写制造好奇心，具有明显的点击诱导倾向。
+  Consistency  pred=1 conf=0.900 prob=[0.2 0.8] | 标题使用“喜笑颜开”、“终于解放了”等情绪化、夸张化词汇，将福奇对工作环境改善的理性评价转化为戏剧性叙事，具有明显的点击诱导倾向。
+Single weights:
+  Semantic    : 0.1931
+  Emotion     : 0.1946
+  Intention   : 0.2260
+  Lexical     : 0.1931
+  Consistency : 0.1931
+Top pairwise weights:
+  Emotion + Intention         : 0.0079
+  Intention + Consistency     : 0.0077
+  Semantic + Intention        : 0.0077
+
+--- Sample ---
+Task: clickbait
+Text: 评美国联邦航空局为波音737 MAX 8背书：速度很快 理由不强 撰稿 | 记者 高兴 何律衡埃航坠机事故调查正在进行当中，全球越来越多的国家还在陆续停飞波音737 MAX系列机型，然而，美国联邦航空局（下文以FAA代替）当地时间昨天晚上在推特上发声说：波音737 MAX 8和9两种机型均安全适航。 什么意思？就是美国联邦民航局给波音背书了。FAA发布波音737 MAX 8和9适航通知暂且耐心听听FAA具体怎么说的： FAA已向各国民航局发布关于波音737 MAX 8和9两种机型的适航通知，强调波音737 MAX系列仍然安全适航。 FAA在这条推特下发布的调查报告显示，目前，作为技术顾问...
+Gold label: 0 | Final prediction: 1 | Final probs: [0.0492 0.9508]
+Agent predictions:
+  Semantic     pred=1 conf=0.950 prob=[0.1 0.9] | 标题通过“背书”、“速度很快”、“理由不强”等带有强烈主观评价和冲突暗示的词汇，制造悬念并引导读者对FAA的公正性产生质疑，具有明显的点击诱导倾向。
+  Emotion      pred=1 conf=0.950 prob=[0.1 0.9] | 标题通过“速度很快，理由不强”的评价性词汇制造悬念，并以反问句式引导读者对权威机构产生质疑，具有明显的点击诱导倾向。
+  Intention    pred=1 conf=0.950 prob=[0.1 0.9] | 标题通过“背书”、“理由不强”等带有强烈主观色彩和冲突感的词汇，制造悬念并引导读者对FAA的公正性产生质疑，具有明显的点击诱导倾向。
+  Lexical      pred=1 conf=0.950 prob=[0.1 0.9] | 标题采用“速度很快，理由不强”的评价性修辞，正文包含“懂？”等挑衅性反问，具有明显的引导倾向和情绪化叙事，属于典型的点击诱导模式。
+  Consistency  pred=1 conf=0.950 prob=[0.1 0.9] | 标题通过“背书”、“速度很快”、“理由不强”等带有强烈主观色彩和情绪引导的词汇，制造争议性以吸引点击，具有明显的点击诱导倾向。
+Single weights:
+  Semantic    : 0.1931
+  Emotion     : 0.1946
+  Intention   : 0.2260
+  Lexical     : 0.1931
+  Consistency : 0.1931
+Top pairwise weights:
+  Emotion + Intention         : 0.0079
+  Intention + Consistency     : 0.0077
+  Semantic + Intention        : 0.0077
+
+Readable model summary saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0031_20260519_101654_llm_discrete_2additive_gemini-3.1-flash-lite\model_summary.json
+Latest model copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\best_choquet_model.pt
+Latest summary copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\model_summary.json
+
+=== Capacity Monotonicity Diagnostic ===
+{'checked': 211, 'violations': 0, 'max_violation': 0.0}
+Run metadata saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0031_20260519_101654_llm_discrete_2additive_gemini-3.1-flash-lite\run_result.json
+
+Done. Agents produced fixed outputs; only the selected Choquet aggregation layer was trained.

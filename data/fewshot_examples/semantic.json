@@ -1,0 +1,23 @@
+[
+  {
+    "example": "标题：科学家发现这种食物背后隐藏的秘密\n内容：研究人员揭示了一个神秘的真相，这个发现将改变你对健康的认知...",
+    "class_0_probability": 0.1,
+    "class_1_probability": 0.9,
+    "confidence": 0.85,
+    "explanation": "文本包含'隐藏的秘密'、'神秘真相'等暗示性词汇，具有明显的点击诱导特征"
+  },
+  {
+    "example": "标题：市政府公布年度预算报告\n内容：根据最新数据显示，本年度财政支出计划已经获得批准...",
+    "class_0_probability": 0.85,
+    "class_1_probability": 0.15,
+    "confidence": 0.9,
+    "explanation": "文本使用中性新闻用语'公布'、'预算报告'，属于常规信息发布"
+  },
+  {
+    "example": "标题：你不知道的五个生活小技巧背后的惊人真相\n内容：这些秘密方法医生都不告诉你...",
+    "class_0_probability": 0.05,
+    "class_1_probability": 0.95,
+    "confidence": 0.92,
+    "explanation": "多重点击诱导元素：'不知道'、'惊人真相'、'医生不告诉'，典型的标题党手法"
+  }
+]
