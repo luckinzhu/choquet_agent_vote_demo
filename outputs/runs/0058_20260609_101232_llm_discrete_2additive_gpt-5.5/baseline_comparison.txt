@@ -1,0 +1,6 @@
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.6875 | 0.6875 | 0.6905 | 0.6863 |
+| Average Probability Voting | 0.6875 | 0.6875 | 0.6905 | 0.6863 |
+| Dynamic Single-Agent Weighting | 0.6875 | 0.6875 | 0.6905 | 0.6863 |
+| Choquet-inspired Pairwise Voting | 0.6875 | 0.6875 | 0.6905 | 0.6863 |

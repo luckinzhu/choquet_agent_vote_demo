@@ -1,0 +1,207 @@
+=== Runtime Configuration ===
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: deepseek-v4-flash
+LLM_MODEL_CANDIDATES: deepseek-v4-pro
+LLM_BASE_URL: https://api.deepseek.com/v1
+LLM_API_KEY_ENV: LLM_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_ds.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0047_20260605_155654_llm_discrete_2additive_deepseek-v4-flash
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv
+Rows: 2119
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        1167
+           1         952
+
+Split: train=1483, valid=317, test=319
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.05, 0.95] confidence=0.900 explanation=包含'震惊'、'忍不住点开'、'曝光'等典型点击诱导用语
+Emotion      probs=[0.0, 1.0] confidence=0.950 explanation=使用'震惊'、'忍不住点开'、'真相曝光'等夸张悬念词汇，典型情绪操控标题党
+Intention    probs=[0.01, 0.99] confidence=0.970 explanation=使用'震惊'、'忍不住点开'及'真相曝光'等典型标题党手法，意图吸引点击
+Lexical      probs=[0.02, 0.98] confidence=0.950 explanation='震惊！'搭配'忍不住点开''真相曝光'，典型标题党模式
+Consistency  probs=[0.05, 0.95] confidence=0.850 explanation=标题使用'震惊'、'忍不住点开'、'真相曝光'等煽动性词汇，典型标题党手法
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+LLM cache warm plan: total=10595, existing_success=10595, need_requests=0
+
+=== Dataset Integrity Check ===
+Dataset Samples: 2119
+Expected Records: 10595
+SUCCESS Records: 10595
+Missing Records: 0
+Complete Samples : 2119
+Incomplete Samples : 0
+LLM cache saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_ds.json
+
+=== Training Choquet Layer (discrete_2additive) ===
+Epoch 01 | train_loss=0.8565 | valid_loss=0.7940 | valid_acc=0.6372 | valid_macro_f1=0.6351
+Epoch 05 | train_loss=0.7052 | valid_loss=0.6839 | valid_acc=0.6372 | valid_macro_f1=0.6339
+Epoch 10 | train_loss=0.6549 | valid_loss=0.6480 | valid_acc=0.6309 | valid_macro_f1=0.6271
+Epoch 15 | train_loss=0.6498 | valid_loss=0.6454 | valid_acc=0.6309 | valid_macro_f1=0.6261
+Epoch 20 | train_loss=0.6493 | valid_loss=0.6452 | valid_acc=0.6467 | valid_macro_f1=0.6423
+Epoch 25 | train_loss=0.6488 | valid_loss=0.6453 | valid_acc=0.6435 | valid_macro_f1=0.6399
+Epoch 30 | train_loss=0.6487 | valid_loss=0.6456 | valid_acc=0.6435 | valid_macro_f1=0.6399
+Epoch 35 | train_loss=0.6489 | valid_loss=0.6454 | valid_acc=0.6467 | valid_macro_f1=0.6433
+Epoch 40 | train_loss=0.6493 | valid_loss=0.6454 | valid_acc=0.6467 | valid_macro_f1=0.6433
+Epoch 45 | train_loss=0.6491 | valid_loss=0.6457 | valid_acc=0.6435 | valid_macro_f1=0.6394
+Epoch 50 | train_loss=0.6496 | valid_loss=0.6454 | valid_acc=0.6467 | valid_macro_f1=0.6433
+
+Best validation: loss=0.6457, acc=0.6562, macro_f1=0.6506
+Saved best model to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0047_20260605_155654_llm_discrete_2additive_deepseek-v4-flash\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=0.6383, acc=0.6426, precision=0.6394, recall=0.6401, macro_f1=0.6397
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.6144 | 0.6242 | 0.6230 | 0.6143 |
+| Average Probability Voting | 0.6113 | 0.6215 | 0.6202 | 0.6111 |
+| Dynamic Single-Agent Weighting | 0.6426 | 0.6378 | 0.6355 | 0.6360 |
+| Choquet-inspired Pairwise Voting | 0.6426 | 0.6394 | 0.6401 | 0.6397 |
+Test predictions saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0047_20260605_155654_llm_discrete_2additive_deepseek-v4-flash\test_predictions.csv
+
+=== Task-level Average Single Weights ===
+
+Task: clickbait
+  Semantic    : 0.1260
+  Emotion     : 0.1886
+  Intention   : 0.2364
+  Lexical     : 0.2949
+  Consistency : 0.1542
+
+=== Task-level Top Pairwise Weights ===
+
+Task: clickbait
+  Intention + Lexical         : 0.0410
+  Emotion + Lexical           : 0.0251
+  Emotion + Intention         : 0.0114
+  Lexical + Consistency       : 0.0003
+  Semantic + Lexical          : -0.0050
+
+=== Sample-level Decision Traces ===
+
+--- Sample ---
+Task: clickbait
+Text: 美国大选Q&A丨特朗普亲自投票给自己，美国选民还有哪些选择？ 收录于话题#美国大选撰稿 | 实习生 蒋清怡 记者 单珊2020年美国大选进入最后倒数阶段，总统特朗普24日现身佛罗里达州的西棕榈滩票站，为自己投票。自9月3日北卡罗来纳州成为全美第一个开放邮寄缺席投票的州以来，美国大部分州和地区提前现场和邮寄投票均已陆续开始。 据“美国选举计划”统计，到目前为止，已有超过3900万人通过邮件投票，近1800万人提前到现场投票。根据选情调查公司Catalist数据，在2016年的大选中，最终在38个州录得4610万提前投票或不在籍投票，大选总选票数为1.36亿票。全美选举项目负责人、佛罗里达大...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.6681 0.3319]
+Agent predictions:
+  Semantic     pred=0 conf=0.900 prob=[0.85 0.15] | 标题使用问答形式，但内容为客观新闻科普，无夸张或诱导性词汇。
+  Emotion      pred=0 conf=0.750 prob=[0.8 0.2] | 标题以Q&A形式提问，语气相对客观，无明显情绪夸张或误导悬念，不属标题党。
+  Intention    pred=1 conf=0.900 prob=[0.1 0.9] | 使用悬念式提问'还有哪些选择'制造好奇心缺口，诱导点击
+  Lexical      pred=0 conf=0.880 prob=[0.85 0.15] | 无极端修饰词或标点堆叠，为信息性问答标题，非典型标题党模式
+  Consistency  pred=0 conf=0.900 prob=[0.85 0.15] | 标题与内容一致，详细解释了投票方式，无矛盾或误导
+Single weights:
+  Semantic    : 0.1260
+  Emotion     : 0.1886
+  Intention   : 0.2364
+  Lexical     : 0.2949
+  Consistency : 0.1542
+Top pairwise weights:
+  Intention + Lexical         : 0.0410
+  Emotion + Lexical           : 0.0251
+  Emotion + Intention         : 0.0114
+
+--- Sample ---
+Task: clickbait
+Text: 对话雷神山里的上海中医：重症有这两个表现，将开拓“上海方案”中西医互补 撰稿 | 记者 马旭 蔡黄浩上周六（2月15日），第四批国家中医医疗队、来自上海4家中医医疗机构共122人启程前往武汉，为雷神山医院新开设的两个重症病区100张左右床位提供医疗救治。 经过四天的防护培训以及相关医疗设施的装配，今天（2月19日），中医医疗队接管的雷神山医院重症病区正式开始收治病人。此次医疗队成员、上海中医药大学附属龙华医院急诊科主任方邦江在收治病人前夕接受了东方网·纵相新闻记者的采访。 方邦江在雷神山医院感染三科五病区，受访者供图 将为患者制定上海方案方邦江有着三十多年的中医临床经验，是国家中医药领军...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.5885 0.4115]
+Agent predictions:
+  Semantic     pred=0 conf=0.900 prob=[0.85 0.15] | 标题虽有概括性引导，但整体为正常新闻报道，无过度夸张或诱导。
+  Emotion      pred=1 conf=0.700 prob=[0.2 0.8] | 使用'重症有这两个表现'制造好奇心缺口，并以'开拓上海方案'暗示重大突破，带有点击诱导意图
+  Intention    pred=1 conf=0.850 prob=[0.1 0.9] | 使用'重症有这两个表现'制造悬念，搭配权威身份诱导点击，带有标题党特征
+  Lexical      pred=0 conf=0.900 prob=[0.92 0.08] | 标题平实陈述事实，无极端词汇、夸张标点或诱导信息
+  Consistency  pred=1 conf=0.850 prob=[0.1 0.9] | 标题强调‘重症有这两个表现’制造悬念，但内容未明确列出，存在一致性落差和好奇心诱导。
+Single weights:
+  Semantic    : 0.1260
+  Emotion     : 0.1886
+  Intention   : 0.2364
+  Lexical     : 0.2949
+  Consistency : 0.1542
+Top pairwise weights:
+  Intention + Lexical         : 0.0410
+  Emotion + Lexical           : 0.0251
+  Emotion + Intention         : 0.0114
+
+--- Sample ---
+Task: clickbait
+Text: “放弃儿子救儿媳”追踪：儿子醒了，媳妇病情恶化了，该怎么办？ 撰稿 | 记者 王玲这两天，延安老夫妇放弃儿子救儿媳新闻在网上刷屏。儿女是父母的心头肉，放弃自己的亲儿子救儿媳，做出这个决定对于陈立有老人来说，是何其艰难，又是何其的残忍。今天中午，东方网·纵相新闻记者采访家属了解到，新闻曝光后，很多爱心人士给他们打电话表达关心、伸出援手，新闻中的“儿子”最近几天有点意识了，但是儿媳的情况又不乐观了。目前中国社会福利基金会919大病救助工程正在帮助他们开展募捐，同时两位病人可能需要去更好的医院救治，家属发出求助，希望有医院能够帮助他们。1“我们家的天塌了”今年3月19日，陕西省延安市村民陈立有...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.4707 0.5293]
+Agent predictions:
+  Semantic     pred=0 conf=0.800 prob=[0.85 0.15] | 标题含问句和情感冲突，但内容为客观新闻追踪，无虚假或耸人听闻诱导。
+  Emotion      pred=1 conf=0.900 prob=[0.05 0.95] | 利用家庭伦理悲剧和悬念冲突诱导点击，情绪操控明显
+  Intention    pred=1 conf=0.900 prob=[0.05 0.95] | 标题利用戏剧化冲突和情感悬念制造好奇心缺口，明显诱导点击。
+  Lexical      pred=1 conf=0.920 prob=[0.05 0.95] | 伦理冲突标题+追踪悬念+病情恶化反转+问句诱导，典型点击诱饵模式
+  Consistency  pred=0 conf=0.900 prob=[0.95 0.05] | 标题与内容一致，客观陈述事件进展，无矛盾或误导
+Single weights:
+  Semantic    : 0.1260
+  Emotion     : 0.1886
+  Intention   : 0.2364
+  Lexical     : 0.2949
+  Consistency : 0.1542
+Top pairwise weights:
+  Intention + Lexical         : 0.0410
+  Emotion + Lexical           : 0.0251
+  Emotion + Intention         : 0.0114
+
+--- Sample ---
+Task: clickbait
+Text: 战“疫”大后方，上海这条热线昼夜不断，最长一通来电打了20分钟 撰稿 | 记者 陈思众 蔡黄浩1月15日，一名56岁武汉籍女性在上海市长宁区一发热门诊就诊后，立即被隔离治疗。经上海市疾控部门检测，并经中国疾控中心复核，成为上海首例新型冠状病毒肺炎确诊病例。此时，一场没有硝烟的应急战在区内打响。在区卫健委新冠肺炎疫情防控工作领导小组领导下，区疾控中心第一时间制订防控工作方案和技术方案，建立完善组织架构与职责分工，成立防控工作领导小组及六个工作小组。与此同时，在长宁区公共卫生中心，一个值班室开始不再熄灯。为了联络各方、反映民生，这里的一条值班热线被开辟出来，电话从此昼夜不断，成为了区内9个街...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.7677 0.2323]
+Agent predictions:
+  Semantic     pred=0 conf=0.900 prob=[0.85 0.15] | 标题客观描述热线工作状态，无夸大或诱导，属于常规新闻报道。
+  Emotion      pred=0 conf=0.800 prob=[0.85 0.15] | 标题客观陈述事实，虽有比喻但无夸大或情绪操控，属于正常新闻描述
+  Intention    pred=0 conf=0.850 prob=[0.9 0.1] | 事实性描述，无操纵语言或点击诱导意图
+  Lexical      pred=0 conf=0.900 prob=[0.92 0.08] | 标题平实叙述事实，无极端修饰词或感叹号，非典型标题党模式
+  Consistency  pred=0 conf=0.900 prob=[0.92 0.08] | 标题与内容一致，描述热线时长无夸大，无矛盾或转折，属客观报道。
+Single weights:
+  Semantic    : 0.1260
+  Emotion     : 0.1886
+  Intention   : 0.2364
+  Lexical     : 0.2949
+  Consistency : 0.1542
+Top pairwise weights:
+  Intention + Lexical         : 0.0410
+  Emotion + Lexical           : 0.0251
+  Emotion + Intention         : 0.0114
+
+--- Sample ---
+Task: clickbait
+Text: 24小时内确诊翻番，韩国疫情背后的邪教，竟与朴槿惠有关？ 撰稿 | 记者 冯茵伦据韩媒报道，截至当地时间下午4时，韩国今日新增100例新冠肺炎确诊病例。其中的87起，与韩国大邱市邪教组织——新天地教会有关。目前，韩国累计确诊也增至204例，隔离人数3180人。新增死亡1人，和首例死者同属一所医院。然而，这场从地方蔓延开的恐怖正呈现全国扩散趋势。今天，军队也出现现役军人确认感染事件，而韩国总统府——青瓦台的十余名内部警卫也因疑似接触而被隔离。最让韩国民众愤怒的是，引爆疫情的邪教组织头目李万熙，竟然称“这是一场阴谋”。他的背后还有什么秘密？//韩三军皆有感染，青瓦台警卫也被隔离//截至21日...
+Gold label: 0 | Final prediction: 1 | Final probs: [0.3892 0.6108]
+Agent predictions:
+  Semantic     pred=1 conf=0.900 prob=[0.05 0.95] | 标题使用“竟”“背后的邪教”制造悬念，结合朴槿惠吸引点击
+  Emotion      pred=1 conf=0.920 prob=[0.02 0.98] | 使用'竟'字制造惊讶，关联邪教与政治人物朴槿惠，煽动好奇和争议，明显的点击诱导。
+  Intention    pred=1 conf=0.850 prob=[0.1 0.9] | 使用“竟”字制造悬念，并将疫情、邪教、政治人物关联，明显诱导点击。
+  Lexical      pred=1 conf=0.920 prob=[0.05 0.95] | '竟'字制造意外感，搭配悬念式问句和敏感词'邪教'，典型标题党模式
+  Consistency  pred=1 conf=0.850 prob=[0. 1.] | 标题用‘竟与朴槿惠有关’制造好奇心缺口，但内容未证实直接关联，属于误导性点击诱导。
+Single weights:
+  Semantic    : 0.1260
+  Emotion     : 0.1886
+  Intention   : 0.2364
+  Lexical     : 0.2949
+  Consistency : 0.1542
+Top pairwise weights:
+  Intention + Lexical         : 0.0410
+  Emotion + Lexical           : 0.0251
+  Emotion + Intention         : 0.0114
+
+Readable model summary saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0047_20260605_155654_llm_discrete_2additive_deepseek-v4-flash\model_summary.json
+Latest model copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\best_choquet_model.pt
+Latest summary copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\model_summary.json
+
+=== Capacity Monotonicity Diagnostic ===
+{'checked': 211, 'violations': 0, 'max_violation': 0.0}
+Run metadata saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0047_20260605_155654_llm_discrete_2additive_deepseek-v4-flash\run_result.json
+
+Done. Agents produced fixed outputs; only the selected Choquet aggregation layer was trained.

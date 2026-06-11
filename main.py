@@ -1,4 +1,4 @@
-﻿import json
+import json
 import os
 import re
 import shutil
@@ -162,6 +162,8 @@ def _save_baseline_comparison(rows, run_dir, table_text: str | None = None) -> d
 
 def _runtime_snapshot(effective_device: str, extra: dict | None = None) -> dict:
     data = {
+        "random_seed": RANDOM_SEED,
+        "data_path": str(DATA_PATH),
         "agent_backend_requested": AGENT_BACKEND,
         "choquet_mode": CHOQUET_MODE,
         "llm_provider": LLM_PROVIDER,
@@ -188,6 +190,8 @@ def _runtime_snapshot(effective_device: str, extra: dict | None = None) -> dict:
 
 def _print_runtime_config(run_dir, effective_device: str) -> None:
     print("=== Runtime Configuration ===")
+    print(f"RANDOM_SEED: {RANDOM_SEED}")
+    print(f"DATA_PATH: {DATA_PATH}")
     print(f"AGENT_BACKEND: {AGENT_BACKEND}")
     print(f"CHOQUET_MODE: {CHOQUET_MODE}")
     print(f"DEVICE requested/effective: {DEVICE} / {effective_device}")

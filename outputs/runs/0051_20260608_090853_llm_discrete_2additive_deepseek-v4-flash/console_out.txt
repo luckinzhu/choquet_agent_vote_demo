@@ -1,0 +1,105 @@
+=== Runtime Configuration ===
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: deepseek-v4-flash
+LLM_MODEL_CANDIDATES: deepseek-v4-pro
+LLM_BASE_URL: https://api.deepseek.com/v1
+LLM_API_KEY_ENV: LLM_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_ds.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0051_20260608_090853_llm_discrete_2additive_deepseek-v4-flash
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv
+Rows: 2119
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        1167
+           1         952
+
+Split: train=1483, valid=317, test=319
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.05, 0.95] confidence=0.900 explanation=包含'震惊'、'忍不住点开'、'曝光'等典型点击诱导用语
+Emotion      probs=[0.0, 1.0] confidence=0.950 explanation=使用'震惊'、'忍不住点开'、'真相曝光'等夸张悬念词汇，典型情绪操控标题党
+Intention    probs=[0.01, 0.99] confidence=0.970 explanation=使用'震惊'、'忍不住点开'及'真相曝光'等典型标题党手法，意图吸引点击
+Lexical      probs=[0.02, 0.98] confidence=0.950 explanation='震惊！'搭配'忍不住点开''真相曝光'，典型标题党模式
+Consistency  probs=[0.05, 0.95] confidence=0.850 explanation=标题使用'震惊'、'忍不住点开'、'真相曝光'等煽动性词汇，典型标题党手法
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+LLM cache warm plan: total=10595, existing_success=10595, need_requests=0
+
+=== Dataset Integrity Check ===
+Dataset Samples: 2119
+Expected Records: 10595
+SUCCESS Records: 10595
+Missing Records: 0
+Complete Samples : 2119
+Incomplete Samples : 0
+LLM cache saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_ds.json
+
+=== Training Choquet Layer (discrete_2additive) ===
+Epoch 01 | train_loss=0.8558 | valid_loss=0.8439 | valid_acc=0.5931 | valid_macro_f1=0.5925
+Epoch 05 | train_loss=0.6975 | valid_loss=0.7241 | valid_acc=0.5773 | valid_macro_f1=0.5751
+Epoch 10 | train_loss=0.6506 | valid_loss=0.6754 | valid_acc=0.5710 | valid_macro_f1=0.5683
+Epoch 15 | train_loss=0.6438 | valid_loss=0.6669 | valid_acc=0.5773 | valid_macro_f1=0.5737
+Epoch 20 | train_loss=0.6426 | valid_loss=0.6662 | valid_acc=0.5773 | valid_macro_f1=0.5742
+Epoch 25 | train_loss=0.6421 | valid_loss=0.6665 | valid_acc=0.5899 | valid_macro_f1=0.5877
+Epoch 30 | train_loss=0.6429 | valid_loss=0.6660 | valid_acc=0.5899 | valid_macro_f1=0.5873
+
+Best validation: loss=0.8439, acc=0.5931, macro_f1=0.5925
+Saved best model to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0051_20260608_090853_llm_discrete_2additive_deepseek-v4-flash\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=0.7798, acc=0.6395, precision=0.6397, recall=0.6412, macro_f1=0.6386
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.6270 | 0.6370 | 0.6357 | 0.6268 |
+| Average Probability Voting | 0.6301 | 0.6408 | 0.6392 | 0.6299 |
+| Dynamic Single-Agent Weighting | 0.6270 | 0.6293 | 0.6305 | 0.6266 |
+| Choquet-inspired Pairwise Voting | 0.6395 | 0.6397 | 0.6412 | 0.6386 |
+Test predictions saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0051_20260608_090853_llm_discrete_2additive_deepseek-v4-flash\test_predictions.csv
+Traceback (most recent call last):
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\main.py", line 499, in <module>
+    main()
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\main.py", line 458, in main
+    print_interpretability_summary(model, test_df)
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\src\evaluate.py", line 139, in print_interpretability_summary
+    summary = aggregate_details_by_task(model, df)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\environment\anaconda3\envs\pytorch\Lib\site-packages\torch\utils\_contextlib.py", line 120, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\src\evaluate.py", line 128, in aggregate_details_by_task
+    preds, probs, details, _ = model.predict(task_df, use_pairwise=True, return_details=True)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\environment\anaconda3\envs\pytorch\Lib\site-packages\torch\utils\_contextlib.py", line 120, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\src\model.py", line 173, in predict
+    inputs = self.make_inputs(df)
+             ^^^^^^^^^^^^^^^^^^^^
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\src\model.py", line 145, in make_inputs
+    sample_rel = self.relevance.sample_relevance(texts)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\src\embeddings.py", line 57, in sample_relevance
+    return self.relevance(sample_texts)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\src\embeddings.py", line 49, in relevance
+    matrix = self.vectorizer.transform(list(texts))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\environment\anaconda3\envs\pytorch\Lib\site-packages\sklearn\feature_extraction\text.py", line 2129, in transform
+    X = super().transform(raw_documents)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\environment\anaconda3\envs\pytorch\Lib\site-packages\sklearn\feature_extraction\text.py", line 1422, in transform
+    _, X = self._count_vocab(raw_documents, fixed_vocab=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\environment\anaconda3\envs\pytorch\Lib\site-packages\sklearn\feature_extraction\text.py", line -1, in _count_vocab
+KeyboardInterrupt

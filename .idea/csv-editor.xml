@@ -17,6 +17,62 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\data\raw_data\implicit hat speech\implicit hat speech\LHd\test.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\implicit hat speech\implicit hat speech\LHd\train.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\implicit hat speech\implicit hat speech\SBIC\test.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\implicit hat speech\implicit hat speech\SBIC\train.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\implicit hat speech\implicit hat speech\State_ToxiCN\test.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\implicit\ProsCons.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\implicit\test.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\implicit\train.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\data\toy_data.csv">
           <value>
             <Attribute>
@@ -60,6 +116,41 @@
           </value>
         </entry>
         <entry key="\outputs\runs\0044_20260602_162139_llm_discrete_2additive_deepseek-v4-flash\test_predictions.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\outputs\runs\0047_20260605_155654_llm_discrete_2additive_deepseek-v4-flash\test_predictions.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\outputs\runs\0049_20260608_085450_llm_discrete_2additive_deepseek-v4-flash\test_predictions.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\outputs\runs\0061_20260609_134907_llm_discrete_2additive_claude-sonnet-4-6\test_predictions.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\test.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\train.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

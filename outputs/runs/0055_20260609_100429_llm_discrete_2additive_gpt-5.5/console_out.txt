@@ -1,0 +1,203 @@
+=== Runtime Configuration ===
+RANDOM_SEED: 78
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: gpt-5.5
+LLM_MODEL_CANDIDATES: deepseek-v4-pro
+LLM_BASE_URL: https://xiaohumini.site/v1
+LLM_API_KEY_ENV: LLM_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_gpt.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0055_20260609_100429_llm_discrete_2additive_gpt-5.5
+
+RUN_SAMPLE_LIMIT active: using 100 rows for this run.
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv
+Rows: 100
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        54
+           1        46
+
+Split: train=70, valid=14, test=16
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.02, 0.98] confidence=0.960 explanation=含“震惊”“忍不住点开”“真相曝光”等典型诱导词
+Emotion      probs=[0.01, 0.99] confidence=0.980 explanation=含“震惊”“忍不住点开”“真相曝光”等强诱导词
+Intention    probs=[0.01, 0.99] confidence=0.980 explanation=使用震惊、忍不住点开、真相曝光等强诱导词
+Lexical      probs=[0.01, 0.99] confidence=0.980 explanation=“震惊”“忍不住点开”“真相曝光”均为典型标题党词汇
+Consistency  probs=[0.02, 0.98] confidence=0.950 explanation=使用“震惊”“真相曝光”等夸张悬念词诱导点击
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+LLM cache warm plan: total=500, existing_success=500, need_requests=0
+
+=== Dataset Integrity Check ===
+Dataset Samples: 100
+Expected Records: 500
+SUCCESS Records: 500
+Missing Records: 0
+Complete Samples : 100
+Incomplete Samples : 0
+LLM cache saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_gpt.json
+
+=== Training Choquet Layer (discrete_2additive) ===
+Epoch 01 | train_loss=0.7848 | valid_loss=0.6194 | valid_acc=0.7143 | valid_macro_f1=0.7143
+Epoch 05 | train_loss=0.7083 | valid_loss=0.6125 | valid_acc=0.7143 | valid_macro_f1=0.7143
+Epoch 10 | train_loss=0.6925 | valid_loss=0.6072 | valid_acc=0.7143 | valid_macro_f1=0.7143
+Epoch 15 | train_loss=0.6352 | valid_loss=0.6036 | valid_acc=0.7143 | valid_macro_f1=0.7143
+
+Best validation: loss=0.6194, acc=0.7143, macro_f1=0.7143
+Saved best model to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0055_20260609_100429_llm_discrete_2additive_gpt-5.5\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=0.5976, acc=0.6875, precision=0.6875, recall=0.6905, macro_f1=0.6863
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.6875 | 0.6875 | 0.6905 | 0.6863 |
+| Average Probability Voting | 0.6875 | 0.6875 | 0.6905 | 0.6863 |
+| Dynamic Single-Agent Weighting | 0.6875 | 0.6875 | 0.6905 | 0.6863 |
+| Choquet-inspired Pairwise Voting | 0.6875 | 0.6875 | 0.6905 | 0.6863 |
+Test predictions saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0055_20260609_100429_llm_discrete_2additive_gpt-5.5\test_predictions.csv
+
+=== Task-level Average Single Weights ===
+
+Task: clickbait
+  Semantic    : 0.1951
+  Emotion     : 0.2040
+  Intention   : 0.2042
+  Lexical     : 0.1964
+  Consistency : 0.2003
+
+=== Task-level Top Pairwise Weights ===
+
+Task: clickbait
+  Emotion + Intention         : 0.0024
+  Emotion + Lexical           : 0.0024
+  Emotion + Consistency       : 0.0016
+  Intention + Consistency     : 0.0014
+  Intention + Lexical         : 0.0001
+
+=== Sample-level Decision Traces ===
+
+--- Sample ---
+Task: clickbait
+Text: 韩国大学生爬墙闯进了美国大使官邸 撰稿 | 记者 冯茵伦据韩联社报道，韩国首尔19名大学生于18日闯入美国驻韩大使哈里·哈里斯（Harry Harris）的官邸，高呼反美口号，抗议美方要求韩国补贴美国驻军费用，事后遭韩国警方扣留。目前，9人仍被拘留，警方表示将彻查此事。这19名大学生是韩国大学生进步联合会（简称大进研）会员。18日下午2点50分左右，17名大学生利用2架梯子，越过位于首尔中区德寿宫旁的驻韩美国大使馆官邸围墙，进入官邸院子里。他们手持“哈里斯，离开这里”、“我们不需要美军”等横幅，抗议美国政府要求韩国将明年防卫费分担金额调升5倍以上，高呼反美口号。 随后，警方以非法闯入罪将...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.9148 0.0852]
+Agent predictions:
+  Semantic     pred=0 conf=0.860 prob=[0.82 0.18] | 标题概括事实，虽有冲突性但无悬念诱导或夸张误导
+  Emotion      pred=0 conf=0.820 prob=[0.78 0.22] | 事件本身有冲突性，但表述直接，无夸张煽动或悬念诱导
+  Intention    pred=0 conf=0.860 prob=[0.78 0.22] | 描述具体事件，虽有冲突性但无明显诱导点击词
+  Lexical      pred=0 conf=0.780 prob=[0.72 0.28] | 事件本身较异常，但表述平实，无夸张悬念词
+  Consistency  pred=0 conf=0.900 prob=[0.92 0.08] | 标题与内容一致，客观概括事件，无明显夸张或悬念诱导
+Single weights:
+  Semantic    : 0.1951
+  Emotion     : 0.2040
+  Intention   : 0.2042
+  Lexical     : 0.1964
+  Consistency : 0.2003
+Top pairwise weights:
+  Emotion + Intention         : 0.0024
+  Emotion + Lexical           : 0.0024
+  Emotion + Consistency       : 0.0016
+
+--- Sample ---
+Task: clickbait
+Text: 2032年奥运会首选布里斯班举行，奥运举办权缘何不进行“选举”了？ 撰稿 | 记者 卞英豪北京时间今日（2月25日），国际奥委会（ioc）宣布澳大利亚布里斯班成为2032年夏奥会首选举办城市。布里斯班为何是“首选”城市？国际奥委会主席巴赫表示，根据“夏季奥运会举办地委员会”提供的报告，布里斯班的申办方案符合相关条例和议程。IOC方面称，将“立即开始”与澳大利亚有关机构展开详细的讨论，并将适时对外发布讨论结果。IOC为何“单方面”宣布布里斯班成为奥运举办候选城市？这届奥运会的举办权还需要投票选举吗？事实上，2019年，国际奥委会对奥林匹克赛事的申办机制进行了改革，成立了夏季与冬季两个“奥运...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.8113 0.1887]
+Agent predictions:
+  Semantic     pred=0 conf=0.900 prob=[0.88 0.12] | 标题为新闻事实加政策疑问，内容详实解释机制改革，无明显夸张或悬念诱导
+  Emotion      pred=0 conf=0.740 prob=[0.68 0.32] | 以疑问引出制度变化，略有悬念但不夸张煽情
+  Intention    pred=0 conf=0.860 prob=[0.82 0.18] | 以事实和政策疑问为主，无夸张煽动或强诱导点击
+  Lexical      pred=0 conf=0.780 prob=[0.72 0.28] | 疑问句有轻微引导，但整体为新闻议题说明，无夸张词
+  Consistency  pred=1 conf=0.720 prob=[0.35 0.65] | 标题暗示不再选举，内容却说明仍需投票表决
+Single weights:
+  Semantic    : 0.1951
+  Emotion     : 0.2040
+  Intention   : 0.2042
+  Lexical     : 0.1964
+  Consistency : 0.2003
+Top pairwise weights:
+  Emotion + Intention         : 0.0024
+  Emotion + Lexical           : 0.0024
+  Emotion + Consistency       : 0.0016
+
+--- Sample ---
+Task: clickbait
+Text: 女生被造“黄谣”？这一系列操作，堪称“教科书式”维权…… 7月11日，短视频平台网红小雪发布视频，讲述自己被造黄谣后报警、取证及保全证据的经过。小雪自述的视频显示，7月9日，自己丈夫发布的一条视频的评论区突然集中出现“求瓜”“已看过”“真的是你啊”等留言。小雪称，他们查询后发现，此前网上出现了一些不雅照片，有人认为这些不雅照片中的人物是她，于是被大肆宣传甚至出现了以此牟利的情况。▲小雪丈夫发出的视频评论区里有大量不雅言论。图片来源/网络据上游新闻消息，7月10日，小雪联系了派出所并咨询律师，在律师的建议下保全了相关证据，并委托律师进行起诉。据北京法大律师事务所的律师函显示，已要求部分涉嫌...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.2244 0.7756]
+Agent predictions:
+  Semantic     pred=1 conf=0.780 prob=[0.35 0.65] | 标题含悬念式“这一系列操作”和省略号，有一定诱导点击
+  Emotion      pred=1 conf=0.780 prob=[0.25 0.75] | 设问与“这一系列操作”制造悬念，带明显点击诱导
+  Intention    pred=1 conf=0.820 prob=[0.25 0.75] | 用疑问和“这一系列操作”制造悬念，引导点击
+  Lexical      pred=1 conf=0.860 prob=[0.18 0.82] | 疑问句加“这一系列操作”和省略号，制造悬念
+  Consistency  pred=0 conf=0.840 prob=[0.72 0.28] | 标题与内容一致，虽有悬念表达但未夸大或误导
+Single weights:
+  Semantic    : 0.1951
+  Emotion     : 0.2040
+  Intention   : 0.2042
+  Lexical     : 0.1964
+  Consistency : 0.2003
+Top pairwise weights:
+  Emotion + Intention         : 0.0024
+  Emotion + Lexical           : 0.0024
+  Emotion + Consistency       : 0.0016
+
+--- Sample ---
+Task: clickbait
+Text: 疯狂的头盔：我10天赚了800万 撰稿 | 记者 马旭 蔡黄浩 4月21日，公安部交管局下发了一则在全国范围内部署“一盔一带”安全守护行动的通知：6月1日起，公安交管部门将加强执法管理，依法查纠摩托车、电动自行车骑乘人员不佩戴安全头盔以及汽车驾乘人员不使用安全带行为。 消息传出1个月，电动车头盔“火”了起来，尽管昨天公安部交管局称，6月1日起的执法处罚范围暂时仅在骑乘摩托车不佩戴安全头盔，但电商平台上的电动车头盔早已一“盔”难求，价格水涨船高翻了几番。而与之相对的，是头盔质量的层次和行业标准的缺失。 对此，东方网·纵相新闻记者辗转联系到一名身处浙江温州的头盔作坊老板张民（化名），他尽管谢...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.1046 0.8954]
+Agent predictions:
+  Semantic     pred=1 conf=0.780 prob=[0.35 0.65] | 标题用“疯狂”“10天赚800万”制造冲击感，但正文有事实支撑
+  Emotion      pred=1 conf=0.930 prob=[0.03 0.97] | “疯狂”“10天赚800万”夸张刺激，强烈诱导点击
+  Intention    pred=1 conf=0.900 prob=[0.08 0.92] | 夸张财富收益和“疯狂”表述，制造猎奇与点击诱导
+  Lexical      pred=1 conf=0.900 prob=[0.08 0.92] | “疯狂”加“10天赚800万”夸张暴富数字，强诱点击
+  Consistency  pred=0 conf=0.780 prob=[0.65 0.35] | 标题虽夸张吸睛，但内容多处印证十天赚800万
+Single weights:
+  Semantic    : 0.1951
+  Emotion     : 0.2040
+  Intention   : 0.2042
+  Lexical     : 0.1964
+  Consistency : 0.2003
+Top pairwise weights:
+  Emotion + Intention         : 0.0024
+  Emotion + Lexical           : 0.0024
+  Emotion + Consistency       : 0.0016
+
+--- Sample ---
+Task: clickbait
+Text: 金正男妻儿下落曝光：经台湾逃亡至荷兰，后遭美国中情局带走 撰稿 | 记者 单珊朝鲜最高领导人金正恩同父异母的哥哥金正男遇害后，其家人始终下落不明。美国《纽约客》11月16日刊出“自由朝鲜”组织领导者洪昌（Adrian Hong）的专访，他透露，金正男家人已被美国中央情报局带走，目前下落不明。“自由朝鲜”组织前称为千里马民防，最早于2017年引起外界关注，该组织曾声称将金正男之子金韩松及其家属移送到安全地带。2017年2月，金正男在吉隆坡机场被两名陌生女性用沾有VX神经毒剂的布块蒙住头部，在送院途中死亡。2019年3月和5月，两名嫌疑人印尼公民茜蒂艾莎和越南公民段氏香先后被释放。暗杀行动的...
+Gold label: 0 | Final prediction: 1 | Final probs: [0.2725 0.7275]
+Agent predictions:
+  Semantic     pred=0 conf=0.720 prob=[0.65 0.35] | 标题略用“曝光”等吸睛词，但信息具体且内容相符
+  Emotion      pred=1 conf=0.720 prob=[0.35 0.65] | “下落曝光”“中情局带走”带悬疑刺激感
+  Intention    pred=1 conf=0.720 prob=[0.35 0.65] | 使用“下落曝光”等吸睛措辞，带有猎奇和悬疑诱导
+  Lexical      pred=1 conf=0.820 prob=[0.22 0.78] | “下落曝光”“逃亡”“中情局带走”制造悬念与刺激感
+  Consistency  pred=1 conf=0.780 prob=[0.35 0.65] | 标题称下落曝光，但内容多次表示仍下落不明
+Single weights:
+  Semantic    : 0.1951
+  Emotion     : 0.2040
+  Intention   : 0.2042
+  Lexical     : 0.1964
+  Consistency : 0.2003
+Top pairwise weights:
+  Emotion + Intention         : 0.0024
+  Emotion + Lexical           : 0.0024
+  Emotion + Consistency       : 0.0016
+
+Readable model summary saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0055_20260609_100429_llm_discrete_2additive_gpt-5.5\model_summary.json
+Latest model copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\best_choquet_model.pt
+Latest summary copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\model_summary.json
+
+=== Capacity Monotonicity Diagnostic ===
+{'checked': 211, 'violations': 0, 'max_violation': 0.0}
+Run metadata saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0055_20260609_100429_llm_discrete_2additive_gpt-5.5\run_result.json
+
+Done. Agents produced fixed outputs; only the selected Choquet aggregation layer was trained.

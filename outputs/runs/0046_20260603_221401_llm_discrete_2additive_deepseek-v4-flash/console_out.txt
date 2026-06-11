@@ -1,0 +1,208 @@
+=== Runtime Configuration ===
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: deepseek-v4-flash
+LLM_MODEL_CANDIDATES: deepseek-v4-pro
+LLM_BASE_URL: https://api.deepseek.com/v1
+LLM_API_KEY_ENV: LLM_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_ds.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0046_20260603_221401_llm_discrete_2additive_deepseek-v4-flash
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv
+Rows: 2119
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        1167
+           1         952
+
+Split: train=1483, valid=317, test=319
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.05, 0.95] confidence=0.900 explanation=包含'震惊'、'忍不住点开'、'曝光'等典型点击诱导用语
+Emotion      probs=[0.0, 1.0] confidence=0.950 explanation=使用'震惊'、'忍不住点开'、'真相曝光'等夸张悬念词汇，典型情绪操控标题党
+Intention    probs=[0.01, 0.99] confidence=0.970 explanation=使用'震惊'、'忍不住点开'及'真相曝光'等典型标题党手法，意图吸引点击
+Lexical      probs=[0.02, 0.98] confidence=0.950 explanation='震惊！'搭配'忍不住点开''真相曝光'，典型标题党模式
+Consistency  probs=[0.05, 0.95] confidence=0.850 explanation=标题使用'震惊'、'忍不住点开'、'真相曝光'等煽动性词汇，典型标题党手法
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+LLM cache warm plan: total=10595, existing_success=10593, need_requests=2
+Precomputing LLM cache:   0%|          | 0/2 [00:00<?, ?req/s]Precomputing LLM cache:   0%|          | 0/2 [00:00<?, ?req/s, agent=Consistency, row=1111]Precomputing LLM cache:  50%|█████     | 1/2 [00:05<00:05,  5.73s/req, agent=Consistency, row=1111]Precomputing LLM cache:  50%|█████     | 1/2 [00:05<00:05,  5.73s/req, agent=Consistency, row=1749]Precomputing LLM cache: 100%|██████████| 2/2 [00:09<00:00,  4.64s/req, agent=Consistency, row=1749]Precomputing LLM cache: 100%|██████████| 2/2 [00:09<00:00,  4.80s/req, agent=Consistency, row=1749]
+
+=== Dataset Integrity Check ===
+Dataset Samples: 2119
+Expected Records: 10595
+SUCCESS Records: 10595
+Missing Records: 0
+Complete Samples : 2119
+Incomplete Samples : 0
+LLM cache saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_ds.json
+
+=== Training Choquet Layer (discrete_2additive) ===
+Epoch 01 | train_loss=0.8641 | valid_loss=0.7827 | valid_acc=0.6435 | valid_macro_f1=0.6430
+Epoch 05 | train_loss=0.7084 | valid_loss=0.6674 | valid_acc=0.6498 | valid_macro_f1=0.6489
+Epoch 10 | train_loss=0.6568 | valid_loss=0.6343 | valid_acc=0.6372 | valid_macro_f1=0.6363
+Epoch 15 | train_loss=0.6498 | valid_loss=0.6328 | valid_acc=0.6435 | valid_macro_f1=0.6426
+Epoch 20 | train_loss=0.6503 | valid_loss=0.6318 | valid_acc=0.6467 | valid_macro_f1=0.6457
+Epoch 25 | train_loss=0.6501 | valid_loss=0.6313 | valid_acc=0.6498 | valid_macro_f1=0.6495
+Epoch 30 | train_loss=0.6504 | valid_loss=0.6305 | valid_acc=0.6467 | valid_macro_f1=0.6454
+Epoch 35 | train_loss=0.6494 | valid_loss=0.6308 | valid_acc=0.6498 | valid_macro_f1=0.6484
+Epoch 40 | train_loss=0.6501 | valid_loss=0.6303 | valid_acc=0.6498 | valid_macro_f1=0.6489
+Epoch 45 | train_loss=0.6497 | valid_loss=0.6306 | valid_acc=0.6562 | valid_macro_f1=0.6542
+Epoch 50 | train_loss=0.6498 | valid_loss=0.6304 | valid_acc=0.6498 | valid_macro_f1=0.6484
+
+Best validation: loss=0.6307, acc=0.6593, macro_f1=0.6587
+Saved best model to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0046_20260603_221401_llm_discrete_2additive_deepseek-v4-flash\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=0.6499, acc=0.6144, precision=0.6122, recall=0.6132, macro_f1=0.6122
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.5987 | 0.6077 | 0.6069 | 0.5986 |
+| Average Probability Voting | 0.5956 | 0.6050 | 0.6040 | 0.5955 |
+| Dynamic Single-Agent Weighting | 0.6238 | 0.6201 | 0.6204 | 0.6202 |
+| Choquet-inspired Pairwise Voting | 0.6144 | 0.6122 | 0.6132 | 0.6122 |
+Test predictions saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0046_20260603_221401_llm_discrete_2additive_deepseek-v4-flash\test_predictions.csv
+
+=== Task-level Average Single Weights ===
+
+Task: clickbait
+  Semantic    : 0.1326
+  Emotion     : 0.1931
+  Intention   : 0.1993
+  Lexical     : 0.3207
+  Consistency : 0.1542
+
+=== Task-level Top Pairwise Weights ===
+
+Task: clickbait
+  Intention + Lexical         : 0.0322
+  Emotion + Lexical           : 0.0296
+  Emotion + Intention         : 0.0050
+  Lexical + Consistency       : 0.0039
+  Semantic + Lexical          : 0.0019
+
+=== Sample-level Decision Traces ===
+
+--- Sample ---
+Task: clickbait
+Text: .亚马孙雨林原住民的“黄金劫”：躲不过的新冠，守不住的黄金 撰稿 | 记者 钟书毓过去5年，在亚马孙雨林中心的亚诺玛米部落，非法开采金矿活动急剧增加。亚诺玛米是亚马孙雨林最离群索居的部族之一，也是南美洲最大的部落，他们与外界相对隔离。有超过2.6万的亚诺玛米人生活在委内瑞拉边境附近，一个面积相当于葡萄牙大小的保护区内。亚诺玛米与世无争，但他们脚下土地里含有宝贵的矿物质，其中也包括黄金。因此，几十年来，对黄金的渴望吸引了许多非法勘探者。他们摧毁森林，污染河流，也给当地部落带来了致命的疾病。淘金热正吞噬原始森林来亚马孙雨林淘金的非法勘探者，主要沿着两条河（乌拉里科埃拉河和穆卡贾伊河）寻找黄金...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.5606 0.4394]
+Agent predictions:
+  Semantic     pred=1 conf=0.850 prob=[0.1 0.9] | 标题使用'黄金劫'、'躲不过'、'守不住'等悬念词汇，具有强烈点击诱导意图
+  Emotion      pred=0 conf=0.500 prob=[0.6 0.4] | 使用了比喻和对比，有一定吸引力但无过度情绪操控或误导
+  Intention    pred=1 conf=0.950 prob=[0.02 0.98] | 使用'黄金劫'夸张比喻，叠加疫情危机制造紧张感，煽情词语诱导点击
+  Lexical      pred=0 conf=0.700 prob=[0.85 0.15] | 标题使用引号和比喻，但无极端修饰词或感叹号，属正常新闻标题
+  Consistency  pred=1 conf=0.850 prob=[0.05 0.95] | 标题使用“黄金劫”、“躲不过”、“守不住”等煽情词汇，制造戏剧化悬念，具有点击诱导倾向。
+Single weights:
+  Semantic    : 0.1326
+  Emotion     : 0.1931
+  Intention   : 0.1993
+  Lexical     : 0.3207
+  Consistency : 0.1542
+Top pairwise weights:
+  Intention + Lexical         : 0.0322
+  Emotion + Lexical           : 0.0296
+  Emotion + Intention         : 0.0050
+
+--- Sample ---
+Task: clickbait
+Text: “一无所知”特朗普，和细思恐极的美国两万流感死者 撰稿 | 记者 单珊早在上个月，日本朝日电视台就作出惊人猜测——“美国1.4万名因流感致死的人中，部分可能死于新冠肺炎”。当时，美国疾控中心（CDC）果断回应：没有证据支持此猜测。然而11日，CDC主任雷德菲尔德在线亲自打脸：“在美国，确实有一些‘流感’死者实际感染的可能是新冠肺炎。”3月11日，美国国会众议院监督委员会就新冠肺炎疫情举行听证会，雷德菲尔德作出上述陈述。同日，特朗普向全国发表电视讲话，公布多项强有力的措施来防控疫情。CNN评价特朗普“只是一无所知”，“这次演讲的特点，与特朗普在担任总统期间的其他危机时刻一样：寻找替罪羊，以...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.3581 0.6419]
+Agent predictions:
+  Semantic     pred=1 conf=0.950 prob=[0. 1.] | 标题使用“一无所知”和“细思恐极”等煽情词汇，制造悬念和情绪冲击，属于典型点击诱导。
+  Emotion      pred=1 conf=0.900 prob=[0.05 0.95] | 使用引导情绪词'细思恐极'和负面标签制造悬念与恐慌，属典型点击诱导标题
+  Intention    pred=1 conf=0.920 prob=[0.05 0.95] | 使用‘细思恐极’制造悬念和恐惧，搭配负面标签‘一无所知’，强点击诱导
+  Lexical      pred=1 conf=0.900 prob=[0.05 0.95] | “细思恐极”是典型的网络标题党词，结合数字“两万”制造悬念与震惊效果
+  Consistency  pred=1 conf=0.850 prob=[0. 1.] | 标题使用耸动词汇和悬念，夸大特朗普无知与流感死者关联，属于点击诱导。
+Single weights:
+  Semantic    : 0.1326
+  Emotion     : 0.1931
+  Intention   : 0.1993
+  Lexical     : 0.3207
+  Consistency : 0.1542
+Top pairwise weights:
+  Intention + Lexical         : 0.0322
+  Emotion + Lexical           : 0.0296
+  Emotion + Intention         : 0.0050
+
+--- Sample ---
+Task: clickbait
+Text: 在海外发出华人声音，他躲过明枪暗箭！今天，却没能躲过那颗子弹 记者 | 卞英豪 宋祖礼当地时间11月16日上午，总部位于美国的著名华文媒体《侨报》发生枪击案，《侨报》董事长谢一宁不幸遭枪击身亡，享年58岁。他，曾是改革开放后第一批大学生。为了“新闻理想”，刻苦攻读；他，曾是铁肩担道义的新闻工作者。为了“优质报道”，扎根海外；他，曾是在美侨民最好的信息窗口。为了“中国声音”，奋斗至今。作为东方网长期以来良好的合作伙伴，我们沉痛悼念谢一宁先生不幸离世。今天，东方网·纵相新闻记者也想带您回顾谢一宁先生那段别样的人生。01拿了“两本书”复习，考上了人民大学他说：我是运气好！谈起自己的过往，谢一宁...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.4073 0.5927]
+Agent predictions:
+  Semantic     pred=1 conf=0.850 prob=[0.1 0.9] | 标题使用'明枪暗箭'、'没能躲过那颗子弹'等煽情与悬念表述，具有典型点击诱导特征
+  Emotion      pred=1 conf=0.950 prob=[0.02 0.98] | 使用'明枪暗箭'和'没能躲过那颗子弹'制造悬念与悲剧反转，明显操纵读者情绪，诱导点击。
+  Intention    pred=1 conf=0.920 prob=[0.05 0.95] | 使用'躲过明枪暗箭'等夸张比喻和'那颗子弹'制造悬念，强点击诱导意图
+  Lexical      pred=1 conf=0.900 prob=[0.05 0.95] | 使用感叹号增强情感，'躲过明枪暗箭'与'没能躲过那颗子弹'制造悬念对比，典型点击诱导模式
+  Consistency  pred=0 conf=0.900 prob=[0.85 0.15] | 标题与内容一致，概括了主人公一生躲过危险但最终不幸遇难的事实，无矛盾或误导
+Single weights:
+  Semantic    : 0.1326
+  Emotion     : 0.1931
+  Intention   : 0.1993
+  Lexical     : 0.3207
+  Consistency : 0.1542
+Top pairwise weights:
+  Intention + Lexical         : 0.0322
+  Emotion + Lexical           : 0.0296
+  Emotion + Intention         : 0.0050
+
+--- Sample ---
+Task: clickbait
+Text: 金正恩连续指导军事活动，现场照片透露朝鲜最新防疫形势？ 收录于话题##朝鲜撰稿 | 记者 冯茵伦据韩联社3月3日报道，朝鲜最高领导人金正恩前一天指导了前沿远程炮兵部队发射疑似火箭炮飞行器的训练，并亲自下达开炮命令。而在此前2天，金正恩还指导了朝鲜人民军的联合打击训练。金正恩连续出席军事活动，引起了外界特别是美方的高度关注。而在朝鲜官方公布的相关照片里，还“意外”地出现了朝鲜高层官员佩戴口罩的画面。这也是全球新冠疫情爆发以来，不曾有过的情景。 （图说：朝中社3月3日报道，金正恩于２日视察了朝鲜人民军前线远程炮兵部队火力打击训练场。）据韩军联合参谋本部消息，朝鲜2日中午12时37分左右从江原...
+Gold label: 0 | Final prediction: 1 | Final probs: [0.4573 0.5427]
+Agent predictions:
+  Semantic     pred=1 conf=0.800 prob=[0.1 0.9] | 标题使用疑问句暗示有隐藏信息，利用好奇心诱导点击，属于标题党手法
+  Emotion      pred=1 conf=0.700 prob=[0.15 0.85] | 问句形式制造好奇心缺口，‘透露’暗示隐藏信息，带有点击诱导意图
+  Intention    pred=1 conf=0.800 prob=[0.15 0.85] | 问句结尾制造好奇心缺口，'现场照片透露'暗示独家信息，具有点击诱导意图
+  Lexical      pred=1 conf=0.600 prob=[0.2 0.8] | 结尾问号制造悬念，但缺少极端修饰词，判断为轻度标题党
+  Consistency  pred=0 conf=0.820 prob=[0.85 0.15] | 标题与内容一致，均围绕军事活动和防疫照片展开，无明显矛盾或误导
+Single weights:
+  Semantic    : 0.1326
+  Emotion     : 0.1931
+  Intention   : 0.1993
+  Lexical     : 0.3207
+  Consistency : 0.1542
+Top pairwise weights:
+  Intention + Lexical         : 0.0322
+  Emotion + Lexical           : 0.0296
+  Emotion + Intention         : 0.0050
+
+--- Sample ---
+Task: clickbait
+Text: 张扣扣案二审明日开庭，精神病法医鉴定专家出庭申请被驳回 撰稿 | 记者 宋祖礼 4月11日9时，陕西省高级人民法院将在汉中市中级人民法院刑事审判法庭公开开庭审理上诉人张扣扣故意杀人、故意毁坏财物一案。关于此前辩方律师针对有精神病法医专家作出“张扣扣在作案时有急性应激障碍”论证，提出相关专家出庭作证的申请，张扣扣辩护律师邓学平也表示其已被法院驳回。4月9日，邓学平律师在微博中贴出了陕西省高院的通知书，表示精神病法医鉴定专家出庭申请被法院正式驳回。“关于张扣扣作案时精神是否正常，依然会是二审的争议焦点之一，专家出庭作证的申请虽然被驳回，但是专家的审查意见是可以作为证据使用的。” 邓学平在接受...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.7696 0.2304]
+Agent predictions:
+  Semantic     pred=0 conf=0.900 prob=[0.95 0.05] | 标题直接陈述事实，无悬念或夸大词汇，内容为客观新闻报道。
+  Emotion      pred=0 conf=0.850 prob=[0.92 0.08] | 标题仅陈述案件事实，无情感夸张或悬念诱导，属于客观新闻标题
+  Intention    pred=0 conf=0.920 prob=[0.95 0.05] | 客观陈述案件进展，无诱导或操纵性语言
+  Lexical      pred=0 conf=0.950 prob=[0.95 0.05] | 平实的新闻陈述，无极端词汇或标点，非标题党
+  Consistency  pred=0 conf=0.900 prob=[0.95 0.05] | 标题客观陈述案件事实，与内容完全一致，无夸张或矛盾
+Single weights:
+  Semantic    : 0.1326
+  Emotion     : 0.1931
+  Intention   : 0.1993
+  Lexical     : 0.3207
+  Consistency : 0.1542
+Top pairwise weights:
+  Intention + Lexical         : 0.0322
+  Emotion + Lexical           : 0.0296
+  Emotion + Intention         : 0.0050
+
+Readable model summary saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0046_20260603_221401_llm_discrete_2additive_deepseek-v4-flash\model_summary.json
+Latest model copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\best_choquet_model.pt
+Latest summary copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\model_summary.json
+
+=== Capacity Monotonicity Diagnostic ===
+{'checked': 211, 'violations': 0, 'max_violation': 0.0}
+Run metadata saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0046_20260603_221401_llm_discrete_2additive_deepseek-v4-flash\run_result.json
+
+Done. Agents produced fixed outputs; only the selected Choquet aggregation layer was trained.

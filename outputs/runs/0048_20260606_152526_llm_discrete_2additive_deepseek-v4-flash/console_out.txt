@@ -1,0 +1,203 @@
+=== Runtime Configuration ===
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: deepseek-v4-flash
+LLM_MODEL_CANDIDATES: deepseek-v4-pro
+LLM_BASE_URL: https://api.deepseek.com/v1
+LLM_API_KEY_ENV: LLM_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_ds.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0048_20260606_152526_llm_discrete_2additive_deepseek-v4-flash
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv
+Rows: 2119
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        1167
+           1         952
+
+Split: train=1483, valid=317, test=319
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.05, 0.95] confidence=0.900 explanation=包含'震惊'、'忍不住点开'、'曝光'等典型点击诱导用语
+Emotion      probs=[0.0, 1.0] confidence=0.950 explanation=使用'震惊'、'忍不住点开'、'真相曝光'等夸张悬念词汇，典型情绪操控标题党
+Intention    probs=[0.01, 0.99] confidence=0.970 explanation=使用'震惊'、'忍不住点开'及'真相曝光'等典型标题党手法，意图吸引点击
+Lexical      probs=[0.02, 0.98] confidence=0.950 explanation='震惊！'搭配'忍不住点开''真相曝光'，典型标题党模式
+Consistency  probs=[0.05, 0.95] confidence=0.850 explanation=标题使用'震惊'、'忍不住点开'、'真相曝光'等煽动性词汇，典型标题党手法
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+LLM cache warm plan: total=10595, existing_success=10595, need_requests=0
+
+=== Dataset Integrity Check ===
+Dataset Samples: 2119
+Expected Records: 10595
+SUCCESS Records: 10595
+Missing Records: 0
+Complete Samples : 2119
+Incomplete Samples : 0
+LLM cache saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_ds.json
+
+=== Training Choquet Layer (discrete_2additive) ===
+Epoch 01 | train_loss=0.8460 | valid_loss=0.8269 | valid_acc=0.6435 | valid_macro_f1=0.6411
+Epoch 05 | train_loss=0.7015 | valid_loss=0.7059 | valid_acc=0.6404 | valid_macro_f1=0.6373
+Epoch 10 | train_loss=0.6545 | valid_loss=0.6590 | valid_acc=0.6309 | valid_macro_f1=0.6276
+Epoch 15 | train_loss=0.6493 | valid_loss=0.6534 | valid_acc=0.6372 | valid_macro_f1=0.6301
+Epoch 20 | train_loss=0.6487 | valid_loss=0.6525 | valid_acc=0.6467 | valid_macro_f1=0.6407
+Epoch 25 | train_loss=0.6491 | valid_loss=0.6527 | valid_acc=0.6341 | valid_macro_f1=0.6258
+Epoch 30 | train_loss=0.6478 | valid_loss=0.6519 | valid_acc=0.6309 | valid_macro_f1=0.6261
+
+Best validation: loss=0.8269, acc=0.6435, macro_f1=0.6411
+Saved best model to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0048_20260606_152526_llm_discrete_2additive_deepseek-v4-flash\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=0.8085, acc=0.6301, precision=0.6293, recall=0.6307, macro_f1=0.6288
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.6176 | 0.6303 | 0.6278 | 0.6171 |
+| Average Probability Voting | 0.6144 | 0.6277 | 0.6250 | 0.6139 |
+| Dynamic Single-Agent Weighting | 0.6144 | 0.6167 | 0.6178 | 0.6140 |
+| Choquet-inspired Pairwise Voting | 0.6301 | 0.6293 | 0.6307 | 0.6288 |
+Test predictions saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0048_20260606_152526_llm_discrete_2additive_deepseek-v4-flash\test_predictions.csv
+
+=== Task-level Average Single Weights ===
+
+Task: clickbait
+  Semantic    : 0.1828
+  Emotion     : 0.1865
+  Intention   : 0.1702
+  Lexical     : 0.2025
+  Consistency : 0.2580
+
+=== Task-level Top Pairwise Weights ===
+
+Task: clickbait
+  Lexical + Consistency       : 0.0192
+  Emotion + Consistency       : 0.0189
+  Semantic + Consistency      : 0.0154
+  Intention + Consistency     : 0.0138
+  Emotion + Lexical           : -0.0111
+
+=== Sample-level Decision Traces ===
+
+--- Sample ---
+Task: clickbait
+Text: 收到“领导”或“熟人”发来的iMessage短信，当心受骗！ “我是XXX这是我的新号码你保存备注好方便日后联系”近期，警方在侦办电信网络诈骗案件过程中，发现有不少人遭遇了“冒充领导、熟人”类型的诈骗，诈骗分子通过iMessage功能群发信息，如果你一旦回复，骗子便会继续通过iMessage功能进行对话，利用“花式”理由，对你进行诈骗。案例今年2月，上海的李先生突然收到一条iMessage短信，对方自称是其老友赵先生。双方闲聊几句后，这位赵先生就称需要李先生帮忙办个私事，给一位所谓老领导的亲戚转一笔汇款，李先生爽快答应。谁知转账成功后，这位赵先生又以银行信息填写错误，未收到钱款为由要求其...
+Gold label: 1 | Final prediction: 0 | Final probs: [0.8014 0.1986]
+Agent predictions:
+  Semantic     pred=0 conf=0.850 prob=[0.9 0.1] | 标题为直接警示性陈述，无悬念或夸张诱导，属于正常安全提醒。
+  Emotion      pred=1 conf=0.700 prob=[0.1 0.9] | 警示性语句，'当心受骗'制造紧迫感和悬念，有诱导点击意图。
+  Intention    pred=1 conf=0.850 prob=[0.1 0.9] | 使用加引号的‘领导’‘熟人’制造悬念，并以‘当心受骗’警示诱导点击。
+  Lexical      pred=0 conf=0.800 prob=[0.85 0.15] | 警示性语气但不含极端修饰或悬念，属于正常提醒信息
+  Consistency  pred=0 conf=0.950 prob=[0.92 0.08] | 标题与内容完全一致，均为警示性信息，无夸大或矛盾，非标题党。
+Single weights:
+  Semantic    : 0.1828
+  Emotion     : 0.1865
+  Intention   : 0.1702
+  Lexical     : 0.2025
+  Consistency : 0.2580
+Top pairwise weights:
+  Lexical + Consistency       : 0.0192
+  Emotion + Consistency       : 0.0189
+  Semantic + Consistency      : 0.0154
+
+--- Sample ---
+Task: clickbait
+Text: 朝鲜“金达莱”，人民军之花 撰稿 | 记者 冯茵伦每年早春四月，朝鲜千里积雪刚开始融化，一种粉艳欲滴的山花便不畏寒冷，迎风冒雪，漫山遍野开得红火。 朝鲜人民叫它“金达莱”，称赞它是春天的使者。11月25日，寒冬料峭，朝鲜最高领导人金正恩来到偏远的西南前线，慰问驻守在此的人民军第5492部队所属女兵连。金正恩向女兵连队授予双筒望远镜和自动步枪，期许连队全体女兵成为真正的“女革命家、党的女儿”。 朝中社的一张照片上，激动落泪的女兵们簇拥着满面笑容的金正恩，海风吹红了姑娘们的脸蛋。 朝鲜人民也叫她们 “金达莱”， 赞美她们美丽、不畏艰难、奋力抗争。 在朝鲜纪录片《朝鲜女性面貌》中有这样一段话：...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.9561 0.0439]
+Agent predictions:
+  Semantic     pred=0 conf=0.900 prob=[0.85 0.15] | 标题为描述性比喻，无悬念、夸张或诱导性词汇，属于正常新闻报道
+  Emotion      pred=0 conf=0.800 prob=[0.85 0.15] | 象征性赞美，语调平和，不制造夸张情绪或悬念
+  Intention    pred=0 conf=0.900 prob=[0.95 0.05] | 标题是中性描述，使用比喻手法，无诱导点击或操纵意图
+  Lexical      pred=0 conf=0.800 prob=[0.85 0.15] | 标题使用引号和比喻，但无极端修饰词或感叹号，语气平实，非典型标题党。
+  Consistency  pred=0 conf=0.900 prob=[0.85 0.15] | 标题与内容一致，均为客观介绍朝鲜女兵，无夸大或矛盾
+Single weights:
+  Semantic    : 0.1828
+  Emotion     : 0.1865
+  Intention   : 0.1702
+  Lexical     : 0.2025
+  Consistency : 0.2580
+Top pairwise weights:
+  Lexical + Consistency       : 0.0192
+  Emotion + Consistency       : 0.0189
+  Semantic + Consistency      : 0.0154
+
+--- Sample ---
+Task: clickbait
+Text: 中国更开放！世界期待第二届中国国际进口博览会 撰稿 | 东方智库首席研究员 周锡生第二届中国国际进口博览会（下称“进博会”）即将在上海开幕，各项准备工作进入最后冲刺，一系列好消息不断传来，参会外国政要有的已经先期到达，有的正在赶来上海的途中。世界150多个国家和地区的3000多家参展企业，正在为开幕做最后的“冲刺”，国际媒体关于进博会的报道也在迅速升温。∆ 这是11月2日拍摄的第二届中国国际进口博览会国家展展区内的中国馆大屏幕。（来源：新华社记者方喆摄）第二届进博会定会以更加盛大的规模、更加靓丽的姿态、更加开放的形象、更为丰富的展出、更为鲜明的特色、更具多样的风格，展示在人们面前。中国更...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.9601 0.0399]
+Agent predictions:
+  Semantic     pred=0 conf=0.950 prob=[0.9 0.1] | 标题和内容均为正面新闻报道，无好奇心缺口或夸大诱导，属于常规信息发布。
+  Emotion      pred=0 conf=0.800 prob=[0.85 0.15] | 语调正面但平稳，感叹号略带情绪但非夸张或操控，属于正常新闻标题
+  Intention    pred=0 conf=0.900 prob=[0.85 0.15] | 标题为正面新闻陈述，无诱导点击或操纵意图
+  Lexical      pred=0 conf=0.800 prob=[0.85 0.15] | 感叹号增强语气，但内容为正常新闻陈述，无极端修饰或悬念诱导
+  Consistency  pred=0 conf=0.950 prob=[0.92 0.08] | 标题与内容高度一致，均为进博会客观报道，无矛盾或转折
+Single weights:
+  Semantic    : 0.1828
+  Emotion     : 0.1865
+  Intention   : 0.1702
+  Lexical     : 0.2025
+  Consistency : 0.2580
+Top pairwise weights:
+  Lexical + Consistency       : 0.0192
+  Emotion + Consistency       : 0.0189
+  Semantic + Consistency      : 0.0154
+
+--- Sample ---
+Task: clickbait
+Text: 烟花三月下扬州，这里竟还藏着一个年产55亿支牙刷的小镇，了不起！ 收录于话题#《了不起的小镇》特别策划撰稿 | 记者 贾天荣 许明 视频 | 记者 丁一涵 汪鹏翀当你在出差、旅行时，随手拿起酒店为你准备的一次性牙刷，有没有想过，你使用的牙刷、日用品可能出自扬州市东郊，一个不足40平方公里的小镇。这样一个小镇何以被称为中国牙刷之都？又是如何包揽全国百分之八十的牙刷年产量、一半的日用品产量？今天，我们带大家来看看'了不起的小镇'——'中国牙刷之都'杭集。'凡是有人类居住的地方，就有杭集生产的牙刷''凡是有人类居住的地方，就有杭集生产的牙刷。'扬州东郊杭集镇牙刷博物馆的墙上，刻有这样一句话。这...
+Gold label: 0 | Final prediction: 1 | Final probs: [0.1033 0.8967]
+Agent predictions:
+  Semantic     pred=1 conf=0.800 prob=[0.1 0.9] | 标题用'竟还藏着'制造好奇心，主观评价'了不起'，具有点击诱导特征
+  Emotion      pred=1 conf=0.850 prob=[0.1 0.9] | 使用'竟还藏着'制造好奇心缺口，'了不起'带有情绪煽动，属于点击诱导
+  Intention    pred=1 conf=0.850 prob=[0.2 0.8] | 用'竟还藏着'制造好奇心缺口，主观褒扬'了不起'，有轻度点击诱导
+  Lexical      pred=1 conf=0.920 prob=[0.05 0.95] | '竟还藏着'引发好奇心，配合惊人数字和感叹号，典型的点击诱导模式
+  Consistency  pred=1 conf=0.850 prob=[0.2 0.8] | 标题使用'竟还藏着'制造好奇，数字55亿与内容65亿有细微出入，但整体内容相符，存在一定点击诱导。
+Single weights:
+  Semantic    : 0.1828
+  Emotion     : 0.1865
+  Intention   : 0.1702
+  Lexical     : 0.2025
+  Consistency : 0.2580
+Top pairwise weights:
+  Lexical + Consistency       : 0.0192
+  Emotion + Consistency       : 0.0189
+  Semantic + Consistency      : 0.0154
+
+--- Sample ---
+Task: clickbait
+Text: 怎么是你？酒店前台出现这一幕，服务员都愣了…… “骑车给你送餐的人除了外卖小哥还有可能是交警！”前几天杭州早高峰街头出现了这样暖心一幕当时一位外卖小哥在骑车送餐途中不慎摔倒受伤心里还惦记着自己的订单附近交警果断出手不仅帮忙扶起、包扎、喊120之后还帮他把订单准时送达酒店这段视频在网上火了收到了许多网友的点赞那天杭州西湖交警大队北山中队副队长周挺正在执勤突然听到车辆倒地的声音回头一看身后几十米开外一辆外卖电动车倒在地上外卖小哥也摔倒了周挺赶紧跑过去查看情况小哥看着二三十岁的年纪倒在地上疼得直叫唤车上的外卖也散落一地周挺俯身询问“哪里受伤了？你感觉怎么样？”小哥眉头紧锁左手抓着右手腕没吭声周...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.2389 0.7611]
+Agent predictions:
+  Semantic     pred=1 conf=0.900 prob=[0.05 0.95] | 标题使用'怎么是你？''这一幕''愣了'等悬念词制造好奇心缺口，典型点击诱导。
+  Emotion      pred=1 conf=0.850 prob=[0.05 0.95] | 悬念式开头'怎么是你？'和省略号制造好奇缺口，服务员发愣强调意外感，明显诱导点击
+  Intention    pred=1 conf=0.900 prob=[0.05 0.95] | 使用悬念句式'怎么是你？'和省略号，刻意制造好奇心缺口，诱导点击
+  Lexical      pred=1 conf=0.920 prob=[0.05 0.95] | 疑问句和‘这一幕’制造悬念，‘愣了’暗示意外，典型标题党模式
+  Consistency  pred=0 conf=0.700 prob=[0.8 0.2] | 标题悬念手法与内容基本一致，无显著矛盾，但略有诱导性
+Single weights:
+  Semantic    : 0.1828
+  Emotion     : 0.1865
+  Intention   : 0.1702
+  Lexical     : 0.2025
+  Consistency : 0.2580
+Top pairwise weights:
+  Lexical + Consistency       : 0.0192
+  Emotion + Consistency       : 0.0189
+  Semantic + Consistency      : 0.0154
+
+Readable model summary saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0048_20260606_152526_llm_discrete_2additive_deepseek-v4-flash\model_summary.json
+Latest model copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\best_choquet_model.pt
+Latest summary copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\model_summary.json
+
+=== Capacity Monotonicity Diagnostic ===
+{'checked': 211, 'violations': 0, 'max_violation': 0.0}
+Run metadata saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0048_20260606_152526_llm_discrete_2additive_deepseek-v4-flash\run_result.json
+
+Done. Agents produced fixed outputs; only the selected Choquet aggregation layer was trained.

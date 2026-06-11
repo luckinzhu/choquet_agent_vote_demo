@@ -1,0 +1,96 @@
+=== Runtime Configuration ===
+RANDOM_SEED: 78
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: gpt-5.5
+LLM_MODEL_CANDIDATES: deepseek-v4-pro
+LLM_BASE_URL: https://xiaohumini.site/v1
+LLM_API_KEY_ENV: LLM_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_gpt.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0052_20260608_110645_llm_discrete_2additive_gpt-5.5
+
+RUN_SAMPLE_LIMIT active: using 100 rows for this run.
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv
+Rows: 100
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        54
+           1        46
+
+Split: train=70, valid=14, test=16
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.02, 0.98] confidence=0.960 explanation=含“震惊”“忍不住点开”“真相曝光”等典型诱导词
+Emotion      probs=[0.01, 0.99] confidence=0.980 explanation=含“震惊”“忍不住点开”“真相曝光”等强诱导词
+Intention    probs=[0.01, 0.99] confidence=0.980 explanation=使用震惊、忍不住点开、真相曝光等强诱导词
+Lexical      probs=[0.01, 0.99] confidence=0.980 explanation=“震惊”“忍不住点开”“真相曝光”均为典型标题党词汇
+Consistency  probs=[0.02, 0.98] confidence=0.950 explanation=使用“震惊”“真相曝光”等夸张悬念词诱导点击
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+LLM cache warm plan: total=500, existing_success=494, need_requests=6
+Precomputing LLM cache:   0%|          | 0/6 [00:00<?, ?req/s]Precomputing LLM cache:   0%|          | 0/6 [00:00<?, ?req/s, agent=Semantic, row=30]Cache warm failed: row=30 agent=Semantic error=LLM request failed after retries: HTTP 500 from https://xiaohumini.site/v1/chat/completions: {"error":{"message":"sensitive words detected (request id: 20260608110721223991695NJ1wzbsu)","type":"new_api_error","param":"","code":"local:sensitive_words"}}
+Precomputing LLM cache:  17%|█▋        | 1/6 [00:16<01:20, 16.03s/req, agent=Semantic, row=30]Precomputing LLM cache:  17%|█▋        | 1/6 [00:16<01:20, 16.03s/req, agent=Semantic, row=78]Cache warm failed: row=78 agent=Semantic error=LLM request failed after retries: HTTP 500 from https://xiaohumini.site/v1/chat/completions: {"error":{"message":"sensitive words detected (request id: 20260608110737705510472H4AJpRp7)","type":"new_api_error","param":"","code":"local:sensitive_words"}}
+Precomputing LLM cache:  33%|███▎      | 2/6 [00:32<01:05, 16.43s/req, agent=Semantic, row=78]Precomputing LLM cache:  33%|███▎      | 2/6 [00:32<01:05, 16.43s/req, agent=Semantic, row=93]Cache warm failed: row=93 agent=Semantic error=LLM request failed after retries: HTTP 500 from https://xiaohumini.site/v1/chat/completions: {"error":{"message":"sensitive words detected (request id: 2026060811075348408800986seDkLp)","type":"new_api_error","param":"","code":"local:sensitive_words"}}
+Precomputing LLM cache:  50%|█████     | 3/6 [00:48<00:48, 16.03s/req, agent=Semantic, row=93]Precomputing LLM cache:  50%|█████     | 3/6 [00:48<00:48, 16.03s/req, agent=Consistency, row=30]Cache warm failed: row=30 agent=Consistency error=LLM request failed after retries: HTTP 500 from https://xiaohumini.site/v1/chat/completions: {"error":{"message":"sensitive words detected (request id: 20260608110808944846497e0OQiqVW)","type":"new_api_error","param":"","code":"local:sensitive_words"}}
+Precomputing LLM cache:  67%|██████▋   | 4/6 [01:03<00:31, 15.85s/req, agent=Consistency, row=30]Precomputing LLM cache:  67%|██████▋   | 4/6 [01:03<00:31, 15.85s/req, agent=Consistency, row=78]Cache warm failed: row=78 agent=Consistency error=LLM request failed after retries: HTTP 500 from https://xiaohumini.site/v1/chat/completions: {"error":{"message":"sensitive words detected (request id: 20260608110825426270264kQq8RU2A)","type":"new_api_error","param":"","code":"local:sensitive_words"}}
+Precomputing LLM cache:  83%|████████▎ | 5/6 [01:20<00:16, 16.04s/req, agent=Consistency, row=78]Precomputing LLM cache:  83%|████████▎ | 5/6 [01:20<00:16, 16.04s/req, agent=Consistency, row=93]Cache warm failed: row=93 agent=Consistency error=LLM request failed after retries: HTTP 500 from https://xiaohumini.site/v1/chat/completions: {"error":{"message":"sensitive words detected (request id: 2026060811084172651649UUnbyhcb)","type":"new_api_error","param":"","code":"local:sensitive_words"}}
+Precomputing LLM cache: 100%|██████████| 6/6 [01:35<00:00, 15.91s/req, agent=Consistency, row=93]Precomputing LLM cache: 100%|██████████| 6/6 [01:35<00:00, 15.98s/req, agent=Consistency, row=93]
+LLM cache precompute is incomplete. Missing entries:
+  - row=30 agent=Semantic model=gpt-5.5 text='那些马拉松比赛的最后一名，同样值得尊敬\n撰稿 | 记者 卞英豪连日来，包头马拉松志愿者轮番“劝退”最后一名的事件不断发酵。昨日（8月23日）赛事组委会发表声明称，已对志愿者进行批评教育，并对此事带来的负面影响致以歉意。\xa0是志愿者行为不当，还'
+  - row=78 agent=Semantic model=gpt-5.5 text='秦刚：站在中美十字路口的新一任“功夫熊猫”\n撰稿\xa0|\xa0记者 周安娜 汪鹏翀美国当地时间2021年7月28日，中华人民共和国新任驻美利坚合众国特命全权大使秦刚抵达美国履新。秦刚大使此后发出了自己到任后的第一条推特，内容是：“已抵达美国，期待在'
+  - row=93 agent=Semantic model=gpt-5.5 text='起中文名，说中国话，写中国字……外国驻华大使们这样亲近中国\n撰稿\xa0|\xa0\xa0实习生 孔宁婧\xa0记者\xa0高兴\xa0盛琬婷罗班松、方澜意、王纯万、潘迪、马磊、高洋、吴若兰、谢胜文、潘绮瑞、牛望道……一些看似“平平无奇”的中文名，近日一同出现在一份名单中。这'
+  - row=30 agent=Consistency model=gpt-5.5 text='那些马拉松比赛的最后一名，同样值得尊敬\n撰稿 | 记者 卞英豪连日来，包头马拉松志愿者轮番“劝退”最后一名的事件不断发酵。昨日（8月23日）赛事组委会发表声明称，已对志愿者进行批评教育，并对此事带来的负面影响致以歉意。\xa0是志愿者行为不当，还'
+  - row=78 agent=Consistency model=gpt-5.5 text='秦刚：站在中美十字路口的新一任“功夫熊猫”\n撰稿\xa0|\xa0记者 周安娜 汪鹏翀美国当地时间2021年7月28日，中华人民共和国新任驻美利坚合众国特命全权大使秦刚抵达美国履新。秦刚大使此后发出了自己到任后的第一条推特，内容是：“已抵达美国，期待在'
+  - row=93 agent=Consistency model=gpt-5.5 text='起中文名，说中国话，写中国字……外国驻华大使们这样亲近中国\n撰稿\xa0|\xa0\xa0实习生 孔宁婧\xa0记者\xa0高兴\xa0盛琬婷罗班松、方澜意、王纯万、潘迪、马磊、高洋、吴若兰、谢胜文、潘绮瑞、牛望道……一些看似“平平无奇”的中文名，近日一同出现在一份名单中。这'
+
+=== Dataset Integrity Check ===
+Dataset Samples: 100
+Expected Records: 500
+SUCCESS Records: 494
+Missing Records: 6
+Complete Samples : 97
+Incomplete Samples : 3
+
+Dataset integrity failed.
+FAILED cache records: 6
+
+Auto retry started...
+Auto retry exit code: 1
+
+=== Dataset Integrity Recheck ===
+Dataset Samples: 100
+Expected Records: 500
+SUCCESS Records: 494
+Missing Records: 6
+Complete Samples : 97
+Incomplete Samples : 3
+Training blocked.
+Traceback (most recent call last):
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\main.py", line 501, in <module>
+    main()
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\main.py", line 407, in main
+    _ensure_dataset_integrity_or_retry(df, model)
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\main.py", line 315, in _ensure_dataset_integrity_or_retry
+    raise_if_incomplete(integrity)
+  File "F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\integrity_checker.py", line 222, in raise_if_incomplete
+    raise RuntimeError(
+RuntimeError: 
+ERROR
+
+Dataset integrity check failed.
+
+3 samples are missing agent outputs.
+
+Run:
+
+python scripts/retry_failed_cache.py
+
+before training.

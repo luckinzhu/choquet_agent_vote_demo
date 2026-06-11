@@ -1,0 +1,24 @@
+{
+  "random_seed": 78,
+  "agent_backend_requested": "llm",
+  "choquet_mode": "discrete_2additive",
+  "llm_provider": "openai_compatible",
+  "llm_model": "gpt-5.5",
+  "llm_model_candidates": [
+    "deepseek-v4-pro"
+  ],
+  "llm_base_url": "https://xiaohumini.site/v1",
+  "llm_api_key_env": "LLM_API_KEY",
+  "api_key_detected": true,
+  "llm_cache_enabled": true,
+  "llm_cache_path": "F:\\PY_projects\\03_STCLABS\\Choquet\\choquet_agent_vote_demo\\outputs\\llm_cache_zx_gpt.json",
+  "epochs": 30,
+  "batch_size": 32,
+  "learning_rate": 0.005,
+  "weight_decay": 0.0001,
+  "device_requested": "auto",
+  "device_effective": "cuda",
+  "cuda_available": true,
+  "run_sample_limit": 100,
+  "choquet_mode_effective": "discrete_2additive"
+}

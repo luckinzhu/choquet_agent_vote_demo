@@ -1,0 +1,208 @@
+=== Runtime Configuration ===
+RANDOM_SEED: 78
+DATA_PATH: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\tencent.csv
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: deepseek-v4-flash
+LLM_MODEL_CANDIDATES: deepseek-v4-pro
+LLM_BASE_URL: https://api.deepseek.com/v1
+LLM_API_KEY_ENV: LLM_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_tc_ds.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0066_20260611_111432_llm_discrete_2additive_deepseek-v4-flash
+
+RUN_SAMPLE_LIMIT active: using 2000 rows for this run.
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\tencent.csv
+Rows: 2000
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        1022
+           1         978
+
+Split: train=1400, valid=299, test=301
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.0, 1.0] confidence=1.000 explanation=使用'震惊'、'忍不住点开'等典型标题党词汇，明确诱导点击
+Emotion      probs=[0.02, 0.98] confidence=0.950 explanation=强烈情绪词、直接点击诱导和悬念手法，典型标题党
+Intention    probs=[0.0, 1.0] confidence=0.980 explanation=使用'震惊'、'忍不住点开'、'真相曝光'等典型标题党词汇，强烈点击诱导
+Lexical      probs=[0.02, 0.98] confidence=0.960 explanation='震惊'、'真相曝光'等词汇配合自我指涉文案，典型的点击诱导模式
+Consistency  probs=[0.1, 0.9] confidence=0.850 explanation=标题使用'震惊'、'忍不住点开'等典型点击诱导词汇，缺乏实质内容
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+LLM cache warm plan: total=10000, existing_success=9998, need_requests=2
+Precomputing LLM cache:   0%|          | 0/2 [00:00<?, ?req/s]Precomputing LLM cache:   0%|          | 0/2 [00:00<?, ?req/s, agent=Consistency, row=1569]Precomputing LLM cache:  50%|█████     | 1/2 [00:04<00:04,  4.67s/req, agent=Consistency, row=1569]Precomputing LLM cache:  50%|█████     | 1/2 [00:04<00:04,  4.67s/req, agent=Consistency, row=1770]Precomputing LLM cache: 100%|██████████| 2/2 [00:09<00:00,  4.95s/req, agent=Consistency, row=1770]Precomputing LLM cache: 100%|██████████| 2/2 [00:09<00:00,  4.91s/req, agent=Consistency, row=1770]
+
+=== Dataset Integrity Check ===
+Dataset Samples: 2000
+Expected Records: 10000
+SUCCESS Records: 10000
+Missing Records: 0
+Complete Samples : 2000
+Incomplete Samples : 0
+LLM cache saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_tc_ds.json
+
+=== Training Choquet Layer (discrete_2additive) ===
+Epoch 01 | train_loss=0.8337 | valid_loss=0.7910 | valid_acc=0.6656 | valid_macro_f1=0.6624
+Epoch 05 | train_loss=0.7185 | valid_loss=0.7042 | valid_acc=0.6890 | valid_macro_f1=0.6878
+Epoch 10 | train_loss=0.6691 | valid_loss=0.6556 | valid_acc=0.6722 | valid_macro_f1=0.6709
+Epoch 15 | train_loss=0.6457 | valid_loss=0.6351 | valid_acc=0.6722 | valid_macro_f1=0.6706
+Epoch 20 | train_loss=0.6369 | valid_loss=0.6278 | valid_acc=0.6689 | valid_macro_f1=0.6664
+Epoch 25 | train_loss=0.6339 | valid_loss=0.6257 | valid_acc=0.6656 | valid_macro_f1=0.6628
+Epoch 30 | train_loss=0.6336 | valid_loss=0.6253 | valid_acc=0.6656 | valid_macro_f1=0.6628
+
+Best validation: loss=0.7042, acc=0.6890, macro_f1=0.6878
+Saved best model to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0066_20260611_111432_llm_discrete_2additive_deepseek-v4-flash\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=0.7716, acc=0.5947, precision=0.5944, recall=0.5937, macro_f1=0.5934
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.6246 | 0.6348 | 0.6274 | 0.6203 |
+| Average Probability Voting | 0.6312 | 0.6408 | 0.6339 | 0.6275 |
+| Dynamic Single-Agent Weighting | 0.5947 | 0.5944 | 0.5937 | 0.5934 |
+| Choquet-inspired Pairwise Voting | 0.5947 | 0.5944 | 0.5937 | 0.5934 |
+Test predictions saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0066_20260611_111432_llm_discrete_2additive_deepseek-v4-flash\test_predictions.csv
+
+=== Task-level Average Single Weights ===
+
+Task: clickbait
+  Semantic    : 0.1573
+  Emotion     : 0.2211
+  Intention   : 0.1723
+  Lexical     : 0.2163
+  Consistency : 0.2329
+
+=== Task-level Top Pairwise Weights ===
+
+Task: clickbait
+  Emotion + Consistency       : 0.0245
+  Lexical + Consistency       : 0.0152
+  Emotion + Lexical           : 0.0070
+  Intention + Consistency     : 0.0056
+  Semantic + Consistency      : -0.0027
+
+=== Sample-level Decision Traces ===
+
+--- Sample ---
+Task: clickbait
+Text: 滞留武汉，异乡人在煎熬 内容: 很多细碎的东西开始变得巨大、不可忽视。有天她听到了隔壁邻居通过厕所传来的咳嗽声，犹如炸弹投向了她敏感的神经。像是某种强迫症，她每天开始数，邻居咳嗽了多久，什么时候咳到呕吐了，什么时候听不到他的呕吐声了，“心态也是跟着他的这个咳嗽声在不断地起伏”。半个月后，声音彻底消失了。她无法猜测那个邻居的命运。撰文丨谢梦遥 王雨娟图片丨尹夕远来源 | 每日人物社本作品著作权归每日人物独家所有，作品信息网络传播权归深圳市腾讯计算机系统有限公司独家所有，未经授权，不得转载。封城除夕之夜，一切都好。旅店老板做了年夜饭，打了一点送过来。口罩很容易在药店买到。房间里屯了牛奶，营养...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.8948 0.1052]
+Agent predictions:
+  Semantic     pred=0 conf=0.900 prob=[0.95 0.05] | 标题平实陈述事实，无夸张悬念或诱导词汇，属于正常新闻报道。
+  Emotion      pred=1 conf=0.850 prob=[0.1 0.9] | 使用'煎熬'等强烈负面词汇，暗示痛苦与无助，情感操控明显，具备点击诱导特征
+  Intention    pred=0 conf=0.850 prob=[0.9 0.1] | 标题描述事实，无夸张或诱导语言，属于中性报道
+  Lexical      pred=0 conf=0.800 prob=[0.85 0.15] | 缺乏极端修饰词和感叹号，情感较克制，不属典型标题党模式
+  Consistency  pred=0 conf=0.920 prob=[0.95 0.05] | 标题与内容高度一致，真实反映了滞留者的煎熬经历，没有夸大或误导性表达
+Single weights:
+  Semantic    : 0.1573
+  Emotion     : 0.2211
+  Intention   : 0.1723
+  Lexical     : 0.2163
+  Consistency : 0.2329
+Top pairwise weights:
+  Emotion + Consistency       : 0.0245
+  Lexical + Consistency       : 0.0152
+  Emotion + Lexical           : 0.0070
+
+--- Sample ---
+Task: clickbait
+Text: 起底南京禄口机场“失守”原因 | 新乡医学院一附院万人转移 内容: 起底南京禄口机场“失守”原因7月28日上午10点30分，南京第八场新冠肺炎疫情防控新闻发布会上，南京市卫健委副主任杨大锁通报，2021年7月27日0-24时，南京市新增本土新冠肺炎确诊病例47例（其中5例为无症状感染者转为确诊病例），新增无症状感染者1例。截至7月27日24时，全市累计报告本土确诊病例153例（其中81例为轻型，68例为普通型，4例为重型），本土无症状感染者2例。无论是南京本土新增病例，还是外溢出去的感染病例，几乎都与此次疫情的中心——南京禄口机场高度相关。据悉，南京禄口国际机场是国家主要干线机场，根据国...
+Gold label: 0 | Final prediction: 1 | Final probs: [0.4135 0.5865]
+Agent predictions:
+  Semantic     pred=1 conf=0.700 prob=[0.2 0.8] | 标题使用‘起底’、‘失守’等煽动性词语，制造好奇心缺口，诱导点击。
+  Emotion      pred=1 conf=0.880 prob=[0.05 0.95] | '起底'、'失守'等词汇制造悬念与危机感，情绪煽动性强，典型点击诱导
+  Intention    pred=1 conf=0.900 prob=[0.1 0.9] | "起底"和"失守"制造悬念，情绪化表述吸引点击，符合好奇心缺口和善意操控。
+  Lexical      pred=1 conf=0.800 prob=[0.25 0.75] | 使用“起底”制造好奇心缺口，“失守”加引号增加煽动性，整体具有点击诱导意图
+  Consistency  pred=0 conf=0.800 prob=[0.82 0.18] | 标题与内容基本一致，但“起底”一词略有诱导感，整体无显著矛盾
+Single weights:
+  Semantic    : 0.1573
+  Emotion     : 0.2211
+  Intention   : 0.1723
+  Lexical     : 0.2163
+  Consistency : 0.2329
+Top pairwise weights:
+  Emotion + Consistency       : 0.0245
+  Lexical + Consistency       : 0.0152
+  Emotion + Lexical           : 0.0070
+
+--- Sample ---
+Task: clickbait
+Text: 何小鹏“重新掌舵” 出品|汽车组作者|王笑渔编辑|周到头图|视觉中国11月30日，小鹏汽车公布了一份“充斥着危险信号”的第三季度财报：总营收68.2亿元，同比增加19%，环比减少8%；净亏损23.8亿元，相比上一季度的27.01亿元，净亏损有所收窄；但公司现金储备为401.2亿元人民币，较上一季度的413.39亿元人民币，有所下滑。用更简单的话来说，小鹏汽车已经进入了初冬。小鹏触底，准备过冬第三季度财报电话会一开场，小鹏汽车董事长、CEO何小鹏就把危机摆在了明面上，“坦诚地说，在实现长期战略目标的道路上，我们正在经历一段充满挑战的时期。”在今年第三季度，小鹏汽车的交付量呈现出明显的下滑趋...
+Gold label: 1 | Final prediction: 0 | Final probs: [0.9462 0.0538]
+Agent predictions:
+  Semantic     pred=0 conf=0.900 prob=[0.85 0.15] | 标题使用比喻'重新掌舵'，但无夸张、悬念或诱导词汇，属于常规商业报道标题。
+  Emotion      pred=0 conf=0.700 prob=[0.8 0.2] | 标题使用比喻手法但语气平和，无明显情绪操控或夸张诱导
+  Intention    pred=0 conf=0.900 prob=[0.85 0.15] | 标题中性，仅陈述事实，没有诱导点击或操纵意图。
+  Lexical      pred=0 conf=0.800 prob=[0.85 0.15] | 引号内词语略带比喻，但无极端修饰或标点，整体平实。
+  Consistency  pred=0 conf=0.800 prob=[0.85 0.15] | 标题与正文一致，核心信息匹配，无矛盾或转折
+Single weights:
+  Semantic    : 0.1573
+  Emotion     : 0.2211
+  Intention   : 0.1723
+  Lexical     : 0.2163
+  Consistency : 0.2329
+Top pairwise weights:
+  Emotion + Consistency       : 0.0245
+  Lexical + Consistency       : 0.0152
+  Emotion + Lexical           : 0.0070
+
+--- Sample ---
+Task: clickbait
+Text: 江苏宜兴5岁男童输错液后死亡，家属称最大诉求就是追责 内容: 宗女士与儿子的合影。宗女士微博截图“孩子去世后，我多次找医院解决，他们只愿意承担轻微责任。”宗女士表示，10月13日，无奈之下她才在网上发布孩子就诊过程，希望引起院方的重视。10月14日下午，宜兴市卫健委介入调查，宜兴市人民医院与宗女士进行第二次协商，表示愿意接受宗女士的诉求，追究相关责任人的责任。文| 时婷婷来源 | 上游新闻此文由上游新闻独家供稿腾讯平台，未经授权，不得转载10月14日晚，江苏省宜兴市卫生健康委员会就5岁男童朱宸熠死亡事件发布消息称，宜兴市人民医院2名当班护士违反操作规范，误输甲硝唑，已被院方辞退。此前的9...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.9656 0.0344]
+Agent predictions:
+  Semantic     pred=0 conf=0.900 prob=[0.95 0.05] | 标题直接陈述医疗事故事实，无夸张悬念词汇，属于正常新闻报道
+  Emotion      pred=0 conf=0.900 prob=[0.85 0.15] | 标题客观陈述事实，无悬念、夸张或情感操控，符合非标题党特征。
+  Intention    pred=0 conf=0.920 prob=[0.95 0.05] | 标题客观陈述新闻事实，无悬念、煽动或诱导性语言
+  Lexical      pred=0 conf=0.900 prob=[0.95 0.05] | 陈述事实的新闻标题，无极端修饰或悬念诱导，不属于标题党模式
+  Consistency  pred=0 conf=0.950 prob=[0.9 0.1] | 标题客观陈述事实，与内容一致，无矛盾或夸大
+Single weights:
+  Semantic    : 0.1573
+  Emotion     : 0.2211
+  Intention   : 0.1723
+  Lexical     : 0.2163
+  Consistency : 0.2329
+Top pairwise weights:
+  Emotion + Consistency       : 0.0245
+  Lexical + Consistency       : 0.0152
+  Emotion + Lexical           : 0.0070
+
+--- Sample ---
+Task: clickbait
+Text: 儿子犯罪后，他每天都想寻死，可“要是死了，又会成为笑柄” 原创语斯雯頔方圆收录于话题#书影·文艺55个图片来源：摄图网自从丈夫被捕后，洋子不能看到任何与案件相关的电视新闻和报纸信息，高度紧绷的情绪彻底击垮她脆弱的神经。甚至，她想要远离案件的心情胜过担心丈夫的安危。为了让自己和身边的人不再受到“加害人家属这一身份”的影响，洋子快速地切断与外界的关联，与丈夫办理离婚、改掉姓氏，先后两次为儿子转学。在她看来，这才是对别人和自己最好的选择……面对加害人家属这一群体，大多数人都会下意识地远离，认为加害人家属有连带责任，不值得同情。但果真如此吗？读完日本作家铃木伸元的纪实文学《加害人家属》，我们也许...
+Gold label: 1 | Final prediction: 0 | Final probs: [0.5676 0.4324]
+Agent predictions:
+  Semantic     pred=1 conf=0.900 prob=[0.05 0.95] | 标题使用情感冲突和悬念手法，诱导点击，属于典型标题党。
+  Emotion      pred=0 conf=0.600 prob=[0.7 0.3] | 情感强烈但表达朴实，没有夸张词汇或明显好奇心缺口，更像故事陈述而非诱导点击
+  Intention    pred=1 conf=0.900 prob=[0.05 0.95] | 利用强烈情感冲突和“成为笑柄”的悬念，制造好奇心缺口，明显诱导点击
+  Lexical      pred=1 conf=0.850 prob=[0.1 0.9] | 通过戏剧性心理矛盾引发好奇心，典型的点击诱导模式
+  Consistency  pred=0 conf=0.800 prob=[0.85 0.15] | 标题与内容完全一致，直接引用文中情节，无矛盾或转折。
+Single weights:
+  Semantic    : 0.1573
+  Emotion     : 0.2211
+  Intention   : 0.1723
+  Lexical     : 0.2163
+  Consistency : 0.2329
+Top pairwise weights:
+  Emotion + Consistency       : 0.0245
+  Lexical + Consistency       : 0.0152
+  Emotion + Lexical           : 0.0070
+
+Readable model summary saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0066_20260611_111432_llm_discrete_2additive_deepseek-v4-flash\model_summary.json
+Latest model copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\best_choquet_model.pt
+Latest summary copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\model_summary.json
+
+=== Capacity Monotonicity Diagnostic ===
+{'checked': 211, 'violations': 0, 'max_violation': 0.0}
+Run metadata saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0066_20260611_111432_llm_discrete_2additive_deepseek-v4-flash\run_result.json
+
+Done. Agents produced fixed outputs; only the selected Choquet aggregation layer was trained.

@@ -1,0 +1,143 @@
+=== Runtime Configuration ===
+RANDOM_SEED: 78
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: claude-sonnet-4-6
+LLM_MODEL_CANDIDATES: deepseek-v4-pro
+LLM_BASE_URL: https://xiaohumini.site/v1
+LLM_API_KEY_ENV: LLM_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_claude.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0063_20260609_144529_llm_discrete_2additive_claude-sonnet-4-6
+
+RUN_SAMPLE_LIMIT active: using 10 rows for this run.
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv
+Rows: 10
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        7
+           1        3
+
+Split: train=7, valid=1, test=2
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.02, 0.98] confidence=0.970 explanation=集中了'震惊'、'忍不住点开'、'真相终于曝光'等多个典型标题党词汇，且文本本身直接描述诱导点击行为，极度典型的点击诱导内容。
+Emotion      probs=[0.02, 0.98] confidence=0.970 explanation=集'震惊''让所有人都忍不住点开''真相终于曝光'于一体，多重典型标题党套路叠加，情绪操控意图极为明显。
+Intention    probs=[0.01, 0.99] confidence=0.980 explanation=典型标题党结构：'震惊'制造情绪冲击，'忍不住点开'自我强化点击诱导，'真相终于曝光'营造神秘感，三重操纵手法叠加。
+Lexical      probs=[0.02, 0.98] confidence=0.970 explanation='震惊'感叹开头，'所有人都忍不住点开'制造从众压力，'真相终于曝光'悬念叠加，多重标题党模式并用
+Consistency  probs=[0.02, 0.98] confidence=0.970 explanation=典型标题党结构：'震惊'煽情词+'所有人忍不住'夸大承诺+'真相终于曝光'制造悬念，三重诱导叠加，无实质内容支撑。
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+LLM cache warm plan: total=50, existing_success=50, need_requests=0
+
+=== Dataset Integrity Check ===
+Dataset Samples: 10
+Expected Records: 50
+SUCCESS Records: 50
+Missing Records: 0
+Complete Samples : 10
+Incomplete Samples : 0
+LLM cache saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_claude.json
+
+=== Training Choquet Layer (discrete_2additive) ===
+Epoch 01 | train_loss=0.4275 | valid_loss=0.0735 | valid_acc=1.0000 | valid_macro_f1=1.0000
+Epoch 05 | train_loss=0.4250 | valid_loss=0.0701 | valid_acc=1.0000 | valid_macro_f1=1.0000
+Epoch 10 | train_loss=0.4220 | valid_loss=0.0678 | valid_acc=1.0000 | valid_macro_f1=1.0000
+Epoch 15 | train_loss=0.4190 | valid_loss=0.0670 | valid_acc=1.0000 | valid_macro_f1=1.0000
+Epoch 20 | train_loss=0.4161 | valid_loss=0.0657 | valid_acc=1.0000 | valid_macro_f1=1.0000
+Epoch 25 | train_loss=0.4131 | valid_loss=0.0634 | valid_acc=1.0000 | valid_macro_f1=1.0000
+Epoch 30 | train_loss=0.4102 | valid_loss=0.0610 | valid_acc=1.0000 | valid_macro_f1=1.0000
+
+Best validation: loss=0.0735, acc=1.0000, macro_f1=1.0000
+Saved best model to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0063_20260609_144529_llm_discrete_2additive_claude-sonnet-4-6\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=0.6090, acc=0.5000, precision=0.2500, recall=0.5000, macro_f1=0.3333
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.5000 | 0.2500 | 0.5000 | 0.3333 |
+| Average Probability Voting | 0.5000 | 0.2500 | 0.5000 | 0.3333 |
+| Dynamic Single-Agent Weighting | 0.5000 | 0.2500 | 0.5000 | 0.3333 |
+| Choquet-inspired Pairwise Voting | 0.5000 | 0.2500 | 0.5000 | 0.3333 |
+Test predictions saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0063_20260609_144529_llm_discrete_2additive_claude-sonnet-4-6\test_predictions.csv
+
+=== Task-level Average Single Weights ===
+
+Task: clickbait
+  Semantic    : 0.2008
+  Emotion     : 0.1988
+  Intention   : 0.2008
+  Lexical     : 0.2008
+  Consistency : 0.1988
+
+=== Task-level Top Pairwise Weights ===
+
+Task: clickbait
+  Intention + Lexical         : 0.0005
+  Semantic + Intention        : 0.0005
+  Intention + Consistency     : 0.0005
+  Semantic + Lexical          : 0.0005
+  Lexical + Consistency       : 0.0005
+
+=== Sample-level Decision Traces ===
+
+--- Sample ---
+Task: clickbait
+Text: 女生被造“黄谣”？这一系列操作，堪称“教科书式”维权…… 7月11日，短视频平台网红小雪发布视频，讲述自己被造黄谣后报警、取证及保全证据的经过。小雪自述的视频显示，7月9日，自己丈夫发布的一条视频的评论区突然集中出现“求瓜”“已看过”“真的是你啊”等留言。小雪称，他们查询后发现，此前网上出现了一些不雅照片，有人认为这些不雅照片中的人物是她，于是被大肆宣传甚至出现了以此牟利的情况。▲小雪丈夫发出的视频评论区里有大量不雅言论。图片来源/网络据上游新闻消息，7月10日，小雪联系了派出所并咨询律师，在律师的建议下保全了相关证据，并委托律师进行起诉。据北京法大律师事务所的律师函显示，已要求部分涉嫌...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.1928 0.8072]
+Agent predictions:
+  Semantic     pred=1 conf=0.700 prob=[0.35 0.65] | 标题用问号制造悬念、'教科书式'加引号强化噱头感，有一定诱导性；但内容为真实事件报道，信息完整，并非纯粹标题党。
+  Emotion      pred=1 conf=0.720 prob=[0.3 0.7] | 问号制造悬念，'教科书式'带褒义煽情色彩，省略号引发好奇，整体有引导点击意图，但事件本身具新闻价值。
+  Intention    pred=1 conf=0.720 prob=[0.25 0.75] | 引号强化戏剧感，'教科书式'夸张表达，省略号制造悬念，具有一定点击诱导意图，但话题本身具有真实社会意义。
+  Lexical      pred=1 conf=0.620 prob=[0.35 0.65] | 引号强调'黄谣'制造悬念，'教科书式'为夸张修饰，省略号引发好奇，但内容具有实质社会意义，标题党倾向中等偏高
+  Consistency  pred=1 conf=0.720 prob=[0.35 0.65] | 标题用问号制造悬念，'教科书式'加引号带煽情色彩，但内容与标题基本一致，实质信息充分，矛盾程度有限。
+Single weights:
+  Semantic    : 0.2008
+  Emotion     : 0.1988
+  Intention   : 0.2008
+  Lexical     : 0.2008
+  Consistency : 0.1988
+Top pairwise weights:
+  Intention + Lexical         : 0.0005
+  Semantic + Intention        : 0.0005
+  Intention + Consistency     : 0.0005
+
+--- Sample ---
+Task: clickbait
+Text: 办还是不办？不管怎样，东京奥运刚刚完成史上最低调的圣火采集 撰稿 | 记者 钟书毓 蔡黄浩北京时间2020年3月12日17时30分，2020东京奥运会的圣火采集仪式在希腊举行。随后，奥林匹克圣火在希腊的奥林匹克发源地——古奥林匹亚的赫拉神庙点燃。奥林匹克火炬传递第一阶段在希腊进行，在火炬传递开始之前，首先要在希腊古代奥运会举行地古奥林匹亚进行圣火采集仪式。采集仪式过后，火炬传递将在希腊境内进行，直到3月19日。火炬传递期间，多个活动还将先后进行。 受新型冠状病毒疫情扩大影响，东京奥运会圣火采集筹备过程一波三折。这之前，古奥林匹克地区负责人曾提议把圣火采集仪式推迟到5月，但国际奥委会没有同...
+Gold label: 0 | Final prediction: 1 | Final probs: [0.3665 0.6335]
+Agent predictions:
+  Semantic     pred=0 conf=0.650 prob=[0.55 0.45] | 标题'办还是不办？'制造悬念，有一定诱导性；但正文内容翔实客观，属新闻报道，整体倾向信息传递而非纯点击诱导。
+  Emotion      pred=1 conf=0.620 prob=[0.35 0.65] | '办还是不办'制造悬念和争议感，'史上最低调'带有轻度夸张，整体偏向诱导点击但尚有新闻事实依托
+  Intention    pred=1 conf=0.700 prob=[0.35 0.65] | 开头'办还是不办？'制造悬念和争议感，'史上最低调'使用极端化表述，有一定点击诱导成分，但核心内容仍属新闻事实报道。
+  Lexical      pred=0 conf=0.620 prob=[0.55 0.45] | '办还是不办'制造悬念，'史上最低调'含极端修饰，但整体偏陈述性，具有一定新闻价值，标题党倾向中等
+  Consistency  pred=1 conf=0.620 prob=[0.35 0.65] | 标题'办还是不办'制造悬念与对立，与内容实际只报道圣火采集仪式经过存在落差，但'史上最低调'与内容描述基本一致。
+Single weights:
+  Semantic    : 0.2008
+  Emotion     : 0.1988
+  Intention   : 0.2008
+  Lexical     : 0.2008
+  Consistency : 0.1988
+Top pairwise weights:
+  Intention + Lexical         : 0.0005
+  Semantic + Intention        : 0.0005
+  Intention + Consistency     : 0.0005
+
+Readable model summary saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0063_20260609_144529_llm_discrete_2additive_claude-sonnet-4-6\model_summary.json
+Latest model copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\best_choquet_model.pt
+Latest summary copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\model_summary.json
+
+=== Capacity Monotonicity Diagnostic ===
+{'checked': 211, 'violations': 0, 'max_violation': 0.0}
+Run metadata saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0063_20260609_144529_llm_discrete_2additive_claude-sonnet-4-6\run_result.json
+
+Done. Agents produced fixed outputs; only the selected Choquet aggregation layer was trained.

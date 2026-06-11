@@ -1,0 +1,144 @@
+=== Runtime Configuration ===
+RANDOM_SEED: 78
+DATA_PATH: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\tencent.csv
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: deepseek-v4-flash
+LLM_MODEL_CANDIDATES: deepseek-v4-pro
+LLM_BASE_URL: https://api.deepseek.com/v1
+LLM_API_KEY_ENV: LLM_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_tc_ds.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0064_20260610_163426_llm_discrete_2additive_deepseek-v4-flash
+
+RUN_SAMPLE_LIMIT active: using 10 rows for this run.
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\tencent.csv
+Rows: 10
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        5
+           1        5
+
+Split: train=7, valid=1, test=2
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.0, 1.0] confidence=1.000 explanation=使用'震惊'、'忍不住点开'等典型标题党词汇，明确诱导点击
+Emotion      probs=[0.02, 0.98] confidence=0.950 explanation=强烈情绪词、直接点击诱导和悬念手法，典型标题党
+Intention    probs=[0.0, 1.0] confidence=0.980 explanation=使用'震惊'、'忍不住点开'、'真相曝光'等典型标题党词汇，强烈点击诱导
+Lexical      probs=[0.02, 0.98] confidence=0.960 explanation='震惊'、'真相曝光'等词汇配合自我指涉文案，典型的点击诱导模式
+Consistency  probs=[0.1, 0.9] confidence=0.850 explanation=标题使用'震惊'、'忍不住点开'等典型点击诱导词汇，缺乏实质内容
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+LLM cache warm plan: total=50, existing_success=50, need_requests=0
+
+=== Dataset Integrity Check ===
+Dataset Samples: 10
+Expected Records: 50
+SUCCESS Records: 50
+Missing Records: 0
+Complete Samples : 10
+Incomplete Samples : 0
+LLM cache saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_tc_ds.json
+
+=== Training Choquet Layer (discrete_2additive) ===
+Epoch 01 | train_loss=0.3257 | valid_loss=0.1085 | valid_acc=1.0000 | valid_macro_f1=1.0000
+Epoch 05 | train_loss=0.3081 | valid_loss=0.1060 | valid_acc=1.0000 | valid_macro_f1=1.0000
+Epoch 10 | train_loss=0.2876 | valid_loss=0.1030 | valid_acc=1.0000 | valid_macro_f1=1.0000
+Epoch 15 | train_loss=0.2689 | valid_loss=0.1001 | valid_acc=1.0000 | valid_macro_f1=1.0000
+Epoch 20 | train_loss=0.2521 | valid_loss=0.0974 | valid_acc=1.0000 | valid_macro_f1=1.0000
+Epoch 25 | train_loss=0.2372 | valid_loss=0.0949 | valid_acc=1.0000 | valid_macro_f1=1.0000
+Epoch 30 | train_loss=0.2240 | valid_loss=0.0926 | valid_acc=1.0000 | valid_macro_f1=1.0000
+
+Best validation: loss=0.1085, acc=1.0000, macro_f1=1.0000
+Saved best model to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0064_20260610_163426_llm_discrete_2additive_deepseek-v4-flash\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=0.4028, acc=0.5000, precision=0.5000, recall=0.2500, macro_f1=0.3333
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.5000 | 0.5000 | 0.2500 | 0.3333 |
+| Average Probability Voting | 0.5000 | 0.5000 | 0.2500 | 0.3333 |
+| Dynamic Single-Agent Weighting | 0.5000 | 0.5000 | 0.2500 | 0.3333 |
+| Choquet-inspired Pairwise Voting | 0.5000 | 0.5000 | 0.2500 | 0.3333 |
+Test predictions saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0064_20260610_163426_llm_discrete_2additive_deepseek-v4-flash\test_predictions.csv
+
+=== Task-level Average Single Weights ===
+
+Task: clickbait
+  Semantic    : 0.2008
+  Emotion     : 0.1988
+  Intention   : 0.1988
+  Lexical     : 0.2008
+  Consistency : 0.2008
+
+=== Task-level Top Pairwise Weights ===
+
+Task: clickbait
+  Semantic + Consistency      : 0.0005
+  Lexical + Consistency       : 0.0005
+  Semantic + Lexical          : 0.0005
+  Emotion + Consistency       : 0.0005
+  Intention + Consistency     : 0.0005
+
+=== Sample-level Decision Traces ===
+
+--- Sample ---
+Task: clickbait
+Text: ​高考第二天，文科生与理科生在热搜上较量！谁赢了？ 高考第二天文科生和理科生在文综和理综结束后竟然在热搜上一度势均力敌#地理冰盖#与#物理青蛙#齐上热搜难倒了无数的文科生和理科生网友回忆物理考试题青蛙网友回忆地理考试题冰盖语文“爆”完数学“爆”终于在热搜上迎来了文科理科大battle#高考历史#、#高考物理#双双登上热搜#高考历史#热度一度压过#高考物理##一生要强的文科生#纷纷高呼#文科生站起来#了得知此情况的理科生怎甘于落后于是#永不服输的理科生#冲冲冲半小时后#高考理综#超越#高考文综#其实，不管文科还是理科同为考生，难免惺惺相惜在考题面前评论区也是达到前所未有的和谐即使不会也要为...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.0841 0.9159]
+Agent predictions:
+  Semantic     pred=0 conf=0.700 prob=[0.75 0.25] | 标题使用'较量'、'谁赢了'带有悬念，但内容为真实新闻，无诱导性
+  Emotion      pred=1 conf=0.850 prob=[0.05 0.95] | 设置文理对决'较量'与'谁赢了'悬念，刺激点击好奇，典型标题党
+  Intention    pred=1 conf=0.920 prob=[0.05 0.95] | 使用悬念'谁赢了'制造好奇缺口，煽动性词语'较量'，明显点击诱导
+  Lexical      pred=1 conf=0.850 prob=[0.1 0.9] | 感叹号和悬念问句结合，挑起文科理科对比，好奇缺口明显
+  Consistency  pred=1 conf=0.900 prob=[0.05 0.95] | 标题承诺回答'谁赢了'，但内容未给出明确答案，利用好奇心缺口诱导点击
+Single weights:
+  Semantic    : 0.2008
+  Emotion     : 0.1988
+  Intention   : 0.1988
+  Lexical     : 0.2008
+  Consistency : 0.2008
+Top pairwise weights:
+  Semantic + Consistency      : 0.0005
+  Lexical + Consistency       : 0.0005
+  Semantic + Lexical          : 0.0005
+
+--- Sample ---
+Task: clickbait
+Text: 刘畊宏该降降火了 原创昭晰｜商业消费组作者｜昭晰题图｜视觉中国“复制刘畊宏是不可能的。”一时间，刘畊宏成为健身圈和流量圈的显学。从2月18日第一场健身直播开始，刘畊宏从一个“江河日下”的过气艺人，迅速蜕变为现象级流量主。截至发稿，刘畊宏抖音粉丝已经超过5000万。“古典”超级主播圈的偃旗息鼓，进一步让刘畊宏聚集流量势能：在杭州，两大女主播自2021年后淡出江湖；上海疫情影响下，淘宝直播一哥李佳琦受困于物流，直播间观看量断崖式下滑。迅速火爆的刘畊宏成为了媒体新宠，甚至引发了媒体圈2022年开年“最内卷时刻”：近千个媒体账号像命题征文大赛一样，不知疲倦地书写这个奇迹——这让刘畊宏和其背后的无...
+Gold label: 1 | Final prediction: 0 | Final probs: [0.5121 0.4879]
+Agent predictions:
+  Semantic     pred=1 conf=0.900 prob=[0. 1.] | 标题用'该降降火'这种主观评价和暗示性词汇，制造好奇和争议，属于典型点击诱导。
+  Emotion      pred=1 conf=0.800 prob=[0.1 0.9] | 隐含讽刺批评，制造好奇心，引导点击了解为何需‘降火’
+  Intention    pred=0 conf=0.650 prob=[0.72 0.28] | 使用了比喻'降降火'，有一定情绪色彩，但无明确行动召唤或夸张承诺，属于评论观点，诱导性较弱
+  Lexical      pred=0 conf=0.820 prob=[0.85 0.15] | 无极端修饰词、感叹号或好奇心缺口，仅为口语化评论，非典型标题党模式
+  Consistency  pred=0 conf=0.900 prob=[0.85 0.15] | 标题概括正文对健身流量泡沫的批判，前后一致，未产生误导性矛盾。
+Single weights:
+  Semantic    : 0.2008
+  Emotion     : 0.1988
+  Intention   : 0.1988
+  Lexical     : 0.2008
+  Consistency : 0.2008
+Top pairwise weights:
+  Semantic + Consistency      : 0.0005
+  Lexical + Consistency       : 0.0005
+  Semantic + Lexical          : 0.0005
+
+Readable model summary saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0064_20260610_163426_llm_discrete_2additive_deepseek-v4-flash\model_summary.json
+Latest model copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\best_choquet_model.pt
+Latest summary copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\model_summary.json
+
+=== Capacity Monotonicity Diagnostic ===
+{'checked': 211, 'violations': 0, 'max_violation': 0.0}
+Run metadata saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0064_20260610_163426_llm_discrete_2additive_deepseek-v4-flash\run_result.json
+
+Done. Agents produced fixed outputs; only the selected Choquet aggregation layer was trained.

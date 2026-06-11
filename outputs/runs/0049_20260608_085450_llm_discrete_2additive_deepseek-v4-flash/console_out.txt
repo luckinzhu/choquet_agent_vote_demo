@@ -1,0 +1,203 @@
+=== Runtime Configuration ===
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: deepseek-v4-flash
+LLM_MODEL_CANDIDATES: deepseek-v4-pro
+LLM_BASE_URL: https://api.deepseek.com/v1
+LLM_API_KEY_ENV: LLM_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_ds.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0049_20260608_085450_llm_discrete_2additive_deepseek-v4-flash
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv
+Rows: 2119
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        1167
+           1         952
+
+Split: train=1483, valid=317, test=319
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.05, 0.95] confidence=0.900 explanation=包含'震惊'、'忍不住点开'、'曝光'等典型点击诱导用语
+Emotion      probs=[0.0, 1.0] confidence=0.950 explanation=使用'震惊'、'忍不住点开'、'真相曝光'等夸张悬念词汇，典型情绪操控标题党
+Intention    probs=[0.01, 0.99] confidence=0.970 explanation=使用'震惊'、'忍不住点开'及'真相曝光'等典型标题党手法，意图吸引点击
+Lexical      probs=[0.02, 0.98] confidence=0.950 explanation='震惊！'搭配'忍不住点开''真相曝光'，典型标题党模式
+Consistency  probs=[0.05, 0.95] confidence=0.850 explanation=标题使用'震惊'、'忍不住点开'、'真相曝光'等煽动性词汇，典型标题党手法
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+LLM cache warm plan: total=10595, existing_success=10595, need_requests=0
+
+=== Dataset Integrity Check ===
+Dataset Samples: 2119
+Expected Records: 10595
+SUCCESS Records: 10595
+Missing Records: 0
+Complete Samples : 2119
+Incomplete Samples : 0
+LLM cache saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_ds.json
+
+=== Training Choquet Layer (discrete_2additive) ===
+Epoch 01 | train_loss=0.8442 | valid_loss=0.7675 | valid_acc=0.6246 | valid_macro_f1=0.6245
+Epoch 05 | train_loss=0.6990 | valid_loss=0.6648 | valid_acc=0.6183 | valid_macro_f1=0.6182
+Epoch 10 | train_loss=0.6511 | valid_loss=0.6359 | valid_acc=0.6309 | valid_macro_f1=0.6308
+Epoch 15 | train_loss=0.6451 | valid_loss=0.6350 | valid_acc=0.6278 | valid_macro_f1=0.6276
+Epoch 20 | train_loss=0.6447 | valid_loss=0.6352 | valid_acc=0.6246 | valid_macro_f1=0.6242
+Epoch 25 | train_loss=0.6442 | valid_loss=0.6357 | valid_acc=0.6278 | valid_macro_f1=0.6273
+Epoch 30 | train_loss=0.6440 | valid_loss=0.6369 | valid_acc=0.6404 | valid_macro_f1=0.6403
+
+Best validation: loss=0.6369, acc=0.6404, macro_f1=0.6403
+Saved best model to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0049_20260608_085450_llm_discrete_2additive_deepseek-v4-flash\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=0.6697, acc=0.5987, precision=0.5992, recall=0.6003, macro_f1=0.5979
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.5737 | 0.5862 | 0.5841 | 0.5730 |
+| Average Probability Voting | 0.5768 | 0.5900 | 0.5876 | 0.5760 |
+| Dynamic Single-Agent Weighting | 0.5768 | 0.5757 | 0.5765 | 0.5751 |
+| Choquet-inspired Pairwise Voting | 0.5987 | 0.5992 | 0.6003 | 0.5979 |
+Test predictions saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0049_20260608_085450_llm_discrete_2additive_deepseek-v4-flash\test_predictions.csv
+
+=== Task-level Average Single Weights ===
+
+Task: clickbait
+  Semantic    : 0.1268
+  Emotion     : 0.1854
+  Intention   : 0.2122
+  Lexical     : 0.3242
+  Consistency : 0.1513
+
+=== Task-level Top Pairwise Weights ===
+
+Task: clickbait
+  Intention + Lexical         : 0.0406
+  Emotion + Lexical           : 0.0285
+  Emotion + Intention         : 0.0060
+  Semantic + Lexical          : 0.0016
+  Lexical + Consistency       : 0.0013
+
+=== Sample-level Decision Traces ===
+
+--- Sample ---
+Task: clickbait
+Text: 尴尬而不失礼貌的微笑！这些总统可能和阿根廷“八字不合” 撰稿 | 记者 卞英豪 单珊 汪鹏翀发自布宜诺斯艾利斯阿根廷当地时间11月29日晚，2018年G20峰会即将在阿根廷举行。各国元首纷纷抵达布宜诺斯参与为期两天的会议。然而，在当地直击G20现场的东方网·纵相新闻记者发现，虽然阿根廷方面十分重视此次会议，不少G20的领导人还是遭遇了一些尴尬。1.“惊喜”！法国总统马克龙出门没人迎接阿根廷当地时间11月29日晚，东方网·纵相新闻记者在位于布宜诺斯艾利斯的G20媒体中心收到实时消息称，法国总统马克龙抵达阿根廷，并收到了一张现场回传照片。然而，这并不是故事的全部。真正的故事是这样的，满面春风...
+Gold label: 0 | Final prediction: 1 | Final probs: [0.4775 0.5225]
+Agent predictions:
+  Semantic     pred=1 conf=0.900 prob=[0.05 0.95] | 标题使用'尴尬不失礼貌微笑'和'八字不合'等感性、夸张词汇，制造悬念吸引点击
+  Emotion      pred=1 conf=0.850 prob=[0.1 0.9] | 使用网络流行语和玄学说法制造好奇与调侃，明显引导点击
+  Intention    pred=0 conf=0.700 prob=[0.7 0.3] | 使用表情符号和双关语增加趣味，但无强烈行动召唤或虚假承诺，诱导性较弱
+  Lexical      pred=1 conf=0.900 prob=[0.05 0.95] | 使用'尴尬而不失礼貌的微笑'等网络流行语及感叹号，+模糊八卦'可能八字不合'，典型点击诱导
+  Consistency  pred=0 conf=0.850 prob=[0.9 0.1] | 标题概括尴尬事件，内容与之相符，无内部矛盾或转折。
+Single weights:
+  Semantic    : 0.1268
+  Emotion     : 0.1854
+  Intention   : 0.2122
+  Lexical     : 0.3242
+  Consistency : 0.1513
+Top pairwise weights:
+  Intention + Lexical         : 0.0406
+  Emotion + Lexical           : 0.0285
+  Emotion + Intention         : 0.0060
+
+--- Sample ---
+Task: clickbait
+Text: “血腥的双手” 撰稿 | 记者 单珊当地时间5月17日，美国总统拜登与以色列总理内塔尼亚胡通话，首次公开呼吁巴以两方结束暴力冲突。但美国一边呼吁和平，一边又向以色列出口武器，土耳其总统埃尔多安批评：美国正以“血腥的双手”书写加沙地带的历史。白宫新闻发言人普萨基在17日的声明中称，拜登表示支持双方停火，美国与埃及和其他合作伙伴正在为此进行讨论。但对于美国的调和，以色列似乎并不买账，内塔尼亚胡17日当天就表示，他已下令国防军继续对加沙地带的目标进行打击。“在完成对当前局势的评估后”，他下达了继续打击恐怖主义目标的命令，“以色列政府将继续采取必要行动，恢复以色列的和平与安全”。根据加沙卫生部门...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.3511 0.6489]
+Agent predictions:
+  Semantic     pred=1 conf=0.900 prob=[0.05 0.95] | 标题“血腥的双手”使用煽情、暗示性词汇，具有点击诱导特征
+  Emotion      pred=1 conf=0.900 prob=[0. 1.] | 血腥一词制造强烈感官刺激与悬念，典型点击诱导
+  Intention    pred=1 conf=0.900 prob=[0.05 0.95] | 使用'血腥'这种强烈视觉与情感冲击词汇，制造好奇心缺口，诱导点击
+  Lexical      pred=1 conf=0.850 prob=[0.1 0.9] | 极端修饰词'血腥'具有强烈情感煽动，符合标题党词汇模式
+  Consistency  pred=1 conf=0.900 prob=[0.05 0.95] | 标题使用耸人听闻的比喻'血腥的双手'，与正文客观报道风格存在落差，具有点击诱导意图。
+Single weights:
+  Semantic    : 0.1268
+  Emotion     : 0.1854
+  Intention   : 0.2122
+  Lexical     : 0.3242
+  Consistency : 0.1513
+Top pairwise weights:
+  Intention + Lexical         : 0.0406
+  Emotion + Lexical           : 0.0285
+  Emotion + Intention         : 0.0060
+
+--- Sample ---
+Task: clickbait
+Text: 【短视频观察①】在芸芸众生中，短视频挖出了现象级的美 摘要人人短视频的场景下，显然数字已不再是“鸿沟”，而是数字正在填平“鸿沟”。图片来源：“丹正母子”相关短视频作品截图“穿过旷野的风，你慢些走。我用沉默告诉你，我醉了酒……”几个月过去了，“丹正母子”一段吉他弹唱的既朴实清澈又空灵悠远的《乌兰巴托的夜》，依然在各个短视频平台热播着。并且，还被各路“高手”再加工、被各色人等再翻唱，都有人共情，有人点赞。随着关注的人数越来越多，这对青海藏族母子的生活也发生着变化。此前40年，母亲根藏卓玛没有出过草原。她的生活就是围着灶台、床头照顾家人，以及在广袤的草原上放牧。丹正则是一名大学生，3年疫情，和...
+Gold label: 1 | Final prediction: 0 | Final probs: [0.5897 0.4103]
+Agent predictions:
+  Semantic     pred=0 conf=0.900 prob=[0.85 0.15] | 标题使用“现象级的美”略带夸张，但整体为中性新闻评论，无典型诱导元素。
+  Emotion      pred=1 conf=0.850 prob=[0.1 0.9] | 使用'现象级的美'等夸大词汇，制造好奇心和点击诱导，符合标题党特征
+  Intention    pred=1 conf=0.750 prob=[0.2 0.8] | 使用'挖出''现象级'等夸大词汇，制造好奇心缺口，有诱导点击意图
+  Lexical      pred=0 conf=0.800 prob=[0.7 0.3] | 使用了'现象级'等流行夸张词，但无极端标点或震惊句式，轻度标题风格
+  Consistency  pred=0 conf=0.900 prob=[0.95 0.05] | 标题概括文章主旨，内容支持标题，无矛盾或误导
+Single weights:
+  Semantic    : 0.1268
+  Emotion     : 0.1854
+  Intention   : 0.2122
+  Lexical     : 0.3242
+  Consistency : 0.1513
+Top pairwise weights:
+  Intention + Lexical         : 0.0406
+  Emotion + Lexical           : 0.0285
+  Emotion + Intention         : 0.0060
+
+--- Sample ---
+Task: clickbait
+Text: 弗洛伊德葬礼上的灵魂之问：美国何时伟大过？ 收录于话题##特朗普 #美国撰稿 | 记者 单珊 汪鹏翀“有人说‘美国再次伟大’，可美国什么时候伟大过？”当地时间6月9日，美国非裔男子弗洛伊德的葬礼上，弗洛伊德的外甥女布鲁克·威廉姆斯如此哽咽地说道。9日当天，弗洛伊德的葬礼在美国得克萨斯州休斯敦市的赞美之泉教堂举行。由于需要遵循社交隔离准则，葬礼活动仅限500人参加。这场葬礼现场并不是完全被泪水和悲伤的气氛所笼罩，嘉宾们通过曲调欢快的歌唱、情绪激昂的演讲以及弗洛伊德现场艺术画像制作，表达着自己的心情以及对弗洛伊德的追思。“有人说‘让美国再次伟大’，可美国什么时候伟大过？”威廉姆斯哽咽地说道，...
+Gold label: 0 | Final prediction: 1 | Final probs: [0.3461 0.6539]
+Agent predictions:
+  Semantic     pred=1 conf=0.900 prob=[0.05 0.95] | 标题使用'灵魂之问'和挑衅性问题，设置争议悬念以吸引点击，属于典型的标题党手法
+  Emotion      pred=1 conf=0.900 prob=[0.05 0.95] | 反问句'美国何时伟大过'配合葬礼场景，充满讽刺和挑衅，明显制造争议吸引点击
+  Intention    pred=1 conf=0.930 prob=[0.05 0.95] | 使用‘灵魂之问’等夸张修辞，质疑性反问煽动情绪，诱导点击
+  Lexical      pred=1 conf=0.900 prob=[0.05 0.95] | '灵魂之问'是极端修饰词，反问形式制造好奇心缺口，典型点击诱导模式
+  Consistency  pred=1 conf=0.900 prob=[0.05 0.95] | 标题'灵魂之问'情感渲染强烈并制造好奇，属于典型点击诱导
+Single weights:
+  Semantic    : 0.1268
+  Emotion     : 0.1854
+  Intention   : 0.2122
+  Lexical     : 0.3242
+  Consistency : 0.1513
+Top pairwise weights:
+  Intention + Lexical         : 0.0406
+  Emotion + Lexical           : 0.0285
+  Emotion + Intention         : 0.0060
+
+--- Sample ---
+Task: clickbait
+Text: 建交50年，这个91岁加拿大老太太有讲不完的中国故事 撰稿 | 周叶华50年前的今天，中国与加拿大正式建交。中国驻加拿大大使丛培武日前发文坦言，由于众所周知的原因，中加关系目前处于严重困难的时期。尽管如此，中加建交50年来，两国经贸合作总体上实现了合作共赢。旅游和留学已经成为两国服务贸易的亮点，中国已多年保持加拿大第二大贸易伙伴的地位。如今共同构建相互尊重、公平正义、合作共赢的新型国际关系成为两国关系重点内容。50年中加关系走过风风雨雨，但两国民间大体上一直保持着友好的关系。今天这篇文章很特别，作者是刚刚从加拿大留学归来的一位大学生，留学期间她拜访了一位见证了中加关系50年发展历程的加拿...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.6444 0.3556]
+Agent predictions:
+  Semantic     pred=0 conf=0.750 prob=[0.78 0.22] | 标题'有讲不完的中国故事'略显好奇诱导，但内容真实详实，非点击诱导
+  Emotion      pred=0 conf=0.800 prob=[0.85 0.15] | 语调平和，无夸张或情感操控，属于正常人物报道标题
+  Intention    pred=0 conf=0.800 prob=[0.85 0.15] | 正常叙事，使用具体数字增加可信度，无诱导性语言
+  Lexical      pred=1 conf=0.700 prob=[0.25 0.75] | 使用具体数字（建交50年、91岁）和‘讲不完’模糊承诺，激发好奇心，具有点击诱导意图
+  Consistency  pred=0 conf=0.920 prob=[0.95 0.05] | 标题与内容一致，均围绕老人经历展开，无夸张或矛盾
+Single weights:
+  Semantic    : 0.1268
+  Emotion     : 0.1854
+  Intention   : 0.2122
+  Lexical     : 0.3242
+  Consistency : 0.1513
+Top pairwise weights:
+  Intention + Lexical         : 0.0406
+  Emotion + Lexical           : 0.0285
+  Emotion + Intention         : 0.0060
+
+Readable model summary saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0049_20260608_085450_llm_discrete_2additive_deepseek-v4-flash\model_summary.json
+Latest model copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\best_choquet_model.pt
+Latest summary copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\model_summary.json
+
+=== Capacity Monotonicity Diagnostic ===
+{'checked': 211, 'violations': 0, 'max_violation': 0.0}
+Run metadata saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0049_20260608_085450_llm_discrete_2additive_deepseek-v4-flash\run_result.json
+
+Done. Agents produced fixed outputs; only the selected Choquet aggregation layer was trained.

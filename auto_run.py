@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import os
 import re
 import subprocess
@@ -29,8 +30,48 @@ def load_project_env() -> None:
             os.environ[key] = value
 
 
+# ===================== API Configuration Presets =====================
+# Uncomment ONE of the following API configurations:
+
+# Option 1: DeepSeek API (current)
+API_PRESET = "deepseek"
+API_CONFIGS = {
+    "deepseek": {
+        "LLM_BASE_URL": "https://api.deepseek.com/v1",
+        "LLM_API_KEY_VALUE": "",  # Read from .env file
+        "LLM_MODEL": "deepseek-v4-flash",
+    },
+    "gpt55": {
+        "LLM_BASE_URL": "https://xiaohumini.site/v1",
+        "LLM_API_KEY_VALUE": "sk-qFEi64pRVOi7gTrP3pSzsc1ROjeq8CnERcsO9xJBZtlEV3EW",
+        "LLM_MODEL": "gpt-5.5",
+    },
+    "claude46": {
+        "LLM_BASE_URL": "https://xiaohumini.site/v1",
+        "LLM_API_KEY_VALUE": "sk-Lm86GPQIVlhuDIPRylctyqPTXlXs9gsF9pSrCPCuOq6xwfmP",
+        "LLM_MODEL": "claude-sonnet-4-6",
+    },
+    "gemini35": {
+        "LLM_BASE_URL": "https://xiaohumini.site/v1",
+        "LLM_API_KEY_VALUE": "sk-nkVVoBEc13bwqL3dlzXtTdTLmIcUqDpGviTxsKVQ1W6xDTZo",
+        "LLM_MODEL": "gemini-3.5-flash",
+    },
+
+    # Add more presets as needed:
+    # "custom": {
+    #     "LLM_BASE_URL": "https://your-api.com/v1",
+    #     "LLM_API_KEY_VALUE": "your-api-key-here",
+    #     "LLM_MODEL": "your-model-name",
+    # },
+}
+# ===========================================================
+
 # ===================== Editable CONFIG =====================
 CONFIG = {
+    # API Preset: Change this to switch between different API configurations
+    # Available presets: "deepseek", "xiaohu"
+    "API_PRESET": API_PRESET,
+
     # Choquet mode:
     # "inspired" = original Choquet-inspired pairwise aggregation
     # "discrete_2additive" = discrete 2-additive Choquet approximation
@@ -47,25 +88,33 @@ CONFIG = {
     # "false" = disable few-shot examples
     "FEWSHOT_ENABLED": "true",
 
+    # Dataset and cache paths. Relative paths are resolved by config.py from PROJECT_ROOT.
+    "DATA_PATH": "",
+    "LLM_CACHE_PATH": "",
+
     # Fast test settings:
     # "8" means use 8 samples; "" or None means full dataset.
-    "RUN_SAMPLE_LIMIT": "",
+    "RUN_SAMPLE_LIMIT": "2000",
 
     # "2" means quick test; "" or None uses config.py defaults.
-    "EPOCHS": "50",
-    "BATCH_SIZE": "16",
+    "RANDOM_SEED": "78",
+    # Optional seed sweep. Leave both empty to run only RANDOM_SEED.
+    # Example: "78" to "85" runs seeds 78,79,80,81,82,83,84,85.
+    "RANDOM_SEED_START": "",
+    "RANDOM_SEED_END": "",
+    "EPOCHS": "30",
+    "BATCH_SIZE": "32",
 
-    # LLM gateway settings.
+    # LLM gateway settings - will be overridden by API_PRESET below
     "LLM_PROVIDER": "openai_compatible",
-    # "LLM_MODEL": "gemini-3.1-flash-lite",
-    "LLM_MODEL": "deepseek-v4-flash",
+    "LLM_MODEL": "deepseek-v4-flash",  # Default, will be overridden by preset
     "LLM_API_KEY_ENV": "LLM_API_KEY",
 
     # Optional local private key. Prefer PROJECT_ROOT/.env instead of this field.
     # Leave as "" or None to read LLM_API_KEY from .env or the system environment.
     "LLM_API_KEY_VALUE": "",
 
-    # "LLM_BASE_URL": "https://xiaohumini.site/v1",
+    # LLM base URL - will be overridden by API_PRESET below
     "LLM_BASE_URL": "https://api.deepseek.com/v1",
 
     # Optional workflow switches:
@@ -92,9 +141,13 @@ CONFIG = {
 # ===========================================================
 
 ENV_KEYS = [
+    "API_PRESET",
     "CHOQUET_MODE",
     "AGENT_BACKEND",
+    "DATA_PATH",
+    "LLM_CACHE_PATH",
     "RUN_SAMPLE_LIMIT",
+    "RANDOM_SEED",
     "EPOCHS",
     "BATCH_SIZE",
     "LLM_PROVIDER",
@@ -103,6 +156,88 @@ ENV_KEYS = [
     "LLM_BASE_URL",
     "FEWSHOT_ENABLED",
 ]
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Run the Choquet experiment with command-line overrides.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument("--api-preset", choices=sorted(API_CONFIGS.keys()), help="API preset name.")
+    parser.add_argument("--choquet-mode", choices=["inspired", "discrete_2additive"], help="Choquet aggregation mode.")
+    parser.add_argument("--agent-backend", choices=["rule", "hybrid", "llm"], help="Agent backend.")
+    parser.add_argument("--fewshot-enabled", choices=["true", "false", "1", "0", "yes", "no"], help="Enable few-shot examples.")
+    parser.add_argument("--data-path", help="Dataset CSV path. Relative paths are resolved from project root.")
+    parser.add_argument("--llm-cache-path", "--cache-path", dest="llm_cache_path", help="LLM cache JSON path.")
+    parser.add_argument("--run-sample-limit", type=int, help="Limit samples for a run. Use 0 for full dataset.")
+    parser.add_argument("--random-seed", type=int, help="Single random seed.")
+    parser.add_argument("--random-seed-start", type=int, help="First seed for a sweep.")
+    parser.add_argument("--random-seed-end", type=int, help="Last seed for a sweep.")
+    parser.add_argument("--epochs", type=int, help="Training epochs.")
+    parser.add_argument("--batch-size", type=int, help="Training batch size.")
+    parser.add_argument("--llm-provider", help="LLM provider, for example openai_compatible or local.")
+    parser.add_argument("--llm-model", help="LLM model name.")
+    parser.add_argument("--llm-base-url", help="OpenAI-compatible base URL.")
+    parser.add_argument("--llm-api-key-env", help="Environment variable name that stores the API key.")
+    parser.add_argument("--llm-api-key", help="Inline API key for this process only. Prefer .env when possible.")
+    parser.add_argument("--run-test-gateway", action="store_true", help="Run gateway smoke test.")
+    parser.add_argument("--skip-test-gateway", action="store_true", help="Skip gateway smoke test.")
+    parser.add_argument("--run-test-fewshot", action="store_true", help="Run few-shot test.")
+    parser.add_argument("--skip-test-fewshot", action="store_true", help="Skip few-shot test.")
+    parser.add_argument("--run-precompute-llm", action="store_true", help="Run LLM precompute step.")
+    parser.add_argument("--skip-precompute-llm", action="store_true", help="Skip LLM precompute step.")
+    parser.add_argument("--run-main", action="store_true", help="Run main.py training/evaluation step.")
+    parser.add_argument("--skip-main", action="store_true", help="Skip main.py step.")
+    parser.add_argument("--stop-on-error", action="store_true", help="Stop remaining steps after a failure.")
+    parser.add_argument("--no-stop-on-error", action="store_true", help="Continue remaining steps after a failure.")
+    parser.add_argument("--dry-run", action="store_true", help="Print resolved configuration without running subprocesses.")
+    return parser.parse_args()
+
+
+def apply_cli_overrides(args: argparse.Namespace) -> None:
+    mapping = {
+        "API_PRESET": args.api_preset,
+        "CHOQUET_MODE": args.choquet_mode,
+        "AGENT_BACKEND": args.agent_backend,
+        "FEWSHOT_ENABLED": args.fewshot_enabled,
+        "DATA_PATH": args.data_path,
+        "LLM_CACHE_PATH": args.llm_cache_path,
+        "RUN_SAMPLE_LIMIT": args.run_sample_limit,
+        "RANDOM_SEED": args.random_seed,
+        "RANDOM_SEED_START": args.random_seed_start,
+        "RANDOM_SEED_END": args.random_seed_end,
+        "EPOCHS": args.epochs,
+        "BATCH_SIZE": args.batch_size,
+        "LLM_PROVIDER": args.llm_provider,
+        "LLM_MODEL": args.llm_model,
+        "LLM_BASE_URL": args.llm_base_url,
+        "LLM_API_KEY_ENV": args.llm_api_key_env,
+        "LLM_API_KEY_VALUE": args.llm_api_key,
+    }
+    for key, value in mapping.items():
+        if value is not None:
+            CONFIG[key] = str(value)
+
+    if args.run_test_gateway:
+        CONFIG["RUN_TEST_GATEWAY"] = True
+    if args.skip_test_gateway:
+        CONFIG["RUN_TEST_GATEWAY"] = False
+    if args.run_test_fewshot:
+        CONFIG["RUN_TEST_FEWSHOT"] = True
+    if args.skip_test_fewshot:
+        CONFIG["RUN_TEST_FEWSHOT"] = False
+    if args.run_precompute_llm:
+        CONFIG["RUN_PRECOMPUTE_LLM"] = True
+    if args.skip_precompute_llm:
+        CONFIG["RUN_PRECOMPUTE_LLM"] = False
+    if args.run_main:
+        CONFIG["RUN_MAIN"] = True
+    if args.skip_main:
+        CONFIG["RUN_MAIN"] = False
+    if args.stop_on_error:
+        CONFIG["STOP_ON_ERROR"] = True
+    if args.no_stop_on_error:
+        CONFIG["STOP_ON_ERROR"] = False
 
 
 def set_or_clear_env(key: str, value: object) -> None:
@@ -117,6 +252,17 @@ def looks_like_inline_api_key(value: object) -> bool:
         return False
     text = str(value).strip()
     return bool(re.match(r"^(sk-|AIza|eyJ)[A-Za-z0-9_.-]{12,}$", text))
+
+
+def apply_api_preset() -> None:
+    api_preset = CONFIG.get("API_PRESET", "")
+    if api_preset and api_preset in API_CONFIGS:
+        preset = API_CONFIGS[api_preset]
+        print(f"Using API preset: {api_preset}")
+        for key, value in preset.items():
+            CONFIG[key] = value
+    elif api_preset:
+        print(f"WARNING: Unknown API preset '{api_preset}', using default CONFIG values")
 
 
 def apply_config() -> tuple[bool, str]:
@@ -151,15 +297,32 @@ def api_key_status() -> tuple[bool, str]:
     return False, "missing"
 
 
+def seed_values() -> list[int]:
+    start = str(CONFIG.get("RANDOM_SEED_START") or "").strip()
+    end = str(CONFIG.get("RANDOM_SEED_END") or "").strip()
+    if start or end:
+        if not start or not end:
+            raise ValueError("RANDOM_SEED_START and RANDOM_SEED_END must be set together.")
+        start_seed = int(start)
+        end_seed = int(end)
+        step = 1 if end_seed >= start_seed else -1
+        return list(range(start_seed, end_seed + step, step))
+    return [int(str(CONFIG.get("RANDOM_SEED") or os.environ.get("RANDOM_SEED") or "78").strip())]
+
+
 def print_config(project_root: Path) -> None:
     detected, source = api_key_status()
     print("=== auto_run.py configuration ===")
     print(f"Project root     : {project_root}")
     for key in [
+        "API_PRESET",
         "AGENT_BACKEND",
         "CHOQUET_MODE",
         "FEWSHOT_ENABLED",
+        "DATA_PATH",
+        "LLM_CACHE_PATH",
         "RUN_SAMPLE_LIMIT",
+        "RANDOM_SEED",
         "EPOCHS",
         "BATCH_SIZE",
         "LLM_PROVIDER",
@@ -183,13 +346,28 @@ def run_step(title: str, args: Iterable[str], project_root: Path) -> int:
 
 
 def main() -> int:
+    args = parse_args()
     project_root = PROJECT_ROOT
     os.chdir(project_root)
     load_project_env()
+    apply_cli_overrides(args)
+    apply_api_preset()
+    apply_cli_overrides(args)
     config_ok, _ = apply_config()
     if not config_ok:
         return 2
-    print_config(project_root)
+    try:
+        seeds = seed_values()
+    except ValueError as exc:
+        print(f"ERROR: {exc}")
+        return 2
+
+    if args.dry_run:
+        print(f"Seed runs        : {', '.join(str(seed) for seed in seeds)}")
+        if seeds:
+            os.environ["RANDOM_SEED"] = str(seeds[0])
+        print_config(project_root)
+        return 0
 
     steps: list[tuple[str, list[str]]] = []
     if CONFIG.get("RUN_TEST_GATEWAY"):
@@ -205,21 +383,39 @@ def main() -> int:
         print("No steps selected. Enable RUN_TEST_GATEWAY, RUN_PRECOMPUTE_LLM, or RUN_MAIN in CONFIG.")
         return 0
 
-    success = True
-    for title, args in steps:
-        code = run_step(title, args, project_root)
-        if code != 0:
-            success = False
-            print(f"Step failed: {title}, exit code={code}")
-            if CONFIG.get("STOP_ON_ERROR", True):
-                break
+    overall_success = True
+    seed_results: list[tuple[int, bool]] = []
+    print(f"Seed runs        : {', '.join(str(seed) for seed in seeds)}")
+    for run_index, seed in enumerate(seeds, 1):
+        os.environ["RANDOM_SEED"] = str(seed)
+        print()
+        print("=" * 80)
+        print(f"Seed run {run_index}/{len(seeds)} | RANDOM_SEED={seed}")
+        print("=" * 80)
+        print_config(project_root)
+
+        seed_success = True
+        for title, args in steps:
+            code = run_step(title, args, project_root)
+            if code != 0:
+                seed_success = False
+                overall_success = False
+                print(f"Step failed: seed={seed}, step={title}, exit code={code}")
+                if CONFIG.get("STOP_ON_ERROR", True):
+                    break
+        seed_results.append((seed, seed_success))
+        if not seed_success and CONFIG.get("STOP_ON_ERROR", True):
+            break
 
     print("\n=== auto_run.py summary ===")
-    print(f"Success          : {success}")
+    print(f"Success          : {overall_success}")
+    print("Seed results     :")
+    for seed, ok in seed_results:
+        print(f"  seed={seed}: {'OK' if ok else 'FAILED'}")
     print(f"Run outputs dir  : {project_root / 'outputs' / 'runs'}")
     print(f"Latest model     : {project_root / 'outputs' / 'best_choquet_model.pt'}")
     print(f"Latest summary   : {project_root / 'outputs' / 'model_summary.json'}")
-    return 0 if success else 1
+    return 0 if overall_success else 1
 
 
 if __name__ == "__main__":

@@ -1,0 +1,203 @@
+=== Runtime Configuration ===
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cuda
+CUDA available: True
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: deepseek-v4-flash
+LLM_MODEL_CANDIDATES: deepseek-v4-pro
+LLM_BASE_URL: https://api.deepseek.com/v1
+LLM_API_KEY_ENV: LLM_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_ds.json
+Run output dir: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0050_20260608_090155_llm_discrete_2additive_deepseek-v4-flash
+
+Dataset: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv
+Rows: 2119
+Columns: task_name, task_description, label, title, content, text
+task_name  label
+clickbait  0        1167
+           1         952
+
+Split: train=1483, valid=317, test=319
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.05, 0.95] confidence=0.900 explanation=包含'震惊'、'忍不住点开'、'曝光'等典型点击诱导用语
+Emotion      probs=[0.0, 1.0] confidence=0.950 explanation=使用'震惊'、'忍不住点开'、'真相曝光'等夸张悬念词汇，典型情绪操控标题党
+Intention    probs=[0.01, 0.99] confidence=0.970 explanation=使用'震惊'、'忍不住点开'及'真相曝光'等典型标题党手法，意图吸引点击
+Lexical      probs=[0.02, 0.98] confidence=0.950 explanation='震惊！'搭配'忍不住点开''真相曝光'，典型标题党模式
+Consistency  probs=[0.05, 0.95] confidence=0.850 explanation=标题使用'震惊'、'忍不住点开'、'真相曝光'等煽动性词汇，典型标题党手法
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+LLM cache warm plan: total=10595, existing_success=10595, need_requests=0
+
+=== Dataset Integrity Check ===
+Dataset Samples: 2119
+Expected Records: 10595
+SUCCESS Records: 10595
+Missing Records: 0
+Complete Samples : 2119
+Incomplete Samples : 0
+LLM cache saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_zx_ds.json
+
+=== Training Choquet Layer (discrete_2additive) ===
+Epoch 01 | train_loss=0.8465 | valid_loss=0.7993 | valid_acc=0.6404 | valid_macro_f1=0.6399
+Epoch 05 | train_loss=0.6970 | valid_loss=0.6835 | valid_acc=0.6530 | valid_macro_f1=0.6524
+Epoch 10 | train_loss=0.6505 | valid_loss=0.6462 | valid_acc=0.6498 | valid_macro_f1=0.6484
+Epoch 15 | train_loss=0.6456 | valid_loss=0.6434 | valid_acc=0.6498 | valid_macro_f1=0.6489
+Epoch 20 | train_loss=0.6440 | valid_loss=0.6433 | valid_acc=0.6530 | valid_macro_f1=0.6524
+Epoch 25 | train_loss=0.6441 | valid_loss=0.6433 | valid_acc=0.6530 | valid_macro_f1=0.6501
+Epoch 30 | train_loss=0.6438 | valid_loss=0.6435 | valid_acc=0.6562 | valid_macro_f1=0.6545
+
+Best validation: loss=0.6433, acc=0.6625, macro_f1=0.6602
+Saved best model to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0050_20260608_090155_llm_discrete_2additive_deepseek-v4-flash\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=0.6631, acc=0.5925, precision=0.5873, recall=0.5868, macro_f1=0.5869
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.5925 | 0.6045 | 0.6025 | 0.5920 |
+| Average Probability Voting | 0.5925 | 0.6045 | 0.6025 | 0.5920 |
+| Dynamic Single-Agent Weighting | 0.5925 | 0.5873 | 0.5868 | 0.5869 |
+| Choquet-inspired Pairwise Voting | 0.5925 | 0.5873 | 0.5868 | 0.5869 |
+Test predictions saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0050_20260608_090155_llm_discrete_2additive_deepseek-v4-flash\test_predictions.csv
+
+=== Task-level Average Single Weights ===
+
+Task: clickbait
+  Semantic    : 0.1512
+  Emotion     : 0.1844
+  Intention   : 0.1777
+  Lexical     : 0.2967
+  Consistency : 0.1900
+
+=== Task-level Top Pairwise Weights ===
+
+Task: clickbait
+  Lexical + Consistency       : 0.0168
+  Emotion + Lexical           : 0.0158
+  Intention + Lexical         : 0.0144
+  Semantic + Lexical          : 0.0084
+  Emotion + Intention         : -0.0086
+
+=== Sample-level Decision Traces ===
+
+--- Sample ---
+Task: clickbait
+Text: 宫颈癌疫苗奠基者：男性也应接种 | 纵相专访 转自公众号：东方网http://mp.weixin.qq.com/s?__biz=MjM5OTkwMzc4Mg==&mid=2652046387&idx=3&sn=e19e6e21016c721fc420c6ca9b4f13b2记者 | 单珊 冯茵伦近期，九价宫颈癌疫苗在国内不少城市陆续上市，与去年上市的二价、四价宫颈癌疫苗正式“合体”。 作为全球首个用于预防肿瘤的疫苗——可预防宫颈癌的HPV病毒疫苗，自问世以来就成为备受追捧的“明星”，但它背后的科学家却鲜为人知。1发现人乳头瘤病毒和宫颈癌之间联系而获奖德国病毒学家哈拉尔德·楚尔·豪森（Ha...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.7641 0.2359]
+Agent predictions:
+  Semantic     pred=0 conf=0.850 prob=[0.9 0.1] | 标题直接陈述专家观点，内容为正式专访，无悬念或夸张诱导词汇。
+  Emotion      pred=0 conf=0.600 prob=[0.65 0.35] | 标题虽有认知反差引起好奇，但语气客观，未使用夸张情绪词
+  Intention    pred=0 conf=0.850 prob=[0.9 0.1] | 标题陈述专家观点，无夸张或诱导性语言，属于正常信息传达。
+  Lexical      pred=0 conf=0.900 prob=[0.92 0.08] | 标题平实陈述权威观点，无极端修饰或标点，非标题党模式
+  Consistency  pred=0 conf=0.900 prob=[0.85 0.15] | 标题概括了专访核心观点，与内容保持一致，无夸大或误导
+Single weights:
+  Semantic    : 0.1512
+  Emotion     : 0.1844
+  Intention   : 0.1777
+  Lexical     : 0.2967
+  Consistency : 0.1900
+Top pairwise weights:
+  Lexical + Consistency       : 0.0168
+  Emotion + Lexical           : 0.0158
+  Intention + Lexical         : 0.0144
+
+--- Sample ---
+Task: clickbait
+Text: 李雪琴走红，当代年轻人同意了吗？ 撰稿 | 记者 陈晨辽宁铁岭，这个闻名全国的“大城市”，因为赵本山，因为赵本山的《乡村爱情》，成为了当代流行文化中一个特殊的地标。 李雪琴就是铁岭人。两年前，她因为跟吴亦凡隔空喊话成了“网红”，又因为在《脱口秀大会》上的惊艳演出，一跃成为综艺界的热门人物。 李雪琴性格和经历本身自带“人设”：北大高材生，却靠东北话视频出圈；一路精英教育出身，内心却是“社恐”“怂货”；时刻被痛苦和抑郁环绕，却懂得如何让人快乐…… 李雪琴走红的本身就是当代年轻人的精神缩影，是对精英文化的一种反叛。当然，更因为她真是个有才华的人。 不是北大人却进了北大门李雪琴应该很满意自己“大...
+Gold label: 1 | Final prediction: 1 | Final probs: [0.4645 0.5355]
+Agent predictions:
+  Semantic     pred=0 conf=0.850 prob=[0.9 0.1] | 标题是设问式，内容为客观人物报道，无夸大或诱导词汇。
+  Emotion      pred=1 conf=0.850 prob=[0.1 0.9] | 反问句制造悬念和争议，暗示年轻人不同意，具有点击诱导意图
+  Intention    pred=1 conf=0.700 prob=[0.25 0.75] | 疑问句式引发好奇心，暗示争议性，有轻微点击诱导意图
+  Lexical      pred=1 conf=0.700 prob=[0.2 0.8] | '同意了吗'用挑衅疑问制造争议和好奇心，属于词汇表层的诱导点击模式
+  Consistency  pred=1 conf=0.850 prob=[0.1 0.9] | 标题以问句制造悬念，但内容并未讨论年轻人是否同意，存在前后不一致
+Single weights:
+  Semantic    : 0.1512
+  Emotion     : 0.1844
+  Intention   : 0.1777
+  Lexical     : 0.2967
+  Consistency : 0.1900
+Top pairwise weights:
+  Lexical + Consistency       : 0.0168
+  Emotion + Lexical           : 0.0158
+  Intention + Lexical         : 0.0144
+
+--- Sample ---
+Task: clickbait
+Text: 对话“最强学霸班”：地质学就业难？程序员还掉头发呢！ 撰稿 | 记者 宋祖礼 蔡黄浩5月底，中国地质大学（武汉）地质学基地班因为一个“最强学霸班”的视频而在微博爆火。最早的爆料称这个班“30人班级29人读研1人直博”，蜂拥而至的围观者，有为“学霸”叫好的，也有调侃地质学专业难以就业如斯的。 这个班到底有多少人升学、几人直博，“地质学”又到底是做什么的？6月，东方网·纵相新闻记者来到这所高校实地探访了这个“神奇”的班级。 1谈专业：我们研究地球“有许多人问我们地质学是做什么的，我的回答就是我们是研究地球的。” 在中国地质大学（武汉）的环境地球化学实验室，是地质学基地班毕业生张思礼最常待的地...
+Gold label: 0 | Final prediction: 1 | Final probs: [0.4607 0.5393]
+Agent predictions:
+  Semantic     pred=1 conf=0.900 prob=[0. 1.] | 标题使用反问与对比制造悬念，诱发好奇心，属于点击诱导。
+  Emotion      pred=1 conf=0.850 prob=[0.1 0.9] | 使用对话形式和争议性对比（地质学就业难vs程序员掉头发）制造好奇心缺口，属于点击诱导
+  Intention    pred=1 conf=0.900 prob=[0.05 0.95] | 使用'最强学霸班'与疑问'地质学就业难？'制造好奇缺口，并通过对比'程序员还掉头发呢！'诱导点击
+  Lexical      pred=1 conf=0.750 prob=[0.2 0.8] | 包含极端修饰词'最强'和反问对比，有点击诱导意图
+  Consistency  pred=0 conf=0.850 prob=[0.88 0.12] | 标题使用对比和悬念，但内容如实报道，无矛盾或误导
+Single weights:
+  Semantic    : 0.1512
+  Emotion     : 0.1844
+  Intention   : 0.1777
+  Lexical     : 0.2967
+  Consistency : 0.1900
+Top pairwise weights:
+  Lexical + Consistency       : 0.0168
+  Emotion + Lexical           : 0.0158
+  Intention + Lexical         : 0.0144
+
+--- Sample ---
+Task: clickbait
+Text: 乌克兰新任“戏精总统”泽连斯基：我会做现实中的瓦夏 撰稿 | 实习生 钟书毓 记者 宋祖礼因为出演总统，最终就真能当上总统，这件事，恐怕连编剧都不敢编。泽连斯基在电视剧《人民公仆》中饰演瓦夏老师就职总统的一刻 然而现实就是这么发生了，2019年4月22日，曾经饰演过总统一角的乌克兰喜剧演员泽连斯基获得了73.07%的选票，击败现任总统波罗申科，当选为乌克兰新一任总统。 这让所有人都瞠目结舌，但却又不那么意外。95街区的戏剧人生很戏剧现年41岁的弗拉基米尔·泽连斯基，他迄今为止的人生之路同前任总统们相比，可谓大相径庭。他的政治生涯从宣布参选以来，可能仅有一百天左右，在此之前的政治经验基本为...
+Gold label: 0 | Final prediction: 1 | Final probs: [0.4285 0.5715]
+Agent predictions:
+  Semantic     pred=1 conf=0.900 prob=[0.05 0.95] | 标题使用'戏精总统'等娱乐化、夸张词汇，制造好奇和反差，有明显点击诱导意图。
+  Emotion      pred=1 conf=0.900 prob=[0.05 0.95] | 使用贬义戏称“戏精”和电视剧角色联想，制造讽刺和好奇心，明显点击诱导。
+  Intention    pred=1 conf=0.950 prob=[0.05 0.95] | 使用'戏精总统'贬低称谓，结合影视角色对比，制造猎奇感和操纵意图，典型点击诱导。
+  Lexical      pred=1 conf=0.900 prob=[0.05 0.95] | 使用贬义标签'戏精总统'及虚构角色'瓦夏'制造好奇和争议，典型标题党模式
+  Consistency  pred=0 conf=0.900 prob=[0.85 0.15] | 标题与内容一致，均描述泽连斯基从演员到总统的戏剧经历，无矛盾或转折
+Single weights:
+  Semantic    : 0.1512
+  Emotion     : 0.1844
+  Intention   : 0.1777
+  Lexical     : 0.2967
+  Consistency : 0.1900
+Top pairwise weights:
+  Lexical + Consistency       : 0.0168
+  Emotion + Lexical           : 0.0158
+  Intention + Lexical         : 0.0144
+
+--- Sample ---
+Task: clickbait
+Text: '人不是病毒，仇外心理才是！'这些国家先后驰援中国 东方网·纵相新闻截至2月5日24时，全国累计确诊新型冠状病毒感染的肺炎28018例，疑似病例24702例，累计死亡病例563例。一方有难，八方来援。疫情爆发以来，世界多国政府迅速做出反应，积极评价中方为抗击新型冠状病毒感染肺炎疫情所做努力，并对中国做出支援。1非常时期，柬埔寨首相洪森'硬核'访华疫情面前，有的国家领导人选择“逆行”。2月5日下午，柬埔寨首相洪森抵达北京，成为中国爆发新型冠状病毒感染的肺炎疫情后首位访华的外国领导人。洪森此前更是提出要前往武汉慰问柬埔寨留学生。在中方婉拒洪森的请求后，他提议将访问地点改至北京。△当地时间 2...
+Gold label: 0 | Final prediction: 0 | Final probs: [0.5402 0.4598]
+Agent predictions:
+  Semantic     pred=1 conf=0.800 prob=[0.15 0.85] | 标题使用感叹号和强烈对比语句，具有情绪化和点击诱导特征
+  Emotion      pred=1 conf=0.850 prob=[0.1 0.9] | 使用情绪化呼吁和悬念结构，激发好奇与情感共鸣，有标题党倾向
+  Intention    pred=0 conf=0.900 prob=[0.85 0.15] | 标题虽有情感口号，但属新闻报道范畴，无直接点击诱导或操纵意图
+  Lexical      pred=1 conf=0.820 prob=[0.15 0.85] | 引语带感叹号，'仇外心理才是'具极端情绪，制造好奇心缺口
+  Consistency  pred=0 conf=0.850 prob=[0.9 0.1] | 标题与内容一致，客观报道各国援助，无夸大或矛盾。
+Single weights:
+  Semantic    : 0.1512
+  Emotion     : 0.1844
+  Intention   : 0.1777
+  Lexical     : 0.2967
+  Consistency : 0.1900
+Top pairwise weights:
+  Lexical + Consistency       : 0.0168
+  Emotion + Lexical           : 0.0158
+  Intention + Lexical         : 0.0144
+
+Readable model summary saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0050_20260608_090155_llm_discrete_2additive_deepseek-v4-flash\model_summary.json
+Latest model copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\best_choquet_model.pt
+Latest summary copied to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\model_summary.json
+
+=== Capacity Monotonicity Diagnostic ===
+{'checked': 211, 'violations': 0, 'max_violation': 0.0}
+Run metadata saved to: F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\runs\0050_20260608_090155_llm_discrete_2additive_deepseek-v4-flash\run_result.json
+
+Done. Agents produced fixed outputs; only the selected Choquet aggregation layer was trained.
