@@ -20,9 +20,9 @@ from typing import Iterable
 import pandas as pd
 
 
-OLD_DATASET_PATH = Path(r"H:\clickbait_data\multimodel_clickbait\zongxiang\zongxiang_nc.csv")
+OLD_DATASET_PATH = Path(r"H:\clickbait_data\multimodel_clickbait\wangyi\wangyi_c.csv")
 NEW_DATASET_PATH = Path(
-    r"F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\zongxiang.csv"
+    r"F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\wangyi.csv"
 )
 
 TARGET_COLUMNS = ["task_name", "task_description", "label", "title", "content"]

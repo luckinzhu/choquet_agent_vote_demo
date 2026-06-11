@@ -493,47 +493,105 @@ class LLMBaseAgent(AgentInterface):
         return probs, confidences, explanations
 
 
+# class LLMSemanticAgent(LLMBaseAgent):
+#     name = "Semantic"
+#     description = SemanticAgent.description
+#     system_role = "语义上下文专家"
+#     perspective = "你关注语义上下文、隐含意义、事实指向和文本整体含义。"
+#     fewshot_file = "semantic.json"
+#
+#
+# class LLMEmotionAgent(LLMBaseAgent):
+#     name = "Emotion"
+#     description = EmotionAgent.description
+#     system_role = "情绪态度专家"
+#     perspective = "你关注情绪、态度、主观色彩、讽刺和隐含感受。"
+#     input_mode = "title"
+#     fewshot_file = "emotion.json"
+#
+#
+# class LLMIntentionAgent(LLMBaseAgent):
+#     name = "Intention"
+#     description = IntentionAgent.description
+#     system_role = "点击诱导/操纵意图专家"
+#     perspective = "你关注诱导点击、操纵意图、夸张承诺、误导性动机和劝服目的。"
+#     input_mode = "title"
+#     fewshot_file = "intention.json"
+#
+#
+# class LLMLexicalAgent(LLMBaseAgent):
+#     name = "Lexical"
+#     description = LexicalAgent.description
+#     system_role = "词汇表层模式专家"
+#     perspective = "你关注表层词汇、标点、标题党模式、极端修饰和关键词线索。"
+#     input_mode = "title"
+#     fewshot_file = "lexical.json"
+#
+#
+# class LLMConsistencyAgent(LLMBaseAgent):
+#     name = "Consistency"
+#     description = ConsistencyAgent.description
+#     system_role = "一致性/矛盾/转折专家"
+#     perspective = "你关注文本内部一致性、矛盾、转折、前后不匹配和叙述落差。"
+#     fewshot_file = "consistency.json"
 class LLMSemanticAgent(LLMBaseAgent):
     name = "Semantic"
-    description = SemanticAgent.description
-    system_role = "语义上下文专家"
-    perspective = "你关注语义上下文、隐含意义、事实指向和文本整体含义。"
-    fewshot_file = "semantic.json"
+    description = "语义隐含情感专家"
+    system_role = "语义隐含情感专家"
+    perspective = (
+        "你关注文本整体语义、隐含意义、未直接表达的态度倾向，"
+        "以及字面表达背后的真实情感。"
+        "你的最终任务是判断文本是否包含隐式情感，而不是只判断语义是否通顺。"
+    )
+    fewshot_file = "implicit_semantic.json"
 
 
 class LLMEmotionAgent(LLMBaseAgent):
     name = "Emotion"
-    description = EmotionAgent.description
-    system_role = "情绪态度专家"
-    perspective = "你关注情绪、态度、主观色彩、讽刺和隐含感受。"
-    input_mode = "title"
-    fewshot_file = "emotion.json"
+    description = "情绪线索与情感倾向专家"
+    system_role = "情绪线索与情感倾向专家"
+    perspective = (
+        "你关注文本中的情绪线索、评价性词语、语气词、标点、程度副词、"
+        "隐性褒贬表达和局部情感触发信息。"
+        "你的目标不是只寻找显性情绪词，而是判断这些线索是否共同指向隐式情感。"
+    )
+    fewshot_file = "emotion_clue.json"
 
 
 class LLMIntentionAgent(LLMBaseAgent):
     name = "Intention"
-    description = IntentionAgent.description
-    system_role = "点击诱导/操纵意图专家"
-    perspective = "你关注诱导点击、操纵意图、夸张承诺、误导性动机和劝服目的。"
-    input_mode = "title"
-    fewshot_file = "intention.json"
+    description = "语用意图与言外之意专家"
+    system_role = "语用意图与言外之意专家"
+    perspective = (
+        "你关注文本是否通过语用方式间接表达情感，包括反问、讽刺、反语、委婉、夸张、"
+        "言外之意、表面肯定但实际否定、表面中立但实际带有态度倾向等。"
+        "你的目标不是单纯判断是否讽刺，而是判断这些表达是否指向隐含情感。"
+    )
+    fewshot_file = "pragmatic.json"
 
 
 class LLMLexicalAgent(LLMBaseAgent):
     name = "Lexical"
-    description = LexicalAgent.description
-    system_role = "词汇表层模式专家"
-    perspective = "你关注表层词汇、标点、标题党模式、极端修饰和关键词线索。"
-    input_mode = "title"
-    fewshot_file = "lexical.json"
+    description = "语气词汇与表达线索专家"
+    system_role = "语气词汇与表达线索专家"
+    perspective = (
+        "你关注文本中的表层表达线索，包括语气词、反问句式、感叹句式、重复标点、"
+        "程度修饰词、网络化表达、隐性褒贬词和带有态度倾向的短语。"
+        "你的目标不是简单统计词语，而是判断这些表达线索是否暗示隐式情感。"
+    )
+    fewshot_file = "lexical_emotion.json"
 
 
 class LLMConsistencyAgent(LLMBaseAgent):
     name = "Consistency"
-    description = ConsistencyAgent.description
-    system_role = "一致性/矛盾/转折专家"
-    perspective = "你关注文本内部一致性、矛盾、转折、前后不匹配和叙述落差。"
-    fewshot_file = "consistency.json"
+    description = "反差转折与隐含立场专家"
+    system_role = "反差转折与隐含立场专家"
+    perspective = (
+        "你关注文本中的反差、转折、前后语义落差、表面表达与真实态度不一致、"
+        "以及说话者对人物、事件、行为或观点的隐含立场。"
+        "你的目标不是判断文本是否矛盾，而是通过反差和立场倾向推断是否存在隐式情感。"
+    )
+    fewshot_file = "stance_contrast.json"
 
 
 class AgentFactory:

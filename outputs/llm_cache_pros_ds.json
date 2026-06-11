@@ -1,0 +1,226 @@
+{
+  "6dd8891448a5c07c220e2551514c73ab2186c0d79eb8f2e7cf8aabd86bc1d47f": {
+    "status": "SUCCESS",
+    "text": "无语，减少上学延迟退休还没那么多就业岗位，要死",
+    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
+    "agent_name": "Semantic",
+    "model_name": "deepseek-v4-flash",
+    "raw_text": "{\n  \"class_0_probability\": 0.1,\n  \"class_1_probability\": 0.9,\n  \"confidence\": 0.85,\n  \"explanation\": \"文本用夸张负面情绪表达社会不满，隐含义煽动性，属点击诱导。\"\n}",
+    "output": {
+      "probs": [
+        0.10000000149011612,
+        0.8999999761581421
+      ],
+      "confidence": 0.85,
+      "explanation": "文本用夸张负面情绪表达社会不满，隐含义煽动性，属点击诱导。"
+    }
+  },
+  "456d2139df5138cd08b0cdb58c390b8e7178756580e4e24c045fadb8c90c76c3": {
+    "status": "SUCCESS",
+    "text": "你建议有个屁用",
+    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
+    "agent_name": "Semantic",
+    "model_name": "deepseek-v4-flash",
+    "raw_text": "{\n  \"class_0_probability\": 0.05,\n  \"class_1_probability\": 0.95,\n  \"confidence\": 0.9,\n  \"explanation\": \"话语隐含强烈否定与不屑，负面情感明显。\"\n}",
+    "output": {
+      "probs": [
+        0.05000000074505806,
+        0.949999988079071
+      ],
+      "confidence": 0.9,
+      "explanation": "话语隐含强烈否定与不屑，负面情感明显。"
+    }
+  },
+  "21ea0b55e21b877a82061697bf005dd966bab263a1156cc8b998c588f3c5b826": {
+    "status": "SUCCESS",
+    "text": "有点过分了",
+    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
+    "agent_name": "Semantic",
+    "model_name": "deepseek-v4-flash",
+    "raw_text": "{\n  \"class_0_probability\": 0.8,\n  \"class_1_probability\": 0.2,\n  \"confidence\": 0.6,\n  \"explanation\": \"文本表达不满但无夸大或误导特征，隐含负面情感但不构成典型标题党。\"\n}",
+    "output": {
+      "probs": [
+        0.800000011920929,
+        0.20000000298023224
+      ],
+      "confidence": 0.6,
+      "explanation": "文本表达不满但无夸大或误导特征，隐含负面情感但不构成典型标题党。"
+    }
+  },
+  "69c3d0a53fcef6a96db122c8a05f1deae88745c6a1ae89485957bb28093e6934": {
+    "status": "SUCCESS",
+    "text": "吃撑了吧？大脑供血不足？提点有用的不好吗？？？",
+    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
+    "agent_name": "Semantic",
+    "model_name": "deepseek-v4-flash",
+    "raw_text": "{\n  \"class_0_probability\": 0.95,\n  \"class_1_probability\": 0.05,\n  \"confidence\": 0.9,\n  \"explanation\": \"文本为讽刺性质的反问，表达不满而非诱导点击，无标题党特征。\"\n}",
+    "output": {
+      "probs": [
+        0.949999988079071,
+        0.05000000074505806
+      ],
+      "confidence": 0.9,
+      "explanation": "文本为讽刺性质的反问，表达不满而非诱导点击，无标题党特征。"
+    }
+  },
+  "085d1df72ba92de28477fbeffc4b14bb89063245ac55a0a874615520646b037c": {
+    "status": "SUCCESS",
+    "text": "这个专家，脑袋好像被那谁，………！",
+    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
+    "agent_name": "Semantic",
+    "model_name": "deepseek-v4-flash",
+    "raw_text": "{\n  \"class_0_probability\": 0.05,\n  \"class_1_probability\": 0.95,\n  \"confidence\": 0.9,\n  \"explanation\": \"文本通过省略和感叹表达强烈负评，暗示专家能力差，煽动性强，属于点击诱导。\"\n}",
+    "output": {
+      "probs": [
+        0.05000000074505806,
+        0.949999988079071
+      ],
+      "confidence": 0.9,
+      "explanation": "文本通过省略和感叹表达强烈负评，暗示专家能力差，煽动性强，属于点击诱导。"
+    }
+  },
+  "d93da6c75976465bac15aa5dbd77de8c87c25b86b867987c27bd638865daa918": {
+    "status": "SUCCESS",
+    "text": "雷总还是猛的",
+    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
+    "agent_name": "Semantic",
+    "model_name": "deepseek-v4-flash",
+    "raw_text": "{\n  \"class_0_probability\": 0.85,\n  \"class_1_probability\": 0.15,\n  \"confidence\": 0.7,\n  \"explanation\": \"文本是对雷总的称赞，隐含正面情感，但无夸张诱导，不属于标题党。\"\n}",
+    "output": {
+      "probs": [
+        0.8500000238418579,
+        0.15000000596046448
+      ],
+      "confidence": 0.7,
+      "explanation": "文本是对雷总的称赞，隐含正面情感，但无夸张诱导，不属于标题党。"
+    }
+  },
+  "72588ca0bf6e63624f1819c67cf09955f80cccb2c3e8beb018c240c5def01b23": {
+    "status": "SUCCESS",
+    "text": "这种张嘴就来的教授为什么还有资格为人师表吧。",
+    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
+    "agent_name": "Semantic",
+    "model_name": "deepseek-v4-flash",
+    "raw_text": "{\n  \"class_0_probability\": 0.1,\n  \"class_1_probability\": 0.9,\n  \"confidence\": 0.85,\n  \"explanation\": \"文本隐含愤怒与失望，反问+贬义措辞表达对教授的不满，情感强烈。\"\n}",
+    "output": {
+      "probs": [
+        0.10000000149011612,
+        0.8999999761581421
+      ],
+      "confidence": 0.85,
+      "explanation": "文本隐含愤怒与失望，反问+贬义措辞表达对教授的不满，情感强烈。"
+    }
+  },
+  "cd96ba6c5fe311ca7ed78a49f317534eacccfb3ae8c48016c5a6bceba49d019e": {
+    "status": "SUCCESS",
+    "text": "神经病!!!!!简直无语...",
+    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
+    "agent_name": "Semantic",
+    "model_name": "deepseek-v4-flash",
+    "raw_text": "{\n  \"class_0_probability\": 0.95,\n  \"class_1_probability\": 0.05,\n  \"confidence\": 0.9,\n  \"explanation\": \"文本是个人情绪宣泄，并非标题党或点击诱导，无明显诱导点击意图。\"\n}",
+    "output": {
+      "probs": [
+        0.949999988079071,
+        0.05000000074505806
+      ],
+      "confidence": 0.9,
+      "explanation": "文本是个人情绪宣泄，并非标题党或点击诱导，无明显诱导点击意图。"
+    }
+  },
+  "56426c521637d94241341073493758bbbbbc8f9cf357c55a0b4dc76cda41885a": {
+    "status": "SUCCESS",
+    "text": "这人恐怕脑子有病吧！还打着冠冕堂皇的借口。",
+    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
+    "agent_name": "Semantic",
+    "model_name": "deepseek-v4-flash",
+    "raw_text": "{\n  \"class_0_probability\": 0.95,\n  \"class_1_probability\": 0.05,\n  \"confidence\": 0.9,\n  \"explanation\": \"该文本是直接的人身攻击，没有诱导点击的标题党特征。\"\n}",
+    "output": {
+      "probs": [
+        0.949999988079071,
+        0.05000000074505806
+      ],
+      "confidence": 0.9,
+      "explanation": "该文本是直接的人身攻击，没有诱导点击的标题党特征。"
+    }
+  },
+  "413e922d8435d1baedce6804ec923ecf1e77fbecdaa0211ef0a114aac7941ffa": {
+    "status": "SUCCESS",
+    "text": "不强制你说个屁",
+    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
+    "agent_name": "Semantic",
+    "model_name": "deepseek-v4-flash",
+    "raw_text": "{\n  \"class_0_probability\": 0.9,\n  \"class_1_probability\": 0.1,\n  \"confidence\": 0.8,\n  \"explanation\": \"文本隐含强烈不满情绪，但并非点击诱导，而是情绪化评论。\"\n}",
+    "output": {
+      "probs": [
+        0.8999999761581421,
+        0.10000000149011612
+      ],
+      "confidence": 0.8,
+      "explanation": "文本隐含强烈不满情绪，但并非点击诱导，而是情绪化评论。"
+    }
+  },
+  "4b4bd04af56676c833634b8d40e92a45fb6c003fb9da28600d47669bf4f7201b": {
+    "status": "SUCCESS",
+    "text": "无语，减少上学延迟退休还没那么多就业岗位，要死",
+    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
+    "agent_name": "Emotion",
+    "model_name": "deepseek-v4-flash",
+    "raw_text": "{\n  \"class_0_probability\": 0.1,\n  \"class_1_probability\": 0.9,\n  \"confidence\": 0.85,\n  \"explanation\": \"包含强烈负面情绪词'无语''要死'，夸张抱怨社会问题，具有点击诱导特征。\"\n}",
+    "output": {
+      "probs": [
+        0.10000000149011612,
+        0.8999999761581421
+      ],
+      "confidence": 0.85,
+      "explanation": "包含强烈负面情绪词'无语''要死'，夸张抱怨社会问题，具有点击诱导特征。"
+    }
+  },
+  "5629c06fd958c80ca639f87de8e272990b77c8936bb2373c664ff20f369c6a7b": {
+    "status": "SUCCESS",
+    "text": "你建议有个屁用",
+    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
+    "agent_name": "Emotion",
+    "model_name": "deepseek-v4-flash",
+    "raw_text": "{\n  \"class_0_probability\": 0.05,\n  \"class_1_probability\": 0.95,\n  \"confidence\": 0.95,\n  \"explanation\": \"粗俗贬义词'屁用'表达强烈蔑视与愤怒，情绪鲜明易诱导点击。\"\n}",
+    "output": {
+      "probs": [
+        0.05000000074505806,
+        0.949999988079071
+      ],
+      "confidence": 0.95,
+      "explanation": "粗俗贬义词'屁用'表达强烈蔑视与愤怒，情绪鲜明易诱导点击。"
+    }
+  },
+  "cdd6e75950cfb825d12bcac459d6c248ff2fa50ec8b04f92a456addea9614d12": {
+    "status": "SUCCESS",
+    "text": "有点过分了",
+    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
+    "agent_name": "Emotion",
+    "model_name": "deepseek-v4-flash",
+    "raw_text": "{\n  \"class_0_probability\": 0.9,\n  \"class_1_probability\": 0.1,\n  \"confidence\": 0.8,\n  \"explanation\": \"文本包含负面评价词'过分'和程度副词'有点'，表达不满情绪，但无诱导点击特征。\"\n}",
+    "output": {
+      "probs": [
+        0.8999999761581421,
+        0.10000000149011612
+      ],
+      "confidence": 0.8,
+      "explanation": "文本包含负面评价词'过分'和程度副词'有点'，表达不满情绪，但无诱导点击特征。"
+    }
+  },
+  "a161a2730353ce632f0c1b24e81feaf3a19879cc61467a9065a294d495748d8d": {
+    "status": "SUCCESS",
+    "text": "吃撑了吧？大脑供血不足？提点有用的不好吗？？？",
+    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
+    "agent_name": "Emotion",
+    "model_name": "deepseek-v4-flash",
+    "raw_text": "{\n  \"class_0_probability\": 0.1,\n  \"class_1_probability\": 0.9,\n  \"confidence\": 0.85,\n  \"explanation\": \"情绪激烈的反问和重复问号，表达不满与讽刺，易激发点击欲望。\"\n}",
+    "output": {
+      "probs": [
+        0.10000000149011612,
+        0.8999999761581421
+      ],
+      "confidence": 0.85,
+      "explanation": "情绪激烈的反问和重复问号，表达不满与讽刺，易激发点击欲望。"
+    }
+  }
+}
