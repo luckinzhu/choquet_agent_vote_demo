@@ -87,6 +87,27 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\data\raw_data\shortText\TextClassification\agnewstitle\test.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\shortText\TextClassification\agnewstitle\train.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\shortText\TextClassification\chatgpt\test.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\data\toy_data.csv">
           <value>
             <Attribute>

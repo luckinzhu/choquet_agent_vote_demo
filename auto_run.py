@@ -94,7 +94,7 @@ CONFIG = {
 
     # Fast test settings:
     # "8" means use 8 samples; "" or None means full dataset.
-    "RUN_SAMPLE_LIMIT": "10",
+    "RUN_SAMPLE_LIMIT": "2000",
 
     # "2" means quick test; "" or None uses config.py defaults.
     "RANDOM_SEED": "78",
