@@ -24,6 +24,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\data\raw_data\fakenews\no_images\gossipcop\gossipcop_test.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\data\raw_data\implicit hat speech\implicit hat speech\LHd\test.csv">
           <value>
             <Attribute>
@@ -102,6 +109,27 @@
           </value>
         </entry>
         <entry key="\data\raw_data\shortText\TextClassification\chatgpt\test.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\shortText\TextClassification\ohsumed\test.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\shortText\TextClassification\snippets\test.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\shortText\TextClassification\snippets\train.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
