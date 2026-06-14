@@ -1,16 +1,21 @@
 import pandas as pd
 from pathlib import Path
 
-# 原始文件所在文件夹
-input_dir = Path(r"F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\implicit hat speech\implicit hat speech\State_ToxiCN")
+# 原始 fake news 文件所在文件夹
+input_dir = Path(r"F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\shortText\TextClassification\newstitle")
 
-# 输出文件
-output_path = Path(r"F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\implicit\State_ToxiCN.csv")
+# 转换后的总输出文件
+output_path = Path(r"F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\shortText\newstitle.csv")
 
-TASK_NAME = "implicit_sentiment"
+# TASK_NAME = "implicit_sentiment"
+# TASK_DESCRIPTION = (
+#     "implicit sentiment analysis: infer the sentiment implied by the described event, "
+#     "behavior, or outcome, even when no explicit emotional words are present"
+# )
+TASK_NAME = "short_text"
 TASK_DESCRIPTION = (
-    "implicit sentiment analysis: infer the sentiment implied by the described event, "
-    "behavior, or outcome, even when no explicit emotional words are present"
+    "short text classification: identify the category of a short text according to its topic,"
+    "intent, or semantic meaning"
 )
 
 # 找到文件夹下所有 csv 文件

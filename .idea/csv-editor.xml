@@ -24,7 +24,49 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\data\raw_data\fakenews\no_images\ReCOVery-master\recovery_test.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\fakenews\no_images\ReCOVery-master\recovery_train.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\data\raw_data\fakenews\no_images\gossipcop\gossipcop_test.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\fakenews\no_images\politifact\politifact_test.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\fakenews\no_images\politifact\politifact_train.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\fakenews\politifact.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\fakenews\recovery.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -80,6 +122,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\data\raw_data\implicit\SBIC.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\data\raw_data\implicit\test.csv">
           <value>
             <Attribute>
@@ -115,6 +164,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\data\raw_data\shortText\TextClassification\newstitle\test.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\shortText\TextClassification\newstitle\train.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\data\raw_data\shortText\TextClassification\ohsumed\test.csv">
           <value>
             <Attribute>
@@ -130,6 +193,27 @@
           </value>
         </entry>
         <entry key="\data\raw_data\shortText\TextClassification\snippets\train.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\shortText\TextClassification\twitter\test.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\shortText\newstitle.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\raw_data\shortText\snippets.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
