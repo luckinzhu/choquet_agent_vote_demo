@@ -38,7 +38,7 @@ API_PRESET = "deepseek"
 API_CONFIGS = {
     "deepseek": {
         "LLM_BASE_URL": "https://api.deepseek.com/v1",
-        "LLM_API_KEY_VALUE": "",  # Read from .env file
+        "LLM_API_KEY_VALUE": "sk-bb7869d824cf48c5a687bf10b8da0115",  # Read from .env file
         "LLM_MODEL": "deepseek-v4-flash",
     },
     "gpt55": {
@@ -94,7 +94,7 @@ CONFIG = {
 
     # Fast test settings:
     # "8" means use 8 samples; "" or None means full dataset.
-    "RUN_SAMPLE_LIMIT": "10",
+    "RUN_SAMPLE_LIMIT": "",
 
     # "2" means quick test; "" or None uses config.py defaults.
     "RANDOM_SEED": "78",

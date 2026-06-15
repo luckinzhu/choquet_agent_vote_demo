@@ -1,0 +1,206 @@
+=== Runtime Configuration ===
+RANDOM_SEED: 78
+DATA_PATH: C:\data\choquet_agent_vote_demo\data\raw_data\implicit\ProsCons.csv
+AGENT_BACKEND: llm
+CHOQUET_MODE: discrete_2additive
+DEVICE requested/effective: auto / cpu
+CUDA available: False
+LLM_PROVIDER: openai_compatible
+LLM_MODEL: deepseek-v4-flash
+LLM_MODEL_CANDIDATES: deepseek-v4-pro
+LLM_BASE_URL: https://api.deepseek.com/v1
+LLM_API_KEY_ENV: LLM_API_KEY
+API key detected: True
+LLM_CACHE_ENABLED: True
+LLM cache path: C:\data\choquet_agent_vote_demo\outputs\llm_cache_pros_ds.json
+Run output dir: C:\data\choquet_agent_vote_demo\outputs\runs\0067_20260613_020935_llm_discrete_2additive_deepseek-v4-flash
+
+Dataset: C:\data\choquet_agent_vote_demo\data\raw_data\implicit\ProsCons.csv
+Rows: 3000
+Columns: task_name, task_description, label, text
+task_name           label
+implicit_sentiment  0        1500
+                    1        1500
+
+Split: train=2100, valid=449, test=451
+
+=== LLM Agent Smoke Test ===
+Semantic     probs=[0.0, 1.0] confidence=0.950 explanation=使用“震惊”“忍不住点开”“真相曝光”等典型标题党词汇，意图诱导点击。
+Emotion      probs=[0.0, 1.0] confidence=0.900 explanation=使用'震惊'、'忍不住点开'、'真相曝光'等情绪词和感叹号，明显诱导点击。
+Intention    probs=[0.05, 0.95] confidence=0.950 explanation=使用'震惊'、'忍不住点开'、'真相曝光'等夸张诱导表达，明显是标题党。
+Lexical      probs=[0.02, 0.98] confidence=0.950 explanation=使用‘震惊’感叹句、‘忍不住点开’诱导短语和‘真相曝光’悬念，典型标题党表达。
+Consistency  probs=[0.0, 1.0] confidence=0.950 explanation=使用‘震惊’‘所有人忍不住点开’‘真相曝光’等夸大悬念词，明显标题党。
+Smoke test passed: all LLM agents returned parseable JSON.
+
+=== Precomputing LLM Agent Output Cache ===
+LLM calls happen here. Training epochs switch to cache-only reads afterward.
+LLM cache warm plan: total=15000, existing_success=14977, need_requests=23
+Precomputing LLM cache:   0%|          | 0/23 [00:00<?, ?req/s]Precomputing LLM cache:   0%|          | 0/23 [00:00<?, ?req/s, agent=Semantic, row=383]Precomputing LLM cache:   4%|▍         | 1/23 [00:04<01:28,  4.01s/req, agent=Semantic, row=383]Precomputing LLM cache:   4%|▍         | 1/23 [00:04<01:28,  4.01s/req, agent=Semantic, row=586]Precomputing LLM cache:   9%|▊         | 2/23 [00:12<02:16,  6.51s/req, agent=Semantic, row=586]Precomputing LLM cache:   9%|▊         | 2/23 [00:12<02:16,  6.51s/req, agent=Semantic, row=1440]Precomputing LLM cache:  13%|█▎        | 3/23 [00:15<01:37,  4.88s/req, agent=Semantic, row=1440]Precomputing LLM cache:  13%|█▎        | 3/23 [00:15<01:37,  4.88s/req, agent=Semantic, row=1825]Precomputing LLM cache:  17%|█▋        | 4/23 [00:19<01:29,  4.73s/req, agent=Semantic, row=1825]Precomputing LLM cache:  17%|█▋        | 4/23 [00:19<01:29,  4.73s/req, agent=Semantic, row=2677]Precomputing LLM cache:  22%|██▏       | 5/23 [00:23<01:19,  4.40s/req, agent=Semantic, row=2677]Precomputing LLM cache:  22%|██▏       | 5/23 [00:23<01:19,  4.40s/req, agent=Semantic, row=2818]Precomputing LLM cache:  26%|██▌       | 6/23 [00:27<01:13,  4.31s/req, agent=Semantic, row=2818]Precomputing LLM cache:  26%|██▌       | 6/23 [00:27<01:13,  4.31s/req, agent=Emotion, row=876]  Precomputing LLM cache:  30%|███       | 7/23 [00:33<01:17,  4.86s/req, agent=Emotion, row=876]Precomputing LLM cache:  30%|███       | 7/23 [00:33<01:17,  4.86s/req, agent=Emotion, row=1981]Precomputing LLM cache:  35%|███▍      | 8/23 [00:38<01:11,  4.76s/req, agent=Emotion, row=1981]Precomputing LLM cache:  35%|███▍      | 8/23 [00:38<01:11,  4.76s/req, agent=Emotion, row=2082]Precomputing LLM cache:  39%|███▉      | 9/23 [00:45<01:15,  5.41s/req, agent=Emotion, row=2082]Precomputing LLM cache:  39%|███▉      | 9/23 [00:45<01:15,  5.41s/req, agent=Emotion, row=2224]Precomputing LLM cache:  43%|████▎     | 10/23 [00:50<01:10,  5.42s/req, agent=Emotion, row=2224]Precomputing LLM cache:  43%|████▎     | 10/23 [00:50<01:10,  5.42s/req, agent=Emotion, row=2409]Precomputing LLM cache:  48%|████▊     | 11/23 [00:55<01:02,  5.22s/req, agent=Emotion, row=2409]Precomputing LLM cache:  48%|████▊     | 11/23 [00:55<01:02,  5.22s/req, agent=Emotion, row=2496]Precomputing LLM cache:  52%|█████▏    | 12/23 [01:00<00:58,  5.29s/req, agent=Emotion, row=2496]Precomputing LLM cache:  52%|█████▏    | 12/23 [01:00<00:58,  5.29s/req, agent=Emotion, row=2545]Precomputing LLM cache:  57%|█████▋    | 13/23 [01:05<00:51,  5.16s/req, agent=Emotion, row=2545]Precomputing LLM cache:  57%|█████▋    | 13/23 [01:05<00:51,  5.16s/req, agent=Emotion, row=2579]Precomputing LLM cache:  61%|██████    | 14/23 [01:09<00:44,  4.91s/req, agent=Emotion, row=2579]Precomputing LLM cache:  61%|██████    | 14/23 [01:09<00:44,  4.91s/req, agent=Intention, row=1058]Precomputing LLM cache:  65%|██████▌   | 15/23 [01:14<00:38,  4.76s/req, agent=Intention, row=1058]Precomputing LLM cache:  65%|██████▌   | 15/23 [01:14<00:38,  4.76s/req, agent=Lexical, row=259]   Precomputing LLM cache:  70%|██████▉   | 16/23 [01:19<00:34,  5.00s/req, agent=Lexical, row=259]Precomputing LLM cache:  70%|██████▉   | 16/23 [01:19<00:34,  5.00s/req, agent=Lexical, row=1553]Precomputing LLM cache:  74%|███████▍  | 17/23 [01:24<00:28,  4.79s/req, agent=Lexical, row=1553]Precomputing LLM cache:  74%|███████▍  | 17/23 [01:24<00:28,  4.79s/req, agent=Lexical, row=1582]Precomputing LLM cache:  78%|███████▊  | 18/23 [01:30<00:25,  5.19s/req, agent=Lexical, row=1582]Precomputing LLM cache:  78%|███████▊  | 18/23 [01:30<00:25,  5.19s/req, agent=Consistency, row=251]Precomputing LLM cache:  83%|████████▎ | 19/23 [01:38<00:24,  6.09s/req, agent=Consistency, row=251]Precomputing LLM cache:  83%|████████▎ | 19/23 [01:38<00:24,  6.09s/req, agent=Consistency, row=1661]Precomputing LLM cache:  87%|████████▋ | 20/23 [01:41<00:15,  5.15s/req, agent=Consistency, row=1661]Precomputing LLM cache:  87%|████████▋ | 20/23 [01:41<00:15,  5.15s/req, agent=Consistency, row=2527]Precomputing LLM cache:  91%|█████████▏| 21/23 [01:45<00:09,  4.92s/req, agent=Consistency, row=2527]Precomputing LLM cache:  91%|█████████▏| 21/23 [01:45<00:09,  4.92s/req, agent=Consistency, row=2562]Precomputing LLM cache:  96%|█████████▌| 22/23 [01:49<00:04,  4.50s/req, agent=Consistency, row=2562]Precomputing LLM cache:  96%|█████████▌| 22/23 [01:49<00:04,  4.50s/req, agent=Consistency, row=2882]Precomputing LLM cache: 100%|██████████| 23/23 [01:51<00:00,  3.93s/req, agent=Consistency, row=2882]Precomputing LLM cache: 100%|██████████| 23/23 [01:51<00:00,  4.87s/req, agent=Consistency, row=2882]
+
+=== Dataset Integrity Check ===
+Dataset Samples: 3000
+Expected Records: 15000
+SUCCESS Records: 15000
+Missing Records: 0
+Complete Samples : 3000
+Incomplete Samples : 0
+LLM cache saved to: C:\data\choquet_agent_vote_demo\outputs\llm_cache_pros_ds.json
+
+=== Training Choquet Layer (discrete_2additive) ===
+Epoch 01 | train_loss=0.4904 | valid_loss=0.5107 | valid_acc=0.7528 | valid_macro_f1=0.7518
+Epoch 05 | train_loss=0.4541 | valid_loss=0.4852 | valid_acc=0.7550 | valid_macro_f1=0.7544
+Epoch 10 | train_loss=0.4504 | valid_loss=0.4817 | valid_acc=0.7550 | valid_macro_f1=0.7544
+Epoch 15 | train_loss=0.4500 | valid_loss=0.4806 | valid_acc=0.7595 | valid_macro_f1=0.7587
+Epoch 20 | train_loss=0.4490 | valid_loss=0.4805 | valid_acc=0.7595 | valid_macro_f1=0.7587
+Epoch 25 | train_loss=0.4496 | valid_loss=0.4805 | valid_acc=0.7595 | valid_macro_f1=0.7587
+Epoch 30 | train_loss=0.4501 | valid_loss=0.4806 | valid_acc=0.7595 | valid_macro_f1=0.7587
+
+Best validation: loss=0.4797, acc=0.7617, macro_f1=0.7610
+Saved best model to: C:\data\choquet_agent_vote_demo\outputs\runs\0067_20260613_020935_llm_discrete_2additive_deepseek-v4-flash\best_choquet_model.pt
+
+=== Test Metrics for Trained Model ===
+loss=0.3935, acc=0.8337, precision=0.8340, recall=0.8337, macro_f1=0.8337
+
+=== Baseline Comparison ===
+| Method | Accuracy | Precision | Recall | Macro F1 |
+| --- | --- | --- | --- | --- |
+| Majority Voting | 0.8226 | 0.8235 | 0.8226 | 0.8225 |
+| Average Probability Voting | 0.8226 | 0.8235 | 0.8226 | 0.8225 |
+| Dynamic Single-Agent Weighting | 0.8271 | 0.8271 | 0.8271 | 0.8271 |
+| Choquet-inspired Pairwise Voting | 0.8337 | 0.8340 | 0.8337 | 0.8337 |
+Test predictions saved to: C:\data\choquet_agent_vote_demo\outputs\runs\0067_20260613_020935_llm_discrete_2additive_deepseek-v4-flash\test_predictions.csv
+
+=== Task-level Average Single Weights ===
+
+Task: implicit_sentiment
+  Semantic    : 0.1069
+  Emotion     : 0.1503
+  Intention   : 0.2153
+  Lexical     : 0.3138
+  Consistency : 0.2137
+
+=== Task-level Top Pairwise Weights ===
+
+Task: implicit_sentiment
+  Intention + Lexical         : 0.0410
+  Lexical + Consistency       : 0.0392
+  Emotion + Lexical           : 0.0153
+  Intention + Consistency     : 0.0109
+  Emotion + Intention         : -0.0186
+
+=== Sample-level Decision Traces ===
+
+--- Sample ---
+Task: implicit_sentiment
+Text: 到底懂不懂？
+Gold label: 0 | Final prediction: 1 | Final probs: [0.1445 0.8555]
+Agent predictions:
+  Semantic     pred=1 conf=0.900 prob=[0. 1.] | 反问句隐含不满与指责，具有激发点击的倾向。
+  Emotion      pred=1 conf=0.800 prob=[0.1 0.9] | 反问句‘到底懂不懂’隐含质疑与不满，语气强烈，易引发争议和点击，符合标题党特征。
+  Intention    pred=1 conf=0.700 prob=[0.2 0.8] | 反问句“到底懂不懂”隐含不满与质疑情绪，易引发点击欲望，具有诱导性。
+  Lexical      pred=1 conf=0.900 prob=[0. 1.] | 反问句式带有强烈质疑语气，暗示不满情绪，属典型情绪化表达，适合作为点击诱导。
+  Consistency  pred=1 conf=0.850 prob=[0.1 0.9] | 反问句制造情绪悬念，内容缺失，典型点击诱导手法。
+Single weights:
+  Semantic    : 0.1069
+  Emotion     : 0.1503
+  Intention   : 0.2153
+  Lexical     : 0.3138
+  Consistency : 0.2137
+Top pairwise weights:
+  Intention + Lexical         : 0.0410
+  Lexical + Consistency       : 0.0392
+  Emotion + Lexical           : 0.0153
+
+--- Sample ---
+Task: implicit_sentiment
+Text: 太麻烦，直接让男人在家扶养孩子，那女人去赚钱好了。
+Gold label: 1 | Final prediction: 1 | Final probs: [0.2459 0.7541]
+Agent predictions:
+  Semantic     pred=1 conf=0.600 prob=[0.3 0.7] | 文本使用反讽语气挑战性别分工，隐含不满，易引发争议，具点击诱导倾向。
+  Emotion      pred=0 conf=0.800 prob=[0.9 0.1] | 文本以抱怨语气表达对性别角色颠倒的不满，隐式情感负面，但无夸张或诱导点击特征。
+  Intention    pred=1 conf=0.800 prob=[0.1 0.9] | 通过反语和夸张表达对传统性别角色的讽刺，隐含不满，具有诱导争议的倾向。
+  Lexical      pred=1 conf=0.800 prob=[0.1 0.9] | “太麻烦”“直接让……那……好了”带有讽刺和不满语气，易引情绪波动，属点击诱导。
+  Consistency  pred=1 conf=0.800 prob=[0.1 0.9] | 表面提议实则讽刺，通过性别角色反转制造争议，隐含不满情绪，吸引点击。
+Single weights:
+  Semantic    : 0.1069
+  Emotion     : 0.1503
+  Intention   : 0.2153
+  Lexical     : 0.3138
+  Consistency : 0.2137
+Top pairwise weights:
+  Intention + Lexical         : 0.0410
+  Lexical + Consistency       : 0.0392
+  Emotion + Lexical           : 0.0153
+
+--- Sample ---
+Task: implicit_sentiment
+Text: 你可闭嘴吧
+Gold label: 1 | Final prediction: 0 | Final probs: [0.7066 0.2934]
+Agent predictions:
+  Semantic     pred=0 conf=0.900 prob=[0.95 0.05] | 文本是直接表达不满的口语命令，无夸张或误导性内容，不属标题党。
+  Emotion      pred=0 conf=0.800 prob=[0.9 0.1] | 文本表达强烈不满和命令语气，隐含负面情绪，但非典型标题党。
+  Intention    pred=0 conf=0.800 prob=[0.9 0.1] | 该句直接表达不满，非间接语用策略，无点击诱导特征。
+  Lexical      pred=1 conf=0.850 prob=[0.05 0.95] | “你可闭嘴吧”使用命令语气和否定词，隐含强烈负面情绪，易引发争议，符合点击诱导特征。
+  Consistency  pred=0 conf=0.800 prob=[0.9 0.1] | 表面命令‘闭嘴’隐含强烈负面情绪，但无标题党常见的夸大或诱导点击特征。
+Single weights:
+  Semantic    : 0.1069
+  Emotion     : 0.1503
+  Intention   : 0.2153
+  Lexical     : 0.3138
+  Consistency : 0.2137
+Top pairwise weights:
+  Intention + Lexical         : 0.0410
+  Lexical + Consistency       : 0.0392
+  Emotion + Lexical           : 0.0153
+
+--- Sample ---
+Task: implicit_sentiment
+Text: 我觉得很好！
+Gold label: 0 | Final prediction: 0 | Final probs: [0.9249 0.0751]
+Agent predictions:
+  Semantic     pred=0 conf=0.900 prob=[0.95 0.05] | 文本直接表达正面情感，无隐含诱导或标题党特征。
+  Emotion      pred=0 conf=0.900 prob=[0.95 0.05] | 该句为直接正面评价，无夸张或悬念，缺乏标题党诱导特征。
+  Intention    pred=0 conf=0.900 prob=[0.95 0.05] | 直接正面表达，无语用隐含或情感诱导。
+  Lexical      pred=0 conf=0.700 prob=[0.8 0.2] | 感叹句和程度词'很'表达直接情感，非隐式暗示，无诱导特征。
+  Consistency  pred=0 conf=0.700 prob=[0.85 0.15] | 文本直接正面表态，无反差或隐含负面立场，不构成点击诱导。
+Single weights:
+  Semantic    : 0.1069
+  Emotion     : 0.1503
+  Intention   : 0.2153
+  Lexical     : 0.3138
+  Consistency : 0.2137
+Top pairwise weights:
+  Intention + Lexical         : 0.0410
+  Lexical + Consistency       : 0.0392
+  Emotion + Lexical           : 0.0153
+
+--- Sample ---
+Task: implicit_sentiment
+Text: 我饿就吃了
+Gold label: 0 | Final prediction: 0 | Final probs: [0.9534 0.0466]
+Agent predictions:
+  Semantic     pred=0 conf=0.900 prob=[0.95 0.05] | 文本仅陈述饥饿后进食的事实，无隐含情感倾向。
+  Emotion      pred=0 conf=0.800 prob=[0.95 0.05] | 文本是简单的事实陈述，无情绪词或夸张语气，无点击诱导特征。
+  Intention    pred=0 conf=0.900 prob=[0.95 0.05] | 陈述直白，无隐含情感或语用诱导，非标题党。
+  Lexical      pred=0 conf=0.950 prob=[0.95 0.05] | 文本无任何语气词、反问、感叹、网络化表达或态度倾向，仅为客观描述，不具诱导性。
+  Consistency  pred=0 conf=0.950 prob=[1. 0.] | 文本为普通陈述，无反差或隐含立场，不具点击诱导特征。
+Single weights:
+  Semantic    : 0.1069
+  Emotion     : 0.1503
+  Intention   : 0.2153
+  Lexical     : 0.3138
+  Consistency : 0.2137
+Top pairwise weights:
+  Intention + Lexical         : 0.0410
+  Lexical + Consistency       : 0.0392
+  Emotion + Lexical           : 0.0153
+
+Readable model summary saved to: C:\data\choquet_agent_vote_demo\outputs\runs\0067_20260613_020935_llm_discrete_2additive_deepseek-v4-flash\model_summary.json
+Latest model copied to: C:\data\choquet_agent_vote_demo\outputs\best_choquet_model.pt
+Latest summary copied to: C:\data\choquet_agent_vote_demo\outputs\model_summary.json
+
+=== Capacity Monotonicity Diagnostic ===
+{'checked': 211, 'violations': 5, 'max_violation': 0.06962621212005615}
+Run metadata saved to: C:\data\choquet_agent_vote_demo\outputs\runs\0067_20260613_020935_llm_discrete_2additive_deepseek-v4-flash\run_result.json
+
+Done. Agents produced fixed outputs; only the selected Choquet aggregation layer was trained.

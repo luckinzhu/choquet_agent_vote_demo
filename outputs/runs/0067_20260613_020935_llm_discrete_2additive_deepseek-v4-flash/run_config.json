@@ -1,0 +1,25 @@
+{
+  "random_seed": 78,
+  "data_path": "C:\\data\\choquet_agent_vote_demo\\data\\raw_data\\implicit\\ProsCons.csv",
+  "agent_backend_requested": "llm",
+  "choquet_mode": "discrete_2additive",
+  "llm_provider": "openai_compatible",
+  "llm_model": "deepseek-v4-flash",
+  "llm_model_candidates": [
+    "deepseek-v4-pro"
+  ],
+  "llm_base_url": "https://api.deepseek.com/v1",
+  "llm_api_key_env": "LLM_API_KEY",
+  "api_key_detected": true,
+  "llm_cache_enabled": true,
+  "llm_cache_path": "C:\\data\\choquet_agent_vote_demo\\outputs\\llm_cache_pros_ds.json",
+  "epochs": 30,
+  "batch_size": 32,
+  "learning_rate": 0.005,
+  "weight_decay": 0.0001,
+  "device_requested": "auto",
+  "device_effective": "cpu",
+  "cuda_available": false,
+  "run_sample_limit": 0,
+  "choquet_mode_effective": "discrete_2additive"
+}
