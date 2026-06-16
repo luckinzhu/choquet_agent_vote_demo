@@ -94,6 +94,43 @@ def _safe_slug(value: str) -> str:
     return re.sub(r"[^A-Za-z0-9_.-]+", "-", value).strip("-") or "run"
 
 
+def _shorten_model_name(model_name: str) -> str:
+    """Shorten model name for folder naming.
+    
+    Examples:
+        deepseek-v4-flash -> ds-flash
+        gpt-5.5 -> gpt-5.5
+        gemini-3.5-flash -> gemini-3.5-flash
+        claude-sonnet-4-6 -> claude-4-6
+    """
+    model_lower = model_name.lower().strip()
+    if model_lower.startswith("deepseek"):
+        # deepseek-v4-flash -> ds-flash, deepseek-v4-pro -> ds-pro
+        parts = model_lower.split("-")
+        if len(parts) >= 2:
+            version = parts[1] if len(parts) >= 2 else ""
+            variant = parts[-1] if len(parts) >= 3 else ""
+            return f"ds-{variant}" if variant else f"ds-{version}"
+    elif model_lower.startswith("claude"):
+        # claude-sonnet-4-6 -> claude-4-6
+        parts = model_lower.split("-")
+        if len(parts) >= 3:
+            return f"claude-{parts[-2]}-{parts[-1]}"
+    # For other models, keep as is but remove extra hyphens
+    return model_lower.replace("_", "-")
+
+
+def _get_dataset_name(data_path: Path) -> str:
+    """Extract dataset name from path.
+    
+    Examples:
+        data/raw_data/clickbait/SCC.csv -> SCC
+        data/toy_data.csv -> toy_data
+    """
+    stem = data_path.stem  # filename without extension
+    return _safe_slug(stem)
+
+
 def _create_run_dir():
     RUNS_DIR.mkdir(parents=True, exist_ok=True)
     existing = []
@@ -104,10 +141,15 @@ def _create_run_dir():
                 existing.append(int(prefix))
     run_index = max(existing, default=0) + 1
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    name = (
-        f"{run_index:04d}_{timestamp}_{_safe_slug(AGENT_BACKEND)}_"
-        f"{_safe_slug(CHOQUET_MODE)}_{_safe_slug(LLM_MODEL)}"
-    )
+    # name = (
+    #     f"{run_index:04d}_{timestamp}_{_safe_slug(AGENT_BACKEND)}_"
+    #     f"{_safe_slug(CHOQUET_MODE)}_{_safe_slug(LLM_MODEL)}"
+    # )
+    # New naming format: {index}_{timestamp}_{dataset}_seed{seed}_{short_model}
+    dataset_name = _get_dataset_name(DATA_PATH)
+    short_model = _shorten_model_name(LLM_MODEL)
+    name = f"{run_index:04d}_{timestamp}_{dataset_name}_seed{RANDOM_SEED}_{short_model}"
+    
     run_dir = RUNS_DIR / name
     run_dir.mkdir(parents=True, exist_ok=False)
     return run_dir

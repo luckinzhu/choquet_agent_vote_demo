@@ -20,12 +20,12 @@ from typing import Iterable
 import pandas as pd
 
 
-OLD_DATASET_PATH = Path(r"H:\clickbait_data\multimodel_clickbait\wangyi\wangyi_c.csv")
+OLD_DATASET_PATH = Path(r"H:\clickbait_data\multimodel_clickbait\wangyi\wangyi_nc.csv")
 NEW_DATASET_PATH = Path(
-    r"F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\wangyi.csv"
+    r"F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\clickbait\wangyi_ot.csv"
 )
 
-TARGET_COLUMNS = ["task_name", "task_description", "label", "title", "content"]
+TARGET_COLUMNS = ["task_name", "task_description", "label", "text"]
 
 # The toy dataset uses task metadata. Reuse the existing clickbait description
 # from toy_data.csv when present; otherwise fall back to this description.
@@ -37,8 +37,8 @@ DEFAULT_CLICKBAIT_DESCRIPTION = (
 # Explicit semantic mapping from old Tencent columns to the target dataset columns.
 # Keep Tencent title as title instead of duplicating it into text.
 COLUMN_MAPPING = {
-    "title": "title",
-    "content": "content",
+    "title": "text",
+    # "content": "content",
     "label": "label",
 }
 
@@ -150,21 +150,21 @@ def transform_old_dataset(old_df: pd.DataFrame, new_df: pd.DataFrame) -> pd.Data
     return transformed
 
 
-def preserve_title_before_dropping_text(new_df: pd.DataFrame) -> pd.DataFrame:
-    """Move text into title only when title is missing, then allow text to be dropped."""
-    if "text" not in new_df.columns:
+def preserve_text_from_title(new_df: pd.DataFrame) -> pd.DataFrame:
+    """Move title into text only when text is missing, then use text as final column."""
+    if "title" not in new_df.columns:
         return new_df
 
     new_df = new_df.copy()
-    if "title" not in new_df.columns:
-        new_df["title"] = new_df["text"]
+    if "text" not in new_df.columns:
+        new_df["text"] = new_df["title"]
         return new_df
 
-    title_is_empty = new_df["title"].isna() | new_df["title"].astype("string").str.strip().eq("")
-    text_has_value = new_df["text"].notna() & new_df["text"].astype("string").str.strip().ne("")
-    new_df.loc[title_is_empty & text_has_value, "title"] = new_df.loc[
-        title_is_empty & text_has_value,
-        "text",
+    text_is_empty = new_df["text"].isna() | new_df["text"].astype("string").str.strip().eq("")
+    title_has_value = new_df["title"].notna() & new_df["title"].astype("string").str.strip().ne("")
+    new_df.loc[text_is_empty & title_has_value, "text"] = new_df.loc[
+        text_is_empty & title_has_value,
+        "title",
     ]
     return new_df
 
@@ -173,7 +173,7 @@ def main() -> None:
     """Load, transform, append, and save the merged dataset."""
     new_df, new_encoding = read_csv_robust(NEW_DATASET_PATH)
     old_df, old_encoding = read_csv_robust(OLD_DATASET_PATH)
-    new_df = preserve_title_before_dropping_text(new_df)
+    new_df = preserve_text_from_title(new_df)
 
     transformed_old_df = transform_old_dataset(old_df, new_df)
 

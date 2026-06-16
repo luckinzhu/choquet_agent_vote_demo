@@ -31,7 +31,7 @@ def _resolve_path(value: str) -> Path:
     return path
 
 
-DATA_PATH = _resolve_path(os.getenv("DATA_PATH", str(PROJECT_ROOT / "data" / "raw_data" / "implicit" / "LHd.csv")))
+DATA_PATH = _resolve_path(os.getenv("DATA_PATH", str(PROJECT_ROOT / "data" / "raw_data" / "clickbait" / "SCC.csv")))
 DATA_AUTOGENERATE_DEMO = os.getenv("DATA_AUTOGENERATE_DEMO", "false").strip().lower() in (
     "1",
     "true",
@@ -41,7 +41,7 @@ MODEL_DIR = PROJECT_ROOT / "outputs"
 RUNS_DIR = MODEL_DIR / "runs"
 BEST_MODEL_PATH = MODEL_DIR / "best_choquet_model.pt"
 MODEL_SUMMARY_PATH = MODEL_DIR / "model_summary.json"
-LLM_CACHE_PATH = _resolve_path(os.getenv("LLM_CACHE_PATH", str(MODEL_DIR / "llm_cache_lhd_ds.json")))
+LLM_CACHE_PATH = _resolve_path(os.getenv("LLM_CACHE_PATH", str(MODEL_DIR / "llm_cache_scc_ds.json")))
 CHOQUET_MODE = os.getenv("CHOQUET_MODE", "inspired").strip().lower()
 
 RANDOM_SEED = int(os.getenv("RANDOM_SEED", "78"))

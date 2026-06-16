@@ -94,7 +94,7 @@ CONFIG = {
 
     # Fast test settings:
     # "8" means use 8 samples; "" or None means full dataset.
-    "RUN_SAMPLE_LIMIT": "2000",
+    "RUN_SAMPLE_LIMIT": "",
 
     # "2" means quick test; "" or None uses config.py defaults.
     "RANDOM_SEED": "78",
@@ -102,8 +102,8 @@ CONFIG = {
     # Example: "78" to "85" runs seeds 78,79,80,81,82,83,84,85.
     "RANDOM_SEED_START": "",
     "RANDOM_SEED_END": "",
-    "EPOCHS": "30",
-    "BATCH_SIZE": "32",
+    "EPOCHS": "20",
+    "BATCH_SIZE": "16",
 
     # LLM gateway settings - will be overridden by API_PRESET below
     "LLM_PROVIDER": "openai_compatible",
