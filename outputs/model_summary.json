@@ -21,57 +21,57 @@
   ],
   "trainable_parameters": {
     "raw_single_m": [
-      -0.6534069776535034,
-      -0.29594001173973083,
-      0.07002399861812592,
-      0.5343160033226013,
-      0.0948840007185936
+      0.5750600099563599,
+      -0.9353960156440735,
+      -1.0108089447021484,
+      0.29313400387763977,
+      0.7560170292854309
     ],
     "raw_pair_m": [
-      -0.6866350173950195,
-      -0.48971301317214966,
-      -0.18081699311733246,
-      -0.48478999733924866,
-      -0.12480100244283676,
-      0.271136999130249,
-      -0.20433899760246277,
-      0.6590219736099243,
-      0.19418999552726746,
-      0.5579320192337036
+      -1.0255169868469238,
+      -1.1329079866409302,
+      -0.0198340006172657,
+      0.20620399713516235,
+      -1.247575044631958,
+      -1.036510944366455,
+      -0.9216439723968506,
+      -1.0698599815368652,
+      -1.0193979740142822,
+      0.025624999776482582
     ],
-    "logit_scale": 2.7648959159851074,
+    "logit_scale": 2.1276400089263916,
     "logit_bias": [
-      0.1862500011920929,
-      -0.18625099956989288
+      0.8706719875335693,
+      -0.8706719875335693
     ]
   },
   "task_level_average_weights": {
-    "implicit_sentiment": {
+    "fake_news": {
       "single_weights": {
-        "Semantic": 0.101172,
-        "Emotion": 0.144646,
-        "Intention": 0.208565,
-        "Lexical": 0.331802,
-        "Consistency": 0.213814
+        "Semantic": 0.296009,
+        "Emotion": 0.065362,
+        "Intention": 0.060614,
+        "Lexical": 0.223289,
+        "Consistency": 0.354727
       },
       "pair_weights": {
-        "Semantic + Emotion": -0.059582,
-        "Semantic + Intention": -0.045399,
-        "Semantic + Lexical": -0.017887,
-        "Semantic + Consistency": -0.045007,
-        "Emotion + Intention": -0.012416,
-        "Emotion + Lexical": 0.026468,
-        "Emotion + Consistency": -0.020154,
-        "Intention + Lexical": 0.057772,
-        "Intention + Consistency": 0.019178,
-        "Lexical + Consistency": 0.050644
+        "Semantic + Emotion": -0.07721,
+        "Semantic + Intention": -0.081201,
+        "Semantic + Lexical": -0.001983,
+        "Semantic + Consistency": 0.020333,
+        "Emotion + Intention": -0.08476,
+        "Emotion + Lexical": -0.077651,
+        "Emotion + Consistency": -0.072667,
+        "Intention + Lexical": -0.078941,
+        "Intention + Consistency": -0.076962,
+        "Lexical + Consistency": 0.002562
       },
       "top_pair_weights": {
-        "Intention + Lexical": 0.057772,
-        "Lexical + Consistency": 0.050644,
-        "Emotion + Lexical": 0.026468,
-        "Intention + Consistency": 0.019178,
-        "Emotion + Intention": -0.012416
+        "Semantic + Consistency": 0.020333,
+        "Lexical + Consistency": 0.002562,
+        "Semantic + Lexical": -0.001983,
+        "Emotion + Consistency": -0.072667,
+        "Intention + Consistency": -0.076962
       }
     }
   }

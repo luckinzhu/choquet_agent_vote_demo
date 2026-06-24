@@ -61,11 +61,12 @@ def parse_args() -> argparse.Namespace:
 
 def classify_error(error: object) -> str:
     text = str(error or "")
+    lower = text.lower()
     if "sensitive words detected" in text.lower() or "local:sensitive_words" in text.lower():
         return "SensitiveWords"
     if "IncompleteRead" in text:
         return "IncompleteRead"
-    if "SSLError" in text or "SSL" in text:
+    if "SSLError" in text or "SSL" in text or "_ssl" in lower or "asn1" in lower or "not_enough_data" in lower:
         return "SSLError"
     if "HTTP 429" in text or "HTTP429" in text or "429" in text:
         return "HTTP429"
@@ -87,6 +88,9 @@ def is_fallback_error(error: object) -> bool:
         "connectionreseterror",
         "incompleteread",
         "sslerror",
+        "_ssl",
+        "asn1",
+        "not_enough_data",
         "timeout",
         "timed out",
     ]

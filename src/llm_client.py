@@ -1,9 +1,16 @@
 import json
 import os
+import ssl
 import time
+import traceback
 import urllib.error
 import urllib.request
 from typing import Dict, List, Optional
+
+import certifi
+
+
+DEBUG_LLM = False
 
 
 class LLMClientError(RuntimeError):
@@ -85,6 +92,11 @@ class LLMClient:
 
     def complete(self, messages: List[Dict[str, str]]) -> str:
         self.validate_ready()
+        if DEBUG_LLM:
+            print("MODEL=", self.model)
+            print("BASE_URL=", self.base_url)
+            print("PROVIDER=", self.provider)
+            print("MESSAGES_LEN=", len(messages))
         payload = {
             "model": self.model,
             "messages": messages,
@@ -95,6 +107,8 @@ class LLMClient:
             try:
                 return self._post_chat_completions(self.chat_completions_url, payload)
             except LLMClientError as exc:
+                if DEBUG_LLM:
+                    traceback.print_exc()
                 last_error = exc
                 if attempt >= self.max_retries:
                     break
@@ -112,8 +126,9 @@ class LLMClient:
             headers=headers,
             method="POST",
         )
+        context = ssl.create_default_context(cafile=certifi.where())
         try:
-            with urllib.request.urlopen(request, timeout=self.timeout) as response:
+            with urllib.request.urlopen(request, timeout=self.timeout, context=context) as response:
                 body = response.read().decode("utf-8", errors="replace")
         except urllib.error.HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="replace")[:500]

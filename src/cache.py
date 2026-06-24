@@ -14,11 +14,12 @@ def utc_now_iso() -> str:
 
 def classify_error(error_message: object) -> str:
     text = str(error_message or "").strip()
+    lower = text.lower()
     if not text:
         return "Unknown"
     if "IncompleteRead" in text:
         return "IncompleteRead"
-    if "SSL" in text:
+    if "SSL" in text or "_ssl" in lower or "asn1" in lower or "not_enough_data" in lower:
         return "SSL_ERROR"
     if "HTTP 429" in text or "HTTP429" in text:
         return "HTTP429"

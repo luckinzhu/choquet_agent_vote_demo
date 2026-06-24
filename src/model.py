@@ -6,6 +6,7 @@ import torch
 from .agents import build_agents, run_agents
 from .choquet_layer import ChoquetInspiredVotingLayer
 from .embeddings import AGENT_DESCRIPTIONS, TfidfRelevanceEstimator
+from .task_schemas import get_task_label_schema
 from .utils import to_tensor
 
 try:
@@ -68,7 +69,8 @@ class MultiAgentChoquetModel:
                     if cached is not None:
                         existing_success += 1
                         continue
-                todo.append((agent, row_idx, text, cache_text, task_description))
+                label_schema = get_task_label_schema(record.get("task_name"), task_description)
+                todo.append((agent, row_idx, text, cache_text, task_description, label_schema))
 
         total_expected = len(texts) * len(self.agents)
         print(
@@ -82,15 +84,15 @@ class MultiAgentChoquetModel:
             progress = tqdm(todo, desc="Precomputing LLM cache", unit="req")
             iterator = progress
 
-        for agent, row_idx, text, cache_text, task_description in iterator:
+        for agent, row_idx, text, cache_text, task_description, label_schema in iterator:
             if progress is not None:
                 progress.set_postfix(row=row_idx, agent=agent.name)
             try:
                 prepared = getattr(agent, "_predict_one_prepared", None)
                 if callable(prepared):
-                    prepared(cache_text, text, task_description)
+                    prepared(cache_text, text, task_description, label_schema)
                 else:
-                    agent.predict_one(text, task_description)
+                    agent.predict_one(text, task_description, label_schema)
             except Exception as exc:
                 print(f"Cache warm failed: row={row_idx} agent={agent.name} error={exc}")
 

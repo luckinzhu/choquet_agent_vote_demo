@@ -86,23 +86,23 @@ CONFIG = {
     # Few-shot configuration:
     # "true" = enable few-shot examples for LLM agents
     # "false" = disable few-shot examples
-    "FEWSHOT_ENABLED": "true",
+    "FEWSHOT_ENABLED": "false",
 
     # Dataset and cache paths. Relative paths are resolved by config.py from PROJECT_ROOT.
-    "DATA_PATH": "",
-    "LLM_CACHE_PATH": "",
+    "DATA_PATH": r"F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\data\raw_data\implicit\LHD.csv",
+    "LLM_CACHE_PATH": r"F:\PY_projects\03_STCLABS\Choquet\choquet_agent_vote_demo\outputs\llm_cache_lhd_ds.json",
 
     # Fast test settings:
     # "8" means use 8 samples; "" or None means full dataset.
     "RUN_SAMPLE_LIMIT": "",
 
     # "2" means quick test; "" or None uses config.py defaults.
-    "RANDOM_SEED": "78",
+    "RANDOM_SEED": "56",
     # Optional seed sweep. Leave both empty to run only RANDOM_SEED.
     # Example: "78" to "85" runs seeds 78,79,80,81,82,83,84,85.
     "RANDOM_SEED_START": "",
     "RANDOM_SEED_END": "",
-    "EPOCHS": "20",
+    "EPOCHS": "50",
     "BATCH_SIZE": "16",
 
     # LLM gateway settings - will be overridden by API_PRESET below

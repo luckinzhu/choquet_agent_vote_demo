@@ -1,770 +1,130 @@
 {
-  "76ee00785eeafd79ff60ace7d50f6034a46a3401989b89a6bf1f3cebca0c976d": {
+  "c6ccca58226300498cf23075c126caf07239f382a8d5b6ca3e4011f69bc2803c": {
     "status": "SUCCESS",
-    "text": "losers looking for scapegoats to blame do . successful people less so . fact .",
+    "text": "watch live : to discuss bathroom bill w / anti - #lgbt hate group at noon cst today #txlege #lgbt",
     "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
     "agent_name": "Semantic",
     "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.2,\n  \"class_1_probability\": 0.8,\n  \"confidence\": 0.7,\n  \"explanation\": \"文本通过对比失败者与成功者，隐含贬低与赞扬的情感，属于隐式情感表达。\"\n}",
-    "output": {
-      "probs": [
-        0.20000000298023224,
-        0.800000011920929
-      ],
-      "confidence": 0.7,
-      "explanation": "文本通过对比失败者与成功者，隐含贬低与赞扬的情感，属于隐式情感表达。"
-    }
-  },
-  "ca5e5e3f1eb878784c9b3269363922f98a11411c0665a69fcd787e154a01ecea": {
-    "status": "SUCCESS",
-    "text": ": american diversity work in progress : black teens kill white girl for bicycle",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.0,\n  \"class_1_probability\": 1.0,\n  \"confidence\": 0.95,\n  \"explanation\": \"标题利用种族和暴力冲突煽动情绪，隐含负面情感，属于点击诱导。\"\n}",
+    "raw_text": "{\n  \"class_0_probability\": 0.0,\n  \"class_1_probability\": 1.0,\n  \"confidence\": 0.95,\n  \"explanation\": \"文本将反LGBT团体直接称为仇恨团体，隐含强烈负面情感立场。\"\n}",
     "output": {
       "probs": [
         0.0,
         1.0
       ],
       "confidence": 0.95,
-      "explanation": "标题利用种族和暴力冲突煽动情绪，隐含负面情感，属于点击诱导。"
+      "explanation": "文本将反LGBT团体直接称为仇恨团体，隐含强烈负面情感立场。"
     }
   },
-  "34ce31310041cff7c7a1c4f28bba1d25574e1cb84c85ab41fe82837180c013ae": {
+  "293b98d1966b3f68de9a41fba401ef692826968879910f40a95deae982ae5a73": {
     "status": "SUCCESS",
-    "text": "no . it's the opposite of marxism . marxism is class-based .",
+    "text": "at what point did whites start all this self-hatred ? no other race self-destructs this way .",
     "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
     "agent_name": "Semantic",
     "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.95,\n  \"class_1_probability\": 0.05,\n  \"confidence\": 0.9,\n  \"explanation\": \"文本为陈述性内容，无夸张或诱导点击特征。\"\n}",
+    "raw_text": "{\n  \"class_0_probability\": 0.0,\n  \"class_1_probability\": 1.0,\n  \"confidence\": 0.9,\n  \"explanation\": \"文本通过反问和对比，隐含批评白人自我憎恨和自毁倾向，有明显负面态度。\"\n}",
     "output": {
       "probs": [
-        0.949999988079071,
-        0.05000000074505806
+        0.0,
+        1.0
       ],
       "confidence": 0.9,
-      "explanation": "文本为陈述性内容，无夸张或诱导点击特征。"
+      "explanation": "文本通过反问和对比，隐含批评白人自我憎恨和自毁倾向，有明显负面态度。"
     }
   },
-  "9f0b160163fc21da31e62a917575752cdc80899ef1a2d28596b743f863cc75ba": {
+  "90d76f3ac3a764b5ae8e6afcc232749adc74b0dab0d604368edf9203f752fc75": {
     "status": "SUCCESS",
-    "text": "don't quit tex ! we are all gonna get swole and save the white race together",
+    "text": "you know it's #fakenews when an organization cites anti-white hate groups like adl and splc.can you say gullible ? bwaaaaahahahahahaha ! !",
     "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
     "agent_name": "Semantic",
     "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.0,\n  \"class_1_probability\": 1.0,\n  \"confidence\": 0.95,\n  \"explanation\": \"文本隐含种族主义煽动，情感强烈，属于点击诱导。\"\n}",
+    "raw_text": "{\n  \"class_0_probability\": 0.0,\n  \"class_1_probability\": 1.0,\n  \"confidence\": 1.0,\n  \"explanation\": \"文本通过嘲讽和讽刺隐含强烈负面态度，属于隐式情感。\"\n}",
     "output": {
       "probs": [
         0.0,
         1.0
       ],
-      "confidence": 0.95,
-      "explanation": "文本隐含种族主义煽动，情感强烈，属于点击诱导。"
+      "confidence": 1.0,
+      "explanation": "文本通过嘲讽和讽刺隐含强烈负面态度，属于隐式情感。"
     }
   },
-  "c810dafbd6d22b005fc68e3b0e813dfd60d5f28fd8ac443027f10a75d3707907": {
+  "5aed97620769971d0a67e373b8bc409c065e1897c35ff689beb21daaef8d9d11": {
     "status": "SUCCESS",
-    "text": "more white genocide on the tl smh",
+    "text": "\" caring for vulnerable includes caring for unborn children & their mothers \" \" says in response to #sotu call to value all life \"",
     "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
     "agent_name": "Semantic",
     "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.9,\n  \"class_1_probability\": 0.1,\n  \"confidence\": 0.7,\n  \"explanation\": \"文本含隐式失望情绪（smh），但非典型标题党，更像是个人观点表达。\"\n}",
-    "output": {
-      "probs": [
-        0.8999999761581421,
-        0.10000000149011612
-      ],
-      "confidence": 0.7,
-      "explanation": "文本含隐式失望情绪（smh），但非典型标题党，更像是个人观点表达。"
-    }
-  },
-  "a4cba0ddf61355b97ee293acb8c2cf7699f0a02a3ecab188903db7e986b24402": {
-    "status": "SUCCESS",
-    "text": "via : islamic state to yazidis : convert to islam  pay jizya  or die #tcot",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.0,\n  \"class_1_probability\": 1.0,\n  \"confidence\": 0.95,\n  \"explanation\": \"文本描述ISIS对雅兹迪人的暴力威胁（改宗、纳税或死），隐含强烈恐怖与仇恨，属于典型猎奇煽动内容。\"\n}",
-    "output": {
-      "probs": [
-        0.0,
-        1.0
-      ],
-      "confidence": 0.95,
-      "explanation": "文本描述ISIS对雅兹迪人的暴力威胁（改宗、纳税或死），隐含强烈恐怖与仇恨，属于典型猎奇煽动内容。"
-    }
-  },
-  "16ade9ea075c9d80c592d915dd36f3402de1086ebef6b6ea75675278805e5149": {
-    "status": "SUCCESS",
-    "text": "extreme hypocrisy : wikipedia explains the difference between gay  asian  black pride and white",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.1,\n  \"class_1_probability\": 0.9,\n  \"confidence\": 0.85,\n  \"explanation\": \"文本使用“极端虚伪”隐含批评，表达对双重标准的不满，有强烈隐式负面情感。\"\n}",
+    "raw_text": "{\n  \"class_0_probability\": 0.1,\n  \"class_1_probability\": 0.9,\n  \"confidence\": 0.85,\n  \"explanation\": \"回应中隐含对未出生孩子及其母亲价值的肯定，带有道德立场和情感倾向。\"\n}",
     "output": {
       "probs": [
         0.10000000149011612,
         0.8999999761581421
       ],
       "confidence": 0.85,
-      "explanation": "文本使用“极端虚伪”隐含批评，表达对双重标准的不满，有强烈隐式负面情感。"
+      "explanation": "回应中隐含对未出生孩子及其母亲价值的肯定，带有道德立场和情感倾向。"
     }
   },
-  "323fcc590569cbb2dde255b28e6fb6baa1d372fc0489c91a55570d7a8e8efe3d": {
+  "ba9383fcd7b45a04497adce1d7d3b1221e0f042c55e675e9350e806f47b72301": {
     "status": "SUCCESS",
-    "text": "rt quran commands warimam in britain says war is comingliberals demand more muslimsdemocrats are the  \" stupid party \" \" \"",
+    "text": "senate republicans wave white flag n amnesty via #stopexecutiveamnesty",
     "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
     "agent_name": "Semantic",
     "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.05,\n  \"class_1_probability\": 0.95,\n  \"confidence\": 0.90,\n  \"explanation\": \"文本拼接煽动性言论，隐含负面情绪和争议，符合标题党特征。\"\n}",
+    "raw_text": "{\n  \"class_0_probability\": 0.1,\n  \"class_1_probability\": 0.9,\n  \"confidence\": 0.85,\n  \"explanation\": \"“挥舞白旗”隐喻投降，隐含对参议院共和党人此举的讽刺或不满。\"\n}",
+    "output": {
+      "probs": [
+        0.10000000149011612,
+        0.8999999761581421
+      ],
+      "confidence": 0.85,
+      "explanation": "“挥舞白旗”隐喻投降，隐含对参议院共和党人此举的讽刺或不满。"
+    }
+  },
+  "990eaefeaca9790765cf540efe43042f43ee7b5eab7e003fd8e7e1bc5761fb05": {
+    "status": "SUCCESS",
+    "text": "germany : the most important thing is to educate refugees about the holocaust via",
+    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
+    "agent_name": "Semantic",
+    "model_name": "deepseek-v4-flash",
+    "raw_text": "{\n  \"class_0_probability\": 0.1,\n  \"class_1_probability\": 0.9,\n  \"confidence\": 0.8,\n  \"explanation\": \"教育难民学习大屠杀隐含历史警示与沉重情感。\"\n}",
+    "output": {
+      "probs": [
+        0.10000000149011612,
+        0.8999999761581421
+      ],
+      "confidence": 0.8,
+      "explanation": "教育难民学习大屠杀隐含历史警示与沉重情感。"
+    }
+  },
+  "107bea9074c68e8297d417ade3215c98b857388c2c3fc461d555746b124c7a7e": {
+    "status": "SUCCESS",
+    "text": "rt the words  \" love your race \" \" are now a hate symbol according to the anti-defamation leaguedoes that just apply to white people or everybody ? \"",
+    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
+    "agent_name": "Semantic",
+    "model_name": "deepseek-v4-flash",
+    "raw_text": "{\n  \"class_0_probability\": 0.0,\n  \"class_1_probability\": 1.0,\n  \"confidence\": 0.95,\n  \"explanation\": \"通过反问质疑双重标准，隐含讽刺和不满情感。\"\n}",
+    "output": {
+      "probs": [
+        0.0,
+        1.0
+      ],
+      "confidence": 0.95,
+      "explanation": "通过反问质疑双重标准，隐含讽刺和不满情感。"
+    }
+  },
+  "b78c2682149dff951501fa9d0599250f5b85d84db1e55adb154abbbe5092b296": {
+    "status": "SUCCESS",
+    "text": "white presidents only .",
+    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
+    "agent_name": "Semantic",
+    "model_name": "deepseek-v4-flash",
+    "raw_text": "{\n  \"class_0_probability\": 0.05,\n  \"class_1_probability\": 0.95,\n  \"confidence\": 0.9,\n  \"explanation\": \"句子通过'only'暗示排他性，隐含对非白人总统的排斥或歧视态度，属于隐式情感。\"\n}",
     "output": {
       "probs": [
         0.05000000074505806,
         0.949999988079071
       ],
       "confidence": 0.9,
-      "explanation": "文本拼接煽动性言论，隐含负面情绪和争议，符合标题党特征。"
-    }
-  },
-  "007a21bcaa1b930a32317bc7411211bc8de865d13038a02f35b7b33feb91aa8c": {
-    "status": "SUCCESS",
-    "text": "jews know deep down  they're not white",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.1,\n  \"class_1_probability\": 0.9,\n  \"confidence\": 0.85,\n  \"explanation\": \"语句隐含贬低犹太族群的负面情感，具有煽动性，属于点击诱导。\"\n}",
-    "output": {
-      "probs": [
-        0.10000000149011612,
-        0.8999999761581421
-      ],
-      "confidence": 0.85,
-      "explanation": "语句隐含贬低犹太族群的负面情感，具有煽动性，属于点击诱导。"
-    }
-  },
-  "29ebffd7ed8aeca1b3798bc7384e00ea8155877cbdb0b060dc35bea9793c6bae": {
-    "status": "SUCCESS",
-    "text": "you've been lied to . italians are white",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.1,\n  \"class_1_probability\": 0.9,\n  \"confidence\": 0.9,\n  \"explanation\": \"争议性断言暗示受骗，意图激发情绪和点击。\"\n}",
-    "output": {
-      "probs": [
-        0.10000000149011612,
-        0.8999999761581421
-      ],
-      "confidence": 0.9,
-      "explanation": "争议性断言暗示受骗，意图激发情绪和点击。"
-    }
-  },
-  "c74947265297b03c2eafa647ade06a607c2364087b54da6cc4667165b820ba9a": {
-    "status": "SUCCESS",
-    "text": "nice super bowl racist song ! we are losing america slowly !",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.1,\n  \"class_1_probability\": 0.9,\n  \"confidence\": 0.8,\n  \"explanation\": \"文本使用反讽和强烈指控，意在煽动情绪，属于点击诱导。\"\n}",
-    "output": {
-      "probs": [
-        0.10000000149011612,
-        0.8999999761581421
-      ],
-      "confidence": 0.8,
-      "explanation": "文本使用反讽和强烈指控，意在煽动情绪，属于点击诱导。"
-    }
-  },
-  "1ff49243697ffd52387d3279666c7ea8fcbb28406988b0d21c80a408af28e8df": {
-    "status": "SUCCESS",
-    "text": "the birth of white identity in colonial america via",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.85,\n  \"class_1_probability\": 0.15,\n  \"confidence\": 0.7,\n  \"explanation\": \"文本为学术性陈述，无明显夸张或悬念，不构成标题党。\"\n}",
-    "output": {
-      "probs": [
-        0.8500000238418579,
-        0.15000000596046448
-      ],
-      "confidence": 0.7,
-      "explanation": "文本为学术性陈述，无明显夸张或悬念，不构成标题党。"
-    }
-  },
-  "cb15bb7ccce7980d3cdfa293b8f07e581ec2c5a0e0baa8421275f377fb641f99": {
-    "status": "SUCCESS",
-    "text": "for #worldrefugeeday how about we help the white south africans and save them from the brutality they've been enduring for years now ?",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.2,\n  \"class_1_probability\": 0.8,\n  \"confidence\": 0.7,\n  \"explanation\": \"通过夸张争议性话题（白人南非人）在难民日背景下吸引点击，隐含讽刺和煽动情绪。\"\n}",
-    "output": {
-      "probs": [
-        0.20000000298023224,
-        0.800000011920929
-      ],
-      "confidence": 0.7,
-      "explanation": "通过夸张争议性话题（白人南非人）在难民日背景下吸引点击，隐含讽刺和煽动情绪。"
-    }
-  },
-  "41df418d0c3caf644923955ecd704205e2f794702836be87fa10e51e240477bd": {
-    "status": "SUCCESS",
-    "text": "evening read : deportable alien with priors kills cyclist during tragic dui in kentucky",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.05,\n  \"class_1_probability\": 0.95,\n  \"confidence\": 0.90,\n  \"explanation\": \"通过突出移民身份和前科，煽动情绪，属于点击诱导。\"\n}",
-    "output": {
-      "probs": [
-        0.05000000074505806,
-        0.949999988079071
-      ],
-      "confidence": 0.9,
-      "explanation": "通过突出移民身份和前科，煽动情绪，属于点击诱导。"
-    }
-  },
-  "9b6f9ae4cf23f030a72e69b77e22bf69a5c71f4fe1ef034faa3d21602b47aea7": {
-    "status": "SUCCESS",
-    "text": "white people are 60 % of the pop  this can only show blacks do more crime per %",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.0,\n  \"class_1_probability\": 1.0,\n  \"confidence\": 0.9,\n  \"explanation\": \"文本通过数字对比隐式表达对黑人的负面刻板印象，属于隐式情感诱导。\"\n}",
-    "output": {
-      "probs": [
-        0.0,
-        1.0
-      ],
-      "confidence": 0.9,
-      "explanation": "文本通过数字对比隐式表达对黑人的负面刻板印象，属于隐式情感诱导。"
-    }
-  },
-  "b6aee5fc9afcd9f4f997462e0d4787c44d9d416f66598f32ed1f6c55d264e294": {
-    "status": "SUCCESS",
-    "text": "we are asking for prospective decree ; national limit on population ; balancing population is must 4 earth",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.85,\n  \"class_1_probability\": 0.15,\n  \"confidence\": 0.75,\n  \"explanation\": \"文本为严肃呼吁，无夸张或误导性表述，不属于标题党。\"\n}",
-    "output": {
-      "probs": [
-        0.8500000238418579,
-        0.15000000596046448
-      ],
-      "confidence": 0.75,
-      "explanation": "文本为严肃呼吁，无夸张或误导性表述，不属于标题党。"
-    }
-  },
-  "75186bec61567c26c8a6bedef8a3a21465db16be8df3c3291ed1f2f55a14ad08": {
-    "status": "SUCCESS",
-    "text": "1.8 million invaders in germany since 2014",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.0,\n  \"class_1_probability\": 1.0,\n  \"confidence\": 0.95,\n  \"explanation\": \"使用煽动性词汇“入侵者”吸引点击，属于标题党。\"\n}",
-    "output": {
-      "probs": [
-        0.0,
-        1.0
-      ],
-      "confidence": 0.95,
-      "explanation": "使用煽动性词汇“入侵者”吸引点击，属于标题党。"
-    }
-  },
-  "c1f59edad8d40dc1866dfa9109b7fb0fdfd3c1c2c5d3301b156951bf482313b0": {
-    "status": "SUCCESS",
-    "text": "this is such a poor graphic . where are asians ? and how about we separate legal hispanic",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.0,\n  \"class_1_probability\": 1.0,\n  \"confidence\": 0.95,\n  \"explanation\": \"文本通过质疑和分裂性建议，隐含歧视与不满情感。\"\n}",
-    "output": {
-      "probs": [
-        0.0,
-        1.0
-      ],
-      "confidence": 0.95,
-      "explanation": "文本通过质疑和分裂性建议，隐含歧视与不满情感。"
-    }
-  },
-  "92c5e63572c3b44b8f4b045e0d0915f0f1d43ecf71a5bf546e7047ad8a491a1e": {
-    "status": "SUCCESS",
-    "text": "last attention you get . you're what's destroying white people  you make #blacklivesmatter look like",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.9,\n  \"class_1_probability\": 0.1,\n  \"confidence\": 0.8,\n  \"explanation\": \"文本是情绪化评论，隐含愤怒与对立，但无标题党结构，不属于点击诱导。\"\n}",
-    "output": {
-      "probs": [
-        0.8999999761581421,
-        0.10000000149011612
-      ],
-      "confidence": 0.8,
-      "explanation": "文本是情绪化评论，隐含愤怒与对立，但无标题党结构，不属于点击诱导。"
-    }
-  },
-  "10d5bfb90a2e7efaa6ff55a37c37093b735864ca6dec774a99b8ae6642cc31ea": {
-    "status": "SUCCESS",
-    "text": "potentially ? it's just another way ( ( ( they ) ) ) are trying to attack whites by polluting learning institutions .",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.1,\n  \"class_1_probability\": 0.9,\n  \"confidence\": 0.85,\n  \"explanation\": \"文本用煽动性语言暗示阴谋，激发负面情绪，属于点击诱导\"\n}",
-    "output": {
-      "probs": [
-        0.10000000149011612,
-        0.8999999761581421
-      ],
-      "confidence": 0.85,
-      "explanation": "文本用煽动性语言暗示阴谋，激发负面情绪，属于点击诱导"
-    }
-  },
-  "2ae193514da1c80b957059cf3ebfd7871c1743d66820f0591bb80d7cd9476873": {
-    "status": "SUCCESS",
-    "text": "big difference between southern and midwestern evangelicals is racial consciousness",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.9,\n  \"class_1_probability\": 0.1,\n  \"confidence\": 0.85,\n  \"explanation\": \"陈述客观比较，无夸张或情感诱导，非标题党。\"\n}",
-    "output": {
-      "probs": [
-        0.8999999761581421,
-        0.10000000149011612
-      ],
-      "confidence": 0.85,
-      "explanation": "陈述客观比较，无夸张或情感诱导，非标题党。"
-    }
-  },
-  "cf8818819623e18508a620bb6d7593b6b527edf48283eabc583ece618d487860": {
-    "status": "SUCCESS",
-    "text": "race baiting self loathing white guilt syndrome snowflake leftists antifa loving media .",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.1,\n  \"class_1_probability\": 0.9,\n  \"confidence\": 0.85,\n  \"explanation\": \"文本使用一系列贬义政治标签，语气煽动，具有点击诱导特征。\"\n}",
-    "output": {
-      "probs": [
-        0.10000000149011612,
-        0.8999999761581421
-      ],
-      "confidence": 0.85,
-      "explanation": "文本使用一系列贬义政治标签，语气煽动，具有点击诱导特征。"
-    }
-  },
-  "652dc64d7b2e9e8669e115058a92fa3a4a17eb4c3c0db358f201102e14ee8109": {
-    "status": "SUCCESS",
-    "text": "spencer  a racist jew : bring public attention to rabbis who suck blood off penises of baby boys  infected thousands w / herpes .",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.0,\n  \"class_1_probability\": 1.0,\n  \"confidence\": 0.95,\n  \"explanation\": \"文本使用极端煽动性语言攻击犹太人和拉比，具有明显标题党特征。\"\n}",
-    "output": {
-      "probs": [
-        0.0,
-        1.0
-      ],
-      "confidence": 0.95,
-      "explanation": "文本使用极端煽动性语言攻击犹太人和拉比，具有明显标题党特征。"
-    }
-  },
-  "ded701e5e6f9affdd4c7a4855d2a2b6f4b92281cfc4023b54b9ca86a9d139a47": {
-    "status": "SUCCESS",
-    "text": "blm is a racist hateful group",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.9,\n  \"class_1_probability\": 0.1,\n  \"confidence\": 0.9,\n  \"explanation\": \"文本直接使用'racist'和'hateful'等显式贬义情感词，无需推断隐含情绪，故非隐式情感。\"\n}",
-    "output": {
-      "probs": [
-        0.8999999761581421,
-        0.10000000149011612
-      ],
-      "confidence": 0.9,
-      "explanation": "文本直接使用'racist'和'hateful'等显式贬义情感词，无需推断隐含情绪，故非隐式情感。"
-    }
-  },
-  "d8b8593d8a76d1044ce552444ec52d71bd0a93b68f22291bed04e44035517a41": {
-    "status": "SUCCESS",
-    "text": "fair was started by white supremacist john tanton . are you a white supremacist ?",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.1,\n  \"class_1_probability\": 0.9,\n  \"confidence\": 0.85,\n  \"explanation\": \"通过反问和指控性措辞引发争议，隐含煽动情绪，具有点击诱导特征。\"\n}",
-    "output": {
-      "probs": [
-        0.10000000149011612,
-        0.8999999761581421
-      ],
-      "confidence": 0.85,
-      "explanation": "通过反问和指控性措辞引发争议，隐含煽动情绪，具有点击诱导特征。"
-    }
-  },
-  "3b094d64316ba1f379c5216bf42334cc33d6ab8b8e9f50b1d042cafdc2d12e71": {
-    "status": "SUCCESS",
-    "text": "i'd pay to see those optics . lol",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.9,\n  \"class_1_probability\": 0.1,\n  \"confidence\": 0.85,\n  \"explanation\": \"文本是个人评论，语气调侃，无标题党特征\"\n}",
-    "output": {
-      "probs": [
-        0.8999999761581421,
-        0.10000000149011612
-      ],
-      "confidence": 0.85,
-      "explanation": "文本是个人评论，语气调侃，无标题党特征"
-    }
-  },
-  "769fca92a545357b7973c674db8f04da4bcac3d0215f757b200c0834288bb260": {
-    "status": "SUCCESS",
-    "text": "sez  \" we don't have a jew problem or black problem . we have white problem \" \" no . \" \" we \" \" don \"",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.1,\n  \"class_1_probability\": 0.9,\n  \"confidence\": 0.85,\n  \"explanation\": \"文本隐含种族争议，以对话形式表达敏感观点，具有点击诱导倾向。\"\n}",
-    "output": {
-      "probs": [
-        0.10000000149011612,
-        0.8999999761581421
-      ],
-      "confidence": 0.85,
-      "explanation": "文本隐含种族争议，以对话形式表达敏感观点，具有点击诱导倾向。"
-    }
-  },
-  "c890b94034ff8df5c80dda6138dceec4e9bdd0d15465f03b5f9ccf721bd8b655": {
-    "status": "SUCCESS",
-    "text": ": correction : trauma appears to be on the inside aspect of hh's rear thigh . also gives credence to massive int",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.9,\n  \"class_1_probability\": 0.1,\n  \"confidence\": 0.8,\n  \"explanation\": \"文本为客观医学修正描述，无情感词汇或暗示，不隐含情感。\"\n}",
-    "output": {
-      "probs": [
-        0.8999999761581421,
-        0.10000000149011612
-      ],
-      "confidence": 0.8,
-      "explanation": "文本为客观医学修正描述，无情感词汇或暗示，不隐含情感。"
-    }
-  },
-  "6e46afe6b53a1ef10342dc744c82b6134aaf35733b0515cd5589db2585132d57": {
-    "status": "SUCCESS",
-    "text": "its 75 % white which is very high when the > 22 population is only about half white",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.9,\n  \"class_1_probability\": 0.1,\n  \"confidence\": 0.8,\n  \"explanation\": \"文本陈述客观数据对比，无夸张或情绪化诱导，不属于标题党。\"\n}",
-    "output": {
-      "probs": [
-        0.8999999761581421,
-        0.10000000149011612
-      ],
-      "confidence": 0.8,
-      "explanation": "文本陈述客观数据对比，无夸张或情绪化诱导，不属于标题党。"
-    }
-  },
-  "18716bf2d1b912c99361ee0304931d317e7a6738e6458d5f16672fbed98a3acc": {
-    "status": "SUCCESS",
-    "text": "namaste india ! #markzuckerberg founder and ceo of #facebook begins his india visit with internet org summit in delhi",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.85,\n  \"class_1_probability\": 0.15,\n  \"confidence\": 0.7,\n  \"explanation\": \"文本为事实陈述，没有夸大或误导，不属于标题党\"\n}",
-    "output": {
-      "probs": [
-        0.8500000238418579,
-        0.15000000596046448
-      ],
-      "confidence": 0.7,
-      "explanation": "文本为事实陈述，没有夸大或误导，不属于标题党"
-    }
-  },
-  "19797eb8e5f0aba46222962d00be6464412ac2de6a953b0a091884a6e9c34226": {
-    "status": "SUCCESS",
-    "text": "really have you heard the pope lately ? no christian or jew is taught to kill homosexuals.no law supports it .",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.95,\n  \"class_1_probability\": 0.05,\n  \"confidence\": 0.9,\n  \"explanation\": \"文本为陈述性反驳，无夸张或误导，非标题党。\"\n}",
-    "output": {
-      "probs": [
-        0.949999988079071,
-        0.05000000074505806
-      ],
-      "confidence": 0.9,
-      "explanation": "文本为陈述性反驳，无夸张或误导，非标题党。"
-    }
-  },
-  "7fd2293e7440eed52f7aa418ec612beb51ce1840bfa406d2b4cd7c7797041d7d": {
-    "status": "SUCCESS",
-    "text": "a couple days from now you won't be able to find a single person who was ever in the #cruzcrew",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.3,\n  \"class_1_probability\": 0.7,\n  \"confidence\": 0.6,\n  \"explanation\": \"文本隐含强烈负面预测，绝对化表述具有煽动性，可能为点击诱导。\"\n}",
-    "output": {
-      "probs": [
-        0.30000001192092896,
-        0.699999988079071
-      ],
-      "confidence": 0.6,
-      "explanation": "文本隐含强烈负面预测，绝对化表述具有煽动性，可能为点击诱导。"
-    }
-  },
-  "f58de08ecf4606dccd0ec75d1edc53df7fc1789b5cb3da6ef34c28ff24e14b0a": {
-    "status": "SUCCESS",
-    "text": "the black guy is trying to tell the other guy what his iq is . #drainthesewer",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.0,\n  \"class_1_probability\": 1.0,\n  \"confidence\": 0.95,\n  \"explanation\": \"文本隐含种族歧视，使用贬低黑人智商的表述，具有点击诱导性。\"\n}",
-    "output": {
-      "probs": [
-        0.0,
-        1.0
-      ],
-      "confidence": 0.95,
-      "explanation": "文本隐含种族歧视，使用贬低黑人智商的表述，具有点击诱导性。"
-    }
-  },
-  "0dc3bac3c3b02d0ff5e84b71aec3aadcd75bb615f25193fd432c2dfe2cd3ec0e": {
-    "status": "SUCCESS",
-    "text": "believes trump supporters are the dregs of white america . no  we are the angriest about what has happened to white america",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.05,\n  \"class_1_probability\": 0.95,\n  \"confidence\": 0.90,\n  \"explanation\": \"文本使用贬低性隐喻并表达强烈愤怒，隐含挑衅与诱导点击意图。\"\n}",
-    "output": {
-      "probs": [
-        0.05000000074505806,
-        0.949999988079071
-      ],
-      "confidence": 0.9,
-      "explanation": "文本使用贬低性隐喻并表达强烈愤怒，隐含挑衅与诱导点击意图。"
-    }
-  },
-  "97e7be3ddad9e97482936a6742adeb21f00f34c998136de0498e5dc903d6dd64": {
-    "status": "SUCCESS",
-    "text": "\" : : one white person started this . so let's blame all white people . \" \" death to the whitezz \" \" \"",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.05,\n  \"class_1_probability\": 0.95,\n  \"confidence\": 0.9,\n  \"explanation\": \"文本包含极端煽动性种族仇恨言论，明显意图引发争议和点击，属于点击诱导。\"\n}",
-    "output": {
-      "probs": [
-        0.05000000074505806,
-        0.949999988079071
-      ],
-      "confidence": 0.9,
-      "explanation": "文本包含极端煽动性种族仇恨言论，明显意图引发争议和点击，属于点击诱导。"
-    }
-  },
-  "e3d789c352a9ba3dbe14e335384b3bc0539ff4e308c8152e0a51c6bc1ea9396a": {
-    "status": "SUCCESS",
-    "text": ": @ me white men",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.25,\n  \"class_1_probability\": 0.75,\n  \"confidence\": 0.65,\n  \"explanation\": \"简短引战语句，隐含种族对立，诱导点击。\"\n}",
-    "output": {
-      "probs": [
-        0.25,
-        0.75
-      ],
-      "confidence": 0.65,
-      "explanation": "简短引战语句，隐含种族对立，诱导点击。"
-    }
-  },
-  "156904ee28469cbfcaf4b82173170d23be5e7e1c944746056f83ef3dbf5ebb66": {
-    "status": "SUCCESS",
-    "text": "mccain is not and has never been a republican . people forget that he was the bernie sander",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.0,\n  \"class_1_probability\": 1.0,\n  \"confidence\": 0.9,\n  \"explanation\": \"歪曲事实，制造争议，明显标题党。\"\n}",
-    "output": {
-      "probs": [
-        0.0,
-        1.0
-      ],
-      "confidence": 0.9,
-      "explanation": "歪曲事实，制造争议，明显标题党。"
-    }
-  },
-  "44864bce428646489c503f034e4229892fe9f19ecd021b77f57b08b09f0746b9": {
-    "status": "SUCCESS",
-    "text": "as it should be . all that is happening to europe today  hitler foresaw . he also knew the jewish plan to destroy whites .",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.0,\n  \"class_1_probability\": 1.0,\n  \"confidence\": 0.9,\n  \"explanation\": \"文本隐含对希特勒的赞同和对犹太人的敌意，情感强烈。\"\n}",
-    "output": {
-      "probs": [
-        0.0,
-        1.0
-      ],
-      "confidence": 0.9,
-      "explanation": "文本隐含对希特勒的赞同和对犹太人的敌意，情感强烈。"
-    }
-  },
-  "fcacceeda61c32b49ad2c39f1e3e01dffd4ce30ffd160423392793ccad62d007": {
-    "status": "SUCCESS",
-    "text": "odd for you to say this since you're a white supremacist .",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.0,\n  \"class_1_probability\": 1.0,\n  \"confidence\": 0.8,\n  \"explanation\": \"文本隐式指责对方为白人至上主义者，带有强烈攻击性和煽动性，易引发争议与点击。\"\n}",
-    "output": {
-      "probs": [
-        0.0,
-        1.0
-      ],
-      "confidence": 0.8,
-      "explanation": "文本隐式指责对方为白人至上主义者，带有强烈攻击性和煽动性，易引发争议与点击。"
-    }
-  },
-  "e08913983872c3ea2f12f53dd99a0630f4a99d99ee7fa24247957806d13f90db": {
-    "status": "SUCCESS",
-    "text": "this doesn't make sense though ... only white people can be racist ? #liberallogic",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.95,\n  \"class_1_probability\": 0.05,\n  \"confidence\": 0.9,\n  \"explanation\": \"文本为讽刺性评论，无夸大或误导点击意图，非标题党。\"\n}",
-    "output": {
-      "probs": [
-        0.949999988079071,
-        0.05000000074505806
-      ],
-      "confidence": 0.9,
-      "explanation": "文本为讽刺性评论，无夸大或误导点击意图，非标题党。"
-    }
-  },
-  "c9b672182e10857834716090bf44f4bbbb2e681ba153d74e32baf1cec73593c2": {
-    "status": "SUCCESS",
-    "text": "white . proud . no . apologies .",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.3,\n  \"class_1_probability\": 0.7,\n  \"confidence\": 0.6,\n  \"explanation\": \"文本隐含骄傲且拒绝道歉的态度，易引发情绪反应，有标题党倾向。\"\n}",
-    "output": {
-      "probs": [
-        0.30000001192092896,
-        0.699999988079071
-      ],
-      "confidence": 0.6,
-      "explanation": "文本隐含骄傲且拒绝道歉的态度，易引发情绪反应，有标题党倾向。"
-    }
-  },
-  "ad7cd758b5b46c621accfd3f70d1f0b0208e7ec37e10101a80af112ce2586c16": {
-    "status": "SUCCESS",
-    "text": "rt i'm probably banned from entering the uk for  \" islamophobia . \" \" meanwhile  these people are let into the country \"",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.85,\n  \"class_1_probability\": 0.15,\n  \"confidence\": 0.7,\n  \"explanation\": \"文本是用户评论，非标题结构，不能作为点击诱导。\"\n}",
-    "output": {
-      "probs": [
-        0.8500000238418579,
-        0.15000000596046448
-      ],
-      "confidence": 0.7,
-      "explanation": "文本是用户评论，非标题结构，不能作为点击诱导。"
-    }
-  },
-  "935e7b32a89468586a8d75932cc2b16876be2ef31af70eca59e1ac0aee2b4c56": {
-    "status": "SUCCESS",
-    "text": "will mike tell us how jewish wives are the last stand of implicit white identity ?",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.1,\n  \"class_1_probability\": 0.9,\n  \"confidence\": 0.95,\n  \"explanation\": \"疑问形式+种族敏感话题，明显诱导点击\"\n}",
-    "output": {
-      "probs": [
-        0.10000000149011612,
-        0.8999999761581421
-      ],
-      "confidence": 0.95,
-      "explanation": "疑问形式+种族敏感话题，明显诱导点击"
-    }
-  },
-  "7282ff64310093f44d60f94c235030b6ac8846fbd56355bfce03b2e10a5bc95e": {
-    "status": "SUCCESS",
-    "text": "please subscribe and view my non profit white genocide jew lies playlist",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.0,\n  \"class_1_probability\": 1.0,\n  \"confidence\": 0.95,\n  \"explanation\": \"文本包含极端煽动性言论，明显通过仇恨内容诱导点击，属于标题党。\"\n}",
-    "output": {
-      "probs": [
-        0.0,
-        1.0
-      ],
-      "confidence": 0.95,
-      "explanation": "文本包含极端煽动性言论，明显通过仇恨内容诱导点击，属于标题党。"
-    }
-  },
-  "717400d87125d8c7d93d75aa387014ab6282affa0e05561191366d7671557323": {
-    "status": "SUCCESS",
-    "text": "gary sutton and congressman lou barletta  a good friend  at fair hold their feet to the fire event in dc",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.85,\n  \"class_1_probability\": 0.15,\n  \"confidence\": 0.7,\n  \"explanation\": \"文本描述事件无夸张诱导，但习语隐含施压情感，偏向客观报道。\"\n}",
-    "output": {
-      "probs": [
-        0.8500000238418579,
-        0.15000000596046448
-      ],
-      "confidence": 0.7,
-      "explanation": "文本描述事件无夸张诱导，但习语隐含施压情感，偏向客观报道。"
-    }
-  },
-  "e1a7fcb5a7f8945803db3981275c9f333555346828abf93a46cd758400fd9557": {
-    "status": "SUCCESS",
-    "text": "trump filled the white house with racist white nationalists like bannon  mil",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.0,\n  \"class_1_probability\": 1.0,\n  \"confidence\": 0.9,\n  \"explanation\": \"描述隐含强烈负面情感，使用煽动性词汇，属于点击诱导。\"\n}",
-    "output": {
-      "probs": [
-        0.0,
-        1.0
-      ],
-      "confidence": 0.9,
-      "explanation": "描述隐含强烈负面情感，使用煽动性词汇，属于点击诱导。"
-    }
-  },
-  "da4b9fb789d24612eb7c638e50ecba18c96dcf18ffd2fd7069a4a07a3e1686a7": {
-    "status": "SUCCESS",
-    "text": "cernovich claims he's a jew---it sure shows . #lol .",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.7,\n  \"class_1_probability\": 0.3,\n  \"confidence\": 0.6,\n  \"explanation\": \"文本带有嘲讽意味，但并非刻意诱导点击，更像是个人情感表达\"\n}",
-    "output": {
-      "probs": [
-        0.699999988079071,
-        0.30000001192092896
-      ],
-      "confidence": 0.6,
-      "explanation": "文本带有嘲讽意味，但并非刻意诱导点击，更像是个人情感表达"
-    }
-  },
-  "f2a55f8e745c1ce9064bdf026c99abcc0d1bc20215a895356dfbf60cc601c21c": {
-    "status": "SUCCESS",
-    "text": "all the republicans are doing is pulling white america into the quicksand ! we must let go of them if we are to survive !",
-    "task_description": "implicit sentiment analysis: infer the sentiment implied by the described event, behavior, or outcome, even when no explicit emotional words are present",
-    "agent_name": "Semantic",
-    "model_name": "deepseek-v4-flash",
-    "raw_text": "{\n  \"class_0_probability\": 0.0,\n  \"class_1_probability\": 1.0,\n  \"confidence\": 0.95,\n  \"explanation\": \"使用夸张比喻和紧迫语气煽动情绪，属于典型点击诱导。\"\n}",
-    "output": {
-      "probs": [
-        0.0,
-        1.0
-      ],
-      "confidence": 0.95,
-      "explanation": "使用夸张比喻和紧迫语气煽动情绪，属于典型点击诱导。"
+      "explanation": "句子通过'only'暗示排他性，隐含对非白人总统的排斥或歧视态度，属于隐式情感。"
     }
   }
 }

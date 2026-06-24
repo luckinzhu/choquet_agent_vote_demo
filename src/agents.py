@@ -6,12 +6,18 @@ from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
+from .task_schemas import DEFAULT_LABEL_SCHEMA, get_task_label_schema
 
-DEFAULT_LABEL_SCHEMA = {
-    "class_0": "否 / 非标题党 / 非点击诱导",
-    "class_1": "是 / 标题党 / 点击诱导",
-}
 
+def _label_schema_for_sample(
+    explicit_schema: Optional[Dict[str, str]],
+    task_description: str,
+    record: Optional[Dict[str, object]] = None,
+) -> Dict[str, str]:
+    if explicit_schema:
+        return explicit_schema
+    task_name = record.get("task_name") if record else None
+    return get_task_label_schema(task_name, task_description)
 
 def _contains_any(text: str, keywords: List[str]) -> int:
     lower = text.lower()
@@ -95,10 +101,12 @@ class AgentInterface(ABC):
         texts: List[str],
         task_descriptions: List[str],
         records: Optional[List[Dict[str, object]]] = None,
+        label_schema: Optional[Dict[str, str]] = None,
     ):
+        records = records or [None] * len(texts)
         outputs = [
-            self.predict_one(t, d, DEFAULT_LABEL_SCHEMA)
-            for t, d in zip(texts, task_descriptions)
+            self.predict_one(t, d, _label_schema_for_sample(label_schema, d, record))
+            for t, d, record in zip(texts, task_descriptions, records)
         ]
         probs = np.stack([np.asarray(o["probs"], dtype=np.float32) for o in outputs], axis=0)
         confidences = np.array([o["confidence"] for o in outputs], dtype=np.float32)
@@ -294,14 +302,14 @@ class LLMBaseAgent(AgentInterface):
         return (
             f"你是{self.system_role}。{self.perspective}\n"
             "你只从自己的专家视角判断，不要综合其他角度。\n"
-            "当前主要任务是中文点击诱导/标题党判断；如果 task_description 另有说明，则仍按任务描述判断。\n"
-            "class_0 = 否 / 非标题党 / 非点击诱导 / 负类。\n"
-            "class_1 = 是 / 标题党 / 点击诱导 / 正类。\n"
+            "这是一个二分类文本判断任务，具体任务由用户提示中的 task_description 和 label_schema 决定。\n"
+            "class_0 和 class_1 的具体含义以用户提示中的标签定义为准。\n"
             "probability 必须在 0 到 1 之间；confidence 表示你对自己判断的可靠程度。\n"
             "输出必须是严格 JSON，不要 Markdown，不要代码块，不要额外解释。"
         )
 
     def user_prompt(self, text: str, task_description: str, label_schema: Dict[str, str]) -> str:
+        label_schema = label_schema or DEFAULT_LABEL_SCHEMA
         prompt_parts = []
         
         prompt_parts.append("任务描述：\n")
@@ -432,7 +440,7 @@ class LLMBaseAgent(AgentInterface):
     ) -> Dict[str, object]:
         self.last_error = None
         self.last_used_fallback = False
-        label_schema = label_schema or DEFAULT_LABEL_SCHEMA
+        label_schema = label_schema or get_task_label_schema(task_description=task_description)
         if self.cache is not None:
             cached = self.cache.get(llm_text, task_description, self.name, self.model_name)
             if cached is not None:
@@ -476,6 +484,7 @@ class LLMBaseAgent(AgentInterface):
         texts: List[str],
         task_descriptions: List[str],
         records: Optional[List[Dict[str, object]]] = None,
+        label_schema: Optional[Dict[str, str]] = None,
     ):
         records = records or [None] * len(texts)
         outputs = [
@@ -483,7 +492,7 @@ class LLMBaseAgent(AgentInterface):
                 self.generate_input_text(text, record),
                 text,
                 task_description,
-                DEFAULT_LABEL_SCHEMA,
+                _label_schema_for_sample(label_schema, task_description, record),
             )
             for text, task_description, record in zip(texts, task_descriptions, records)
         ]
@@ -493,6 +502,7 @@ class LLMBaseAgent(AgentInterface):
         return probs, confidences, explanations
 
 
+# clickbait task
 # class LLMSemanticAgent(LLMBaseAgent):
 #     name = "Semantic"
 #     description = SemanticAgent.description
@@ -534,6 +544,8 @@ class LLMBaseAgent(AgentInterface):
 #     system_role = "一致性/矛盾/转折专家"
 #     perspective = "你关注文本内部一致性、矛盾、转折、前后不匹配和叙述落差。"
 #     fewshot_file = "consistency.json"
+
+# implicit task
 class LLMSemanticAgent(LLMBaseAgent):
     name = "Semantic"
     description = "语义隐含情感专家"
@@ -594,6 +606,139 @@ class LLMConsistencyAgent(LLMBaseAgent):
     fewshot_file = "stance_contrast.json"
 
 
+# fake news task
+# class LLMSemanticAgent(LLMBaseAgent):
+#     name = "Semantic"
+#     description = "新闻语义与事实主张专家"
+#     system_role = "新闻语义与事实主张专家"
+#     perspective = (
+#         "你关注新闻文本的整体语义、核心事实主张、事件描述是否清晰可信，"
+#         "以及文本中是否存在夸大、模糊、无法验证或逻辑上可疑的事实表述。"
+#         "你的最终任务是判断该新闻是否包含虚构、误导性或难以核实的信息，"
+#         "而不是只判断文本语义是否通顺。"
+#     )
+#     fewshot_file = "fake_semantic.json"
+#
+#
+# class LLMEmotionAgent(LLMBaseAgent):
+#     name = "Emotion"
+#     description = "情绪煽动与误导性表达专家"
+#     system_role = "情绪煽动与误导性表达专家"
+#     perspective = (
+#         "你关注新闻文本中的情绪化表达、煽动性措辞、强烈立场、夸张评价、"
+#         "恐慌制造、愤怒引导、过度渲染和吸引眼球的表达方式。"
+#         "你的目标不是单纯判断文本是否有情绪，而是判断这些情绪化线索是否可能服务于"
+#         "误导读者、制造偏见或掩盖事实真实性。"
+#     )
+#     fewshot_file = "fake_emotion_clue.json"
+#
+#
+# class LLMIntentionAgent(LLMBaseAgent):
+#     name = "Intention"
+#     description = "传播意图与误导策略专家"
+#     system_role = "传播意图与误导策略专家"
+#     perspective = (
+#         "你关注新闻文本是否存在明显的误导性传播意图，包括断章取义、标题党式引导、"
+#         "选择性呈现事实、偷换概念、诱导读者相信未经证实的信息、"
+#         "将猜测包装成事实、或通过暗示方式制造错误认知。"
+#         "你的目标不是判断作者主观动机本身，而是根据文本表现判断其是否具有假新闻或误导性信息特征。"
+#     )
+#     fewshot_file = "fake_pragmatic.json"
+#
+#
+# class LLMLexicalAgent(LLMBaseAgent):
+#     name = "Lexical"
+#     description = "新闻措辞与可疑表达线索专家"
+#     system_role = "新闻措辞与可疑表达线索专家"
+#     perspective = (
+#         "你关注新闻文本中的表层语言线索，包括绝对化用词、模糊来源、匿名爆料、"
+#         "未经证实的说法、夸张标题、极端判断、模棱两可的事实描述、"
+#         "以及缺少明确证据支持的断言。"
+#         "你的目标不是简单统计可疑词语，而是判断这些表达线索是否共同指向虚假、误导或不可验证信息。"
+#     )
+#     fewshot_file = "fake_lexical.json"
+#
+#
+# class LLMConsistencyAgent(LLMBaseAgent):
+#     name = "Consistency"
+#     description = "事实一致性与证据可信度专家"
+#     system_role = "事实一致性与证据可信度专家"
+#     perspective = (
+#         "你关注新闻文本中的事实一致性、前后逻辑关系、事件因果关系、时间地点人物是否自洽，"
+#         "以及文本中的结论是否有足够证据支撑。"
+#         "你需要识别文本是否存在前后矛盾、证据不足、来源不明、事实跳跃、"
+#         "以偏概全或将不确定信息表述为确定事实等问题。"
+#         "你的目标不是单纯判断文本是否矛盾，而是通过一致性和证据可信度判断其是否可能是假新闻。"
+#     )
+#     fewshot_file = "fake_stance_contrast.json"
+
+
+# traditional task
+# class LLMSemanticAgent(LLMBaseAgent):
+#     name = "Semantic"
+#     description = "短文本语义理解专家"
+#     system_role = "短文本语义理解专家"
+#     perspective = (
+#         "你关注短文本的整体语义、核心含义、主题指向和上下文中的隐含信息。"
+#         "由于短文本通常信息量少、表达简略，你需要根据有限文本判断其最可能所属的类别。"
+#         "你的最终任务是根据文本的主题、意图或语义含义进行分类，"
+#         "而不是只判断文本是否通顺。"
+#     )
+#     fewshot_file = "short_semantic.json"
+#
+#
+# class LLMEmotionAgent(LLMBaseAgent):
+#     name = "Emotion"
+#     description = "语气情绪与表达倾向专家"
+#     system_role = "语气情绪与表达倾向专家"
+#     perspective = (
+#         "你关注短文本中的语气、情绪色彩、态度倾向、评价性表达、感叹、反问、"
+#         "程度副词和具有主观色彩的词语。"
+#         "你的目标不是单纯判断文本情绪，而是分析这些语气和情绪线索是否有助于区分文本类别，"
+#         "例如判断文本更偏向询问、抱怨、推荐、评价、求助、新闻、娱乐或其他主题类别。"
+#     )
+#     fewshot_file = "short_emotion_clue.json"
+#
+#
+# class LLMIntentionAgent(LLMBaseAgent):
+#     name = "Intention"
+#     description = "用户意图与交际目的专家"
+#     system_role = "用户意图与交际目的专家"
+#     perspective = (
+#         "你关注短文本背后的用户意图和交际目的，包括询问、陈述、请求、推荐、吐槽、"
+#         "分享、评价、求助、命令、提醒或表达观点等。"
+#         "你的目标不是只看文本表面词语，而是判断说话者想通过这段短文本完成什么目的，"
+#         "并根据意图信息辅助判断其所属类别。"
+#     )
+#     fewshot_file = "short_intention.json"
+#
+#
+# class LLMLexicalAgent(LLMBaseAgent):
+#     name = "Lexical"
+#     description = "关键词与表层特征专家"
+#     system_role = "关键词与表层特征专家"
+#     perspective = (
+#         "你关注短文本中的关键词、短语、实体名称、领域词、网络用语、特殊符号、"
+#         "高频类别提示词和具有区分度的表层表达。"
+#         "你的目标不是简单统计词语，而是根据这些关键词和表达线索判断文本更可能属于哪个主题、"
+#         "意图或语义类别。"
+#     )
+#     fewshot_file = "short_lexical.json"
+#
+#
+# class LLMConsistencyAgent(LLMBaseAgent):
+#     name = "Consistency"
+#     description = "类别一致性与判别边界专家"
+#     system_role = "类别一致性与判别边界专家"
+#     perspective = (
+#         "你关注短文本与候选类别之间的一致性，判断文本内容、语义、意图和关键词是否共同指向同一类别。"
+#         "当文本较短、信息不足或多个类别相似时，你需要分析不同类别之间的边界，"
+#         "识别最符合文本含义的类别，并避免被单个关键词误导。"
+#         "你的目标不是判断文本是否矛盾，而是判断文本与各类别定义之间的匹配程度。"
+#     )
+#     fewshot_file = "short_consistency.json"
+
+
 class AgentFactory:
     rule_agent_classes = [SemanticAgent, EmotionAgent, IntentionAgent, LexicalAgent, ConsistencyAgent]
     llm_agent_classes = [
@@ -635,10 +780,16 @@ def run_agents(
     texts: List[str],
     task_descriptions: List[str],
     records: Optional[List[Dict[str, object]]] = None,
+    label_schema: Optional[Dict[str, str]] = None,
 ):
     probs, confidences, explanations = [], [], []
     for agent in agents:
-        p, c, e = agent.predict_batch(texts, task_descriptions, records=records)
+        p, c, e = agent.predict_batch(
+            texts,
+            task_descriptions,
+            records=records,
+            label_schema=label_schema,
+        )
         probs.append(p)
         confidences.append(c)
         explanations.append(e)
